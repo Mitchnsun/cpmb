@@ -1,0 +1,104 @@
+# Chœur des Pays du Mont-Blanc
+
+Ce projet contient le code source du site web officiel du **Chœur des Pays du Mont-Blanc**, accessible à l'adresse : [https://choeurdespaysdumontblanc.fr/](https://choeurdespaysdumontblanc.fr/)
+
+## 📖 Description
+
+Site web moderne développé avec Next.js pour présenter le Chœur des Pays du Mont-Blanc, ses activités, concerts, et permettre aux visiteurs de découvrir l'ensemble vocal.
+
+## 🚀 Technologies utilisées
+
+- **Framework** : [Next.js 15.5.2](https://nextjs.org/) avec Turbopack
+- **Langage** : TypeScript
+- **Styling** : [Tailwind CSS 4.1.13](https://tailwindcss.com/)
+- **Runtime** : React 19.1.1
+- **Gestionnaire de paquets** : Yarn 4.9.4
+- **Linting** : ESLint avec configuration Next.js
+
+## 🛠️ Installation et développement
+
+### Prérequis
+
+- Node.js (version 18+ recommandée)
+- Yarn 4.9.4
+
+### Installation des dépendances
+
+```bash
+yarn install
+```
+
+### Lancement du serveur de développement
+
+```bash
+yarn dev
+```
+
+Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
+
+### Scripts disponibles
+
+- `yarn dev` - Lance le serveur de développement avec Turbopack
+- `yarn build` - Compile l'application pour la production
+- `yarn start` - Lance l'application en mode production
+- `yarn lint` - Vérifie le code avec ESLint
+- `yarn lint:fix` - Corrige automatiquement les erreurs ESLint
+
+## 📁 Structure du projet
+
+```
+├── app/                    # Pages et layouts Next.js (App Router)
+│   ├── layout.tsx         # Layout principal
+│   ├── page.tsx           # Page d'accueil
+│   └── globals.css        # Styles globaux
+├── public/                # Assets statiques
+├── .vscode/               # Configuration VS Code
+├── eslint.config.js       # Configuration ESLint
+├── tailwind.config.js     # Configuration Tailwind CSS
+├── tsconfig.json          # Configuration TypeScript
+└── next.config.ts         # Configuration Next.js
+```
+
+## 🔧 Configuration
+
+### ESLint
+
+Le projet utilise ESLint avec :
+
+- Configuration Next.js (`next/core-web-vitals`)
+- Support TypeScript
+- Règles personnalisées pour la qualité du code
+
+### Tailwind CSS
+
+Configuration avec PostCSS pour un styling moderne et responsive.
+
+### TypeScript
+
+Configuration stricte pour un développement robuste.
+
+## 🚀 Déploiement
+
+Le site est optimisé pour un déploiement sur [Vercel](https://vercel.com/), mais peut être déployé sur d'autres plateformes supportant Next.js.
+
+```bash
+yarn build
+```
+
+## 📝 Contribution
+
+Pour contribuer au projet :
+
+1. Fork le repository
+2. Créer une branche pour votre feature (`git checkout -b feature/ma-feature`)
+3. Commiter vos changements (`git commit -am 'Ajout de ma feature'`)
+4. Push vers la branche (`git push origin feature/ma-feature`)
+5. Ouvrir une Pull Request
+
+## 📞 Contact
+
+Pour toute question concernant le développement du site, contactez l'équipe de développement.
+
+---
+
+**Site officiel** : [https://choeurdespaysdumontblanc.fr/](https://choeurdespaysdumontblanc.fr/)
