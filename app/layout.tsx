@@ -17,7 +17,7 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Choeur des Pays du Mont-Blanc",
+  title: "Chœur des Pays du Mont-Blanc",
   description:
     "L'objectif est de proposer à un public le plus large possible des interprétations de grande qualité. Notre vocation est de faire connaître et promouvoir la musique classique, permettant de rapprocher les musiciens et un large public, parfois non initié, en expliquant les œuvres musicales partant du principe qu'\"Apprendre à écouter, c'est découvrir l'émotion\".",
 };
