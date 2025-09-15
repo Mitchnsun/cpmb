@@ -5,18 +5,18 @@ import MailIcon from "@/public/mail.svg";
 export default function Home() {
   return (
     <>
-      <main className="py-8 text-zinc-900">
+      <main className="p-4 text-zinc-900 lg:p-8">
         <article className="container mx-auto">
           <h3 className="mb-4 text-xl font-bold text-sky-700">
             Le CPMB a le plaisir de vous présenter son nouveau Chef de Chœur !
           </h3>
-          <div className="flex items-center gap-8">
+          <div className="flex flex-col items-start gap-8 text-justify sm:flex-row lg:items-center">
             <Image
               src="/media/benoit_dubu.jpg"
               alt="Benoît Dubu"
-              width={200}
-              height={350}
-              className="rounded-md object-cover"
+              width={180}
+              height={325}
+              className="mx-auto h-80 w-full max-w-60 grow-0 rounded-md object-cover lg:m-0 lg:h-auto"
             />
             <div>
               <p>Le CPMB, est dirigé par Benoît Dubu, Chef de choeur professionnel depuis le mois de janvier 2024.</p>
@@ -40,17 +40,17 @@ export default function Home() {
           </div>
         </article>
       </main>
-      <div className="bg-sky-50">
+      <div className="bg-sky-50 p-4">
         <div className="container mx-auto py-10">
           <h3 className="mb-4 text-xl font-bold text-sky-700">Le CPMB recrute !</h3>
-          <div className="max-w-1/2 rounded-md bg-white p-4 shadow-md">
+          <div className="rounded-md bg-white p-4 shadow-md lg:max-w-1/2">
             <h4 className="font-noto text-lg font-bold text-gray-800 uppercase">Nous avons besoin de vos voix !</h4>
             <p className="pt-3">
               Nous recrutons des choristes ayant une expérience chorale et /ou une capacité en déchiffrage.
             </p>
             <p>Celles et ceux qui souhaitent venir nous rejoindre peuvent demander des informations par courriel à</p>
-            <p className="flex items-center gap-2 py-2 pl-4">
-              <MailIcon className="h-5 w-5" />
+            <p className="flex items-center gap-2 pt-2 md:pl-4">
+              <MailIcon className="hidden h-5 w-5 md:block" />
               <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-700 hover:underline">
                 bureau@choeurdespaysdumontblanc.fr
               </a>

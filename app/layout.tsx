@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans } from "next/font/google";
 
 import Footer from "@/components/Footer";
@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   title: "Choeur des Pays du Mont-Blanc",
   description:
     "L'objectif est de proposer à un public le plus large possible des interprétations de grande qualité. Notre vocation est de faire connaître et promouvoir la musique classique, permettant de rapprocher les musiciens et un large public, parfois non initié, en expliquant les œuvres musicales partant du principe qu'\"Apprendre à écouter, c'est découvrir l'émotion\".",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

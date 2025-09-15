@@ -4,18 +4,18 @@ import Link from "next/link";
 const Footer = () => (
   <footer className="font-noto">
     <div className="container mx-auto flex items-center justify-around gap-6 py-4 text-center">
-      <a href="https://www.veran-piano.com/" target="_blank" rel="noopener noreferrer">
-        <Image src="/logo-veran-pianos.png" alt="Logo Veran Piano" width={200} height={100} />
+      <a href="https://www.veran-piano.com/" target="_blank" rel="noopener noreferrer" className="basis-1/3">
+        <Image src="/logo-veran-pianos.png" alt="Logo Veran Piano" width={200} height={120} className="m-auto" />
       </a>
-      <a href="https://www.gaillard.fr/" target="_blank" rel="noopener noreferrer">
-        <Image src="/logo-gaillard.png" alt="Logo Ville de Gaillard" width={200} height={100} />
+      <a href="https://www.gaillard.fr/" target="_blank" rel="noopener noreferrer" className="basis-1/3">
+        <Image src="/logo-gaillard.png" alt="Logo Ville de Gaillard" width={200} height={120} className="m-auto" />
       </a>
-      <a href="https://www.hautesavoie.fr/" target="_blank" rel="noopener noreferrer">
-        <Image src="/haute-savoie.svg" alt="Logo Haute-Savoie" width={100} height={55} />
+      <a href="https://www.hautesavoie.fr/" target="_blank" rel="noopener noreferrer" className="basis-1/3">
+        <Image src="/haute-savoie.svg" alt="Logo Haute-Savoie" width={90} height={55} className="m-auto" />
       </a>
     </div>
-    <div className="bg-gray-800">
-      <div className="container mx-auto flex items-start gap-24 py-4">
+    <div className="bg-gray-800 px-4">
+      <div className="container mx-auto flex flex-col items-start gap-4 py-4 lg:flex-row lg:gap-24">
         <div>
           <Image
             src="/CPMB-logo-blanc.png"

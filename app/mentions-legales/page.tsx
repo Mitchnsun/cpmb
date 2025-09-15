@@ -1,11 +1,9 @@
 export default function Mentions() {
   return (
-    <main className="py-8 text-zinc-900">
-      <article className="container mx-auto">
+    <main className="p-4 text-zinc-900 lg:py-8">
+      <article className="container mx-auto text-justify">
         <h3 className="mb-4 text-xl font-bold text-sky-700">Mentions légales</h3>
-        <h4 className="font-noto mb-2 text-lg font-bold text-gray-800 uppercase">
-          Droits d&apos;auteurs et copyright :
-        </h4>
+        <h4 className="font-noto mb-2 text-lg font-bold text-gray-800">Droits d&apos;auteurs et copyright :</h4>
         <p>
           Le site de l&apos;association &quot;Chœur des Pays du Mont-Blanc&quot; est protégé par la législation
           française et internationale sur le droit d&apos;auteur et la propriété intellectuelle. Les droits de
@@ -14,7 +12,7 @@ export default function Mentions() {
           diffusion, ainsi que toute utilisation des visuels et textes qu&apos;il contient autre que la consultation
           individuelle et privée sont interdits sauf autorisation expresse du directeur de la publication.
         </p>
-        <h4 className="font-noto my-2 text-lg font-bold text-gray-800 uppercase">Données personnelles :</h4>
+        <h4 className="font-noto my-2 text-lg font-bold text-gray-800">Données personnelles :</h4>
         <h5 className="font-bold">1. Déclaration à la CNIL :</h5>
         <p>
           Conformément à l&apos;article n° 2010-229 du 10 juin 2010 dispensant de déclaration les traitements
