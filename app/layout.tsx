@@ -8,23 +8,24 @@ import Header from "@/components/Header";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 const notoSans = Noto_Sans({
   variable: "--font-noto-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 export const metadata: Metadata = {
-  title: "Choeur des Pays du Mont-Blanc",
+  title: "Chœur des Pays du Mont-Blanc",
   description:
-    "L'objectif est de proposer à un public le plus large possible des interprétations de grande qualité. Notre vocation est de faire connaître et promouvoir la musique classique, permettant de rapprocher les musiciens et un large public, parfois non initié, en expliquant les œuvres musicales partant du principe qu'\"Apprendre à écouter, c'est découvrir l'émotion\".",
+    "Chœur des Pays du Mont-Blanc : interprétations de qualité pour tous — « Apprendre à écouter, c’est découvrir l’émotion ».",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -36,7 +37,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${inter.variable} ${notoSans.variable} font-inter bg-zinc-50 text-zinc-900 antialiased`}>
         <Header />
-        {children}
+        <main id="main-content">{children}</main>
         <Footer />
       </body>
     </html>
