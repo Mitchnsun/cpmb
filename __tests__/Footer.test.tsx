@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-
+import type { ImageProps } from "next/image";
 import Footer from "@/components/Footer";
 
 // Mock Next.js components
 vi.mock("next/image", () => ({
-  default: ({ src, alt, width, height, className }: any) => (
+  default: ({ src, alt, width, height, className }: ImageProps) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} width={width} height={height} className={className} />
   ),
