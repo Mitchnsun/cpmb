@@ -83,4 +83,24 @@ module.exports = [
       "unicorn/filename-case": "off",
     },
   },
+  // Test files configuration
+  {
+    files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "src/test/**/*.{js,jsx,ts,tsx}"],
+    languageOptions: {
+      globals: {
+        vi: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // Allow any in test mocks
+      "sonarjs/no-duplicate-string": "off", // Test descriptions often repeat strings
+    },
+  },
 ];
