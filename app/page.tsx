@@ -4,23 +4,15 @@ import MailIcon from "@/assets/icons/mail.svg";
 import Carrousel from "@/components/Carrousel";
 
 /**
- * Default Next.js page component that renders the site's home content.
- *
- * Renders three static, accessible sections:
- * - A top carousel.
- * - An "About" article introducing the choir's new conductor with a portrait image,
- *   season highlights, concert dates, and soloists.
- * - A recruitment card with contact information (email link) and accessible labels
- *   (uses `aria-labelledby` for the recruitment section and `aria-hidden` on the mail icon).
- *
- * The component is static (no props or state) and returns the page JSX.
+ * Home page (App Router, server component).
+ * Renders: top carousel, About section, and a recruitment card with accessible labeling.
  */
 export default function Home() {
   return (
     <>
-      <section className="container mx-auto p-4 lg:px-0 lg:pt-8">
+      <div className="container mx-auto p-4 lg:px-0 lg:pt-8">
         <Carrousel />
-      </section>
+      </div>
       <section className="p-4 text-zinc-900 lg:p-8">
         <article className="container mx-auto">
           <h1 className="mb-4 text-xl font-bold text-sky-700">

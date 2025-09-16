@@ -29,14 +29,20 @@ const Carrousel = () => {
   useEffect(() => {
     if (!isPlaying) return;
 
+    // Avoid autoplay for users who prefer reduced motion.
+    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!isPlaying || reduce) return;
     const interval = setInterval(nextSlide, 8000);
     return () => clearInterval(interval);
   }, [isPlaying, nextSlide]);
 
   return (
     <section
-      className="relative h-50 w-full overflow-hidden rounded-lg shadow-lg lg:h-96"
+      className="relative h-48 w-full overflow-hidden rounded-lg shadow-lg lg:h-96"
       aria-label="Carrousel d'images du chœur"
+      role="region"
+      aria-roledescription="carousel"
+      aria-live="polite"
     >
       {/* Images container */}
       <div
@@ -44,7 +50,7 @@ const Carrousel = () => {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
-          <div key={image.src} className="relative h-full w-full flex-shrink-0">
+          <div key={image.src} className="relative h-full w-full flex-shrink-0" aria-hidden={index !== currentIndex}>
             <Image
               src={image.src}
               alt={image.alt}
@@ -59,21 +65,27 @@ const Carrousel = () => {
 
       {/* Navigation buttons */}
       <button
-        onClick={prevSlide}
+        onClick={() => {
+          setIsPlaying(false);
+          prevSlide();
+        }}
         className="absolute top-1/2 left-4 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
         aria-label="Image précédente"
       >
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
-        onClick={nextSlide}
+        onClick={() => {
+          setIsPlaying(false);
+          nextSlide();
+        }}
         className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
         aria-label="Image suivante"
       >
-        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -85,11 +97,11 @@ const Carrousel = () => {
         aria-label={isPlaying ? "Mettre en pause" : "Reprendre"}
       >
         {isPlaying ? (
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
           </svg>
         ) : (
-          <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+          <svg aria-hidden="true" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
@@ -105,6 +117,7 @@ const Carrousel = () => {
               index === currentIndex ? "bg-white" : "bg-white/50 hover:bg-white/75"
             }`}
             aria-label={`Aller à l'image ${index + 1}`}
+            aria-current={index === currentIndex ? "true" : undefined}
           />
         ))}
       </div>

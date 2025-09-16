@@ -3,13 +3,13 @@ interface CarrouselImage {
   alt: string;
 }
 
-export const CARROUSEL_IMAGES: CarrouselImage[] = [
+export const CARROUSEL_IMAGES = [
   {
     src: "/carrousel/CPMB-2023.jpg",
     alt: "Chœur des Pays du Mont-Blanc en concert 2023",
   },
   {
-    src: "/carrousel/CPMB-novembre 2023.jpg",
+    src: "/carrousel/CPMB-novembre-2023.jpg",
     alt: "Concert du CPMB en novembre 2023",
   },
   {
@@ -28,4 +28,4 @@ export const CARROUSEL_IMAGES: CarrouselImage[] = [
     src: "/carrousel/Hautecombe-16.10.22.jpg",
     alt: "Concert à Hautecombe le 16 octobre 2022",
   },
-];
+] as const satisfies readonly CarrouselImage[];
