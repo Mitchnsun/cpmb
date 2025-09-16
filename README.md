@@ -2,6 +2,8 @@
 
 Ce projet contient le code source du site web officiel du **Chœur des Pays du Mont-Blanc**, accessible à l'adresse : [https://choeurdespaysdumontblanc.fr/](https://choeurdespaysdumontblanc.fr/)
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Mitchnsun/cpmb?utm_source=oss&utm_medium=github&utm_campaign=Mitchnsun%2Fcpmb&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## 📖 Description
 
 Site web moderne développé avec Next.js pour présenter le Chœur des Pays du Mont-Blanc, ses activités, concerts, et permettre aux visiteurs de découvrir l'ensemble vocal.
