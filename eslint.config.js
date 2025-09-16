@@ -85,12 +85,13 @@ module.exports = [
   },
   // Test files configuration
   {
-    files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "src/test/**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "__tests__/**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
       globals: {
         vi: "readonly",
         describe: "readonly",
         it: "readonly",
+        test: "readonly",
         expect: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",

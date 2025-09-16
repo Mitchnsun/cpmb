@@ -27,9 +27,9 @@ Ce projet utilise **Vitest** avec **React Testing Library** et **jest-dom matche
 export default defineConfig({
   plugins: [react()],
   test: {
-    globals: true, // Variables globales (describe, it, expect)
+    globals: true, // Variables globales (describe, it, expect, vi)
     environment: "jsdom", // Environnement DOM simulé
-    setupFiles: ["./src/test/setup.ts"],
+    setupFiles: ["./__tests__/setup.ts"],
     css: true, // Support CSS dans les tests
     testTimeout: 10000, // Timeout pour les tests
   },
@@ -39,6 +39,41 @@ export default defineConfig({
     },
   },
 });
+```
+
+### TypeScript Configuration
+
+Les fichiers `tsconfig.json` et `tsconfig.test.json` sont configurés pour reconnaître les globals Vitest :
+
+```json
+{
+  "compilerOptions": {
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  }
+}
+```
+
+### ESLint Configuration
+
+ESLint est configuré pour reconnaître les globals Vitest dans les fichiers de test :
+
+```javascript
+{
+  files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "__tests__/**/*.{js,jsx,ts,tsx}"],
+  languageOptions: {
+    globals: {
+      vi: "readonly",
+      describe: "readonly",
+      it: "readonly",
+      test: "readonly",
+      expect: "readonly",
+      beforeEach: "readonly",
+      afterEach: "readonly",
+      beforeAll: "readonly",
+      afterAll: "readonly",
+    },
+  },
+}
 ```
 
 ### Setup Tests (`__tests__/setup.ts`)
@@ -60,13 +95,49 @@ yarn test:run
 yarn test:ui
 ```
 
+## 🌍 Variables Globales Vitest
+
+Grâce à la configuration `globals: true`, vous n'avez **plus besoin d'importer** les fonctions Vitest dans vos tests !
+
+### ✅ Variables Disponibles Globalement
+
+- `describe` / `test` / `it` - Structuration des tests
+- `expect` - Assertions
+- `vi` - Fonctions de mock et utilitaires
+- `beforeEach` / `afterEach` - Hooks de cycle de vie
+- `beforeAll` / `afterAll` - Hooks globaux
+
+### 💡 Avant vs Maintenant
+
+**❌ Avant (avec imports):**
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+
+describe("MonComposant", () => {
+  // ...
+});
+```
+
+**✅ Maintenant (sans imports):**
+
+```typescript
+import { render, screen } from "@testing-library/react";
+
+describe("MonComposant", () => {
+  // describe, it, expect, vi sont disponibles globalement !
+});
+```
+
+Cette configuration améliore l'expérience de développement en réduisant le boilerplate et en se rapprochant de la syntaxe Jest standard.
+
 ## 📝 Exemples de Tests
 
 ### Test de Composant React
 
 ```typescript
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 
 import Header from "@/components/Header";
 
@@ -88,7 +159,7 @@ describe("Header", () => {
 ### Test de Fonction Utilitaire
 
 ```typescript
-import { describe, expect, it } from "vitest";
+// Aucun import de describe, it, expect nécessaire !
 
 function formatDisplayName(firstName: string, lastName: string): string {
   return `${firstName} ${lastName}`.trim();
@@ -98,9 +169,35 @@ describe("formatDisplayName", () => {
   it("should format full name correctly", () => {
     expect(formatDisplayName("Jean", "Dupont")).toBe("Jean Dupont");
   });
+
+  it("should handle empty values", () => {
+    expect(formatDisplayName("Jean", "")).toBe("Jean");
+  });
 });
 ```
 
+### Test avec Mocks et Timers (Sans Imports Vitest)
+
+````typescript
+import { render } from "@testing-library/react";
+
+describe("Tests avec mocks", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should work with mocked dates", () => {
+    const mockDate = new Date("2024-01-01");
+    vi.setSystemTime(mockDate);
+
+    expect(new Date().getFullYear()).toBe(2024);
+  });
+});
+```
 ## 🔧 Bonnes Pratiques
 
 ### 1. Nommage des Tests
@@ -181,3 +278,4 @@ yarn test:coverage
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Jest-DOM Matchers](https://github.com/testing-library/jest-dom#custom-matchers)
 - [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
+````

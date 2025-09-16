@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
 
 import { CARROUSEL_IMAGES } from "@/assets/contents/carrousel";
 import Carrousel from "@/components/Carrousel";

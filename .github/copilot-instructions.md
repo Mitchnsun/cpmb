@@ -21,6 +21,8 @@ This is the official website for **Chœur des Pays du Mont-Blanc**, a choir base
 - **Linting**: ESLint with comprehensive plugins for code quality, security, and accessibility
 - **Formatting**: Prettier with TailwindCSS class sorting
 - **Type Checking**: TypeScript compiler with strict mode
+- **Testing**: Vitest 3.2.4 with React Testing Library and jest-dom
+- **Test Environment**: jsdom with V8 coverage provider
 
 ## 📁 Project Structure
 
@@ -29,15 +31,22 @@ This is the official website for **Chœur des Pays du Mont-Blanc**, a choir base
 │   ├── layout.tsx         # Root layout component
 │   ├── page.tsx           # Homepage component
 │   └── globals.css        # Global styles and Tailwind CSS imports
-├── public/                # Static assets (images, icons, etc.)
-├── .github/               # GitHub configurations and workflows
-├── .vscode/               # VS Code settings
-├── eslint.config.js       # ESLint configuration with advanced plugins
-├── .prettierrc            # Prettier configuration with TailwindCSS plugin
-├── .prettierignore        # Files to exclude from Prettier
-├── tailwind.config.js     # Tailwind CSS configuration
-├── tsconfig.json          # TypeScript configuration
-└── next.config.ts         # Next.js configuration
+├── components/            # Reusable React components
+├── assets/               # Asset files (icons, content data)
+├── public/               # Static assets (images, icons, etc.)
+├── __tests__/            # Unit tests directory
+│   ├── setup.ts          # Test setup configuration
+│   └── *.test.tsx        # Component test files
+├── .github/              # GitHub configurations and workflows
+├── .vscode/              # VS Code settings
+├── eslint.config.js      # ESLint configuration with advanced plugins
+├── vitest.config.ts      # Vitest testing configuration
+├── .prettierrc           # Prettier configuration with TailwindCSS plugin
+├── .prettierignore       # Files to exclude from Prettier
+├── tailwind.config.js    # Tailwind CSS configuration
+├── tsconfig.json         # TypeScript configuration
+├── tsconfig.test.json    # TypeScript configuration for tests
+└── next.config.ts        # Next.js configuration
 ```
 
 ## 🎨 Styling Guidelines
@@ -95,6 +104,83 @@ Imports should be organized in this order:
 }
 ```
 
+## 🧪 Testing Framework
+
+### Testing Stack
+
+The project uses a modern testing setup:
+
+- **Test Runner**: Vitest 3.2.4 for fast execution with hot module reloading
+- **Testing Library**: React Testing Library for component testing with user-centric queries
+- **Matchers**: jest-dom for DOM-specific assertions
+- **Environment**: jsdom for browser simulation
+- **Coverage**: V8 provider for accurate code coverage reports
+
+### Testing Configuration
+
+#### Global Setup
+
+- Vitest globals are enabled (`describe`, `it`, `expect`, etc. available without imports)
+- TypeScript configured with `"vitest/globals"` and `"@testing-library/jest-dom"` types
+- ESLint configured to recognize Vitest globals in test files
+- Test setup file at `__tests__/setup.ts` for browser API mocks
+
+#### Key Features
+
+- **No Import Required**: Test functions are globally available
+- **Mock Support**: Browser APIs (window, document) automatically mocked
+- **Coverage Reports**: Comprehensive coverage with detailed HTML reports
+- **Watch Mode**: Tests re-run automatically on file changes
+- **Interactive UI**: Visual test runner with Vitest UI
+
+### Testing Best Practices
+
+#### Component Testing
+
+- Use React Testing Library's user-centric queries (`getByRole`, `getByLabelText`)
+- Test behavior and accessibility, not implementation details
+- Mock Next.js components (`Image`, `Link`) for isolated testing
+- Test responsive design and interactive elements
+
+#### Test Organization
+
+- Place test files in `__tests__/` directory
+- Use descriptive test names explaining the expected behavior
+- Group related tests with `describe` blocks
+- Follow Arrange-Act-Assert pattern
+
+#### Coverage Standards
+
+- Maintain high component coverage (current: 93.59%)
+- Focus on critical paths and user interactions
+- Exclude configuration files and Next.js boilerplate from coverage
+- Use coverage reports to identify untested code paths
+
+#### Example Test Structure
+
+```typescript
+describe('ComponentName', () => {
+  it('should render correctly', () => {
+    render(<ComponentName />);
+    expect(screen.getByRole('main')).toBeInTheDocument();
+  });
+
+  it('should handle user interactions', async () => {
+    const user = userEvent.setup();
+    render(<ComponentName />);
+
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByText('Updated')).toBeInTheDocument();
+  });
+});
+```
+
+### Running Tests
+
+- **Development**: `yarn test` for watch mode during development
+- **CI/CD**: `yarn test:run` for single run in production pipelines
+- **Interactive**: `yarn test:ui` for visual test exploration
+
 ## 🛠️ Development Workflow
 
 ### Available Scripts
@@ -107,13 +193,17 @@ Imports should be organized in this order:
 - `yarn format` - Format code with Prettier
 - `yarn format:check` - Check if code is properly formatted
 - `yarn type-check` - TypeScript type validation
+- `yarn test` - Run tests in watch mode
+- `yarn test:run` - Run tests once
+- `yarn test:ui` - Open Vitest UI for interactive testing
 
 ### Pre-commit Checklist
 
 1. Run `yarn lint` to check for code quality issues
 2. Run `yarn format` to ensure consistent formatting
 3. Run `yarn type-check` to validate TypeScript
-4. Test the application with `yarn dev`
+4. Run `yarn test:run` to ensure all tests pass
+5. Test the application with `yarn dev`
 
 ## 🌐 Content Guidelines
 
@@ -153,8 +243,9 @@ Imports should be organized in this order:
 1. **Maintain Code Quality**: All code must pass ESLint checks without errors
 2. **Follow Formatting**: Use Prettier for consistent code style
 3. **Type Safety**: Ensure TypeScript compilation succeeds
-4. **Accessibility**: Maintain WCAG compliance using jsx-a11y rules
-5. **Performance**: Consider impact on bundle size and loading times
+4. **Testing**: Write tests for new components and maintain coverage standards
+5. **Accessibility**: Maintain WCAG compliance using jsx-a11y rules
+6. **Performance**: Consider impact on bundle size and loading times
 
 ### Component Development
 
@@ -162,6 +253,8 @@ Imports should be organized in this order:
 - Use semantic HTML elements
 - Implement proper error boundaries where needed
 - Follow React best practices for hooks and state management
+- Write comprehensive tests for all new components
+- Ensure accessibility compliance with ARIA attributes and semantic markup
 
 ### File Naming Conventions
 
