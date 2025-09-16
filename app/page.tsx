@@ -1,10 +1,14 @@
 import Image from "next/image";
 
 import MailIcon from "@/assets/icons/mail.svg";
+import Carrousel from "@/components/Carrousel";
 
 export default function Home() {
   return (
     <>
+      <section className="container mx-auto p-4 lg:px-0 lg:pt-8">
+        <Carrousel />
+      </section>
       <section className="p-4 text-zinc-900 lg:p-8">
         <article className="container mx-auto">
           <h1 className="mb-4 text-xl font-bold text-sky-700">
