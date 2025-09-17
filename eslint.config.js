@@ -2,11 +2,15 @@ const js = require("@eslint/js");
 const typescriptEslint = require("@typescript-eslint/eslint-plugin");
 const tsParser = require("@typescript-eslint/parser");
 const { FlatCompat } = require("@eslint/eslintrc");
-const prettier = require("eslint-plugin-prettier");
 const importPlugin = require("eslint-plugin-import");
+const jsxA11y = require("eslint-plugin-jsx-a11y");
+const prettier = require("eslint-plugin-prettier");
+const security = require("eslint-plugin-security");
+const simpleImportSort = require("eslint-plugin-simple-import-sort");
+const sonarjs = require("eslint-plugin-sonarjs");
 const unicorn = require("eslint-plugin-unicorn");
 const unusedImports = require("eslint-plugin-unused-imports");
-const simpleImportSort = require("eslint-plugin-simple-import-sort");
+const vitest = require("eslint-plugin-vitest");
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
@@ -47,6 +51,9 @@ module.exports = [
       unicorn: unicorn,
       "unused-imports": unusedImports,
       "simple-import-sort": simpleImportSort,
+      sonarjs: sonarjs,
+      security: security,
+      "jsx-a11y": jsxA11y,
     },
     languageOptions: {
       parser: tsParser,
@@ -81,6 +88,34 @@ module.exports = [
       "simple-import-sort/exports": "error",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/filename-case": "off",
+    },
+  },
+  // Test files configuration
+  {
+    files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "__tests__/**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      vitest: vitest,
+    },
+    languageOptions: {
+      globals: {
+        vi: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        test: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+      },
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "@typescript-eslint/no-explicit-any": "off", // Allow any in test mocks
+      "sonarjs/no-duplicate-string": "off", // Test descriptions often repeat strings
+      "vitest/no-focused-tests": "error",
+      "vitest/no-disabled-tests": "warn",
+      "vitest/consistent-test-it": "warn",
     },
   },
 ];
