@@ -11,7 +11,7 @@ Ce projet utilise **Vitest** avec **React Testing Library** et **jest-dom matche
 
 ## 📂 Structure des Tests
 
-```
+```text
 ./__tests__/
 ├── setup.ts          # Configuration globale des tests
 ├── Carrousel.test.tsx # Tests du composant Carrousel
@@ -32,6 +32,10 @@ export default defineConfig({
     setupFiles: ["./__tests__/setup.ts"],
     css: true, // Support CSS dans les tests
     testTimeout: 10000, // Timeout pour les tests
+    coverage: {
+      provider: "v8", // Fournisseur de couverture
+      reporter: ["text", "json", "html"], // Formats de rapport
+    },
   },
   resolve: {
     alias: {
@@ -55,11 +59,14 @@ Les fichiers `tsconfig.json` et `tsconfig.test.json` sont configurés pour recon
 
 ### ESLint Configuration
 
-ESLint est configuré pour reconnaître les globals Vitest dans les fichiers de test :
+ESLint est configuré pour reconnaître les globals Vitest dans les fichiers de test et inclut des règles spécialisées pour Vitest :
 
 ```javascript
 {
   files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "__tests__/**/*.{js,jsx,ts,tsx}"],
+  plugins: {
+    vitest: vitest,
+  },
   languageOptions: {
     globals: {
       vi: "readonly",
@@ -73,8 +80,23 @@ ESLint est configuré pour reconnaître les globals Vitest dans les fichiers de 
       afterAll: "readonly",
     },
   },
+  rules: {
+    ...vitest.configs.recommended.rules,
+    "vitest/no-focused-tests": "error",
+    "vitest/no-disabled-tests": "warn",
+    "vitest/consistent-test-it": "warn",
+  },
 }
 ```
+
+#### Règles ESLint Vitest Actives
+
+- **vitest/no-focused-tests** - Empêche les tests `.only()` en production
+- **vitest/no-disabled-tests** - Avertit des tests `.skip()` oubliés
+- **vitest/consistent-test-it** - Encourage l'utilisation cohérente de `test` ou `it`
+- **Règles recommandées Vitest** - Détection des anti-patterns et bonnes pratiques
+
+````
 
 ### Setup Tests (`__tests__/setup.ts`)
 
@@ -91,9 +113,12 @@ yarn test
 # Exécuter les tests une seule fois
 yarn test:run
 
+# Générer le rapport de couverture de code
+yarn test:coverage
+
 # Ouvrir l'interface utilisateur Vitest
 yarn test:ui
-```
+````
 
 ## 🌍 Variables Globales Vitest
 
@@ -251,11 +276,19 @@ describe("ComponentName", () => {
 
 ### ESLint pour les Tests
 
-Le projet inclut une configuration ESLint spécifique pour les tests qui :
+Le projet inclut **eslint-plugin-vitest** qui fournit une configuration ESLint spécialisée pour les tests :
 
-- Autorise les globals Vitest (vi, describe, it, expect)
-- Relaxe certaines règles pour les mocks
-- Gère les types spécifiques aux tests
+- **Règles recommandées Vitest** - Détection automatique des anti-patterns
+- **Globals Vitest** - Reconnaissance des variables globales (vi, describe, it, expect)
+- **Règles personnalisées** - Prévention des tests focalisés/désactivés en production
+- **Types spécifiques aux tests** - Support TypeScript complet pour Vitest
+
+#### Avantages du Plugin ESLint Vitest
+
+- 🚫 **Prévention des erreurs** - Détecte les erreurs communes dans les tests
+- ✅ **Bonnes pratiques** - Encourage l'utilisation correcte des APIs Vitest
+- 🎯 **Cohérence** - Assure un style uniforme dans tous les tests
+- 🔍 **Debugging** - Identifie les tests problématiques avant l'exécution
 
 ## 📊 Couverture de Code
 

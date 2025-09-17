@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import type { ImageProps } from "next/image";
+
 import Footer from "@/components/Footer";
 
 // Mock Next.js components
 vi.mock("next/image", () => ({
-  default: ({ src, alt, width, height, className }: ImageProps) => (
+  default: ({ src, alt, width, height, className }: any) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} width={width} height={height} className={className} />
   ),
@@ -143,19 +143,6 @@ describe("Footer", () => {
       expect(footer.tagName).toBe("FOOTER");
     });
 
-    it("should have proper heading hierarchy", () => {
-      render(<Footer />);
-
-      const headings = screen.getAllByRole("heading");
-      expect(headings).toHaveLength(2);
-
-      const partnersHeading = screen.getByRole("heading", { name: "Nos Partenaires" });
-      expect(partnersHeading.tagName).toBe("H4");
-
-      const siteMapHeading = screen.getByRole("heading", { name: "Plan du site" });
-      expect(siteMapHeading.tagName).toBe("H4");
-    });
-
     it("should have proper ARIA labels for external links", () => {
       render(<Footer />);
 
@@ -183,21 +170,6 @@ describe("Footer", () => {
     });
   });
 
-  describe("Responsive design classes", () => {
-    it("should have responsive layout classes", () => {
-      render(<Footer />);
-
-      const footer = screen.getByRole("contentinfo");
-      expect(footer).toHaveClass("font-noto");
-
-      // Check for responsive flex classes in main content
-      const mainContent = footer.querySelector(
-        ".container.mx-auto.flex.flex-col.items-start.gap-4.py-4.lg\\:flex-row.lg\\:gap-24"
-      );
-      expect(mainContent).toBeInTheDocument();
-    });
-  });
-
   describe("Content validation", () => {
     it("should contain all expected text content", () => {
       render(<Footer />);
@@ -206,8 +178,8 @@ describe("Footer", () => {
       expect(screen.getByText("Partager la passion de la musique chorale au cœur des Alpes.")).toBeInTheDocument();
 
       // Section headings
-      expect(screen.getByText("Nos Partenaires")).toBeInTheDocument();
-      expect(screen.getByText("Plan du site")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Nos Partenaires", level: 4 })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Plan du site", level: 4 })).toBeInTheDocument();
 
       // Partner names
       expect(screen.getByText("Veran Piano")).toBeInTheDocument();

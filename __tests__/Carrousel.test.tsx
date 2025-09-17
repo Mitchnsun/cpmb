@@ -24,9 +24,8 @@ describe("Carrousel", () => {
   it("should render indicator dots", () => {
     render(<Carrousel />);
 
-    expect(screen.getByRole("button", { name: /aller à l'image 1/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /aller à l'image 2/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /aller à l'image 3/i })).toBeInTheDocument();
+    const dots = screen.getAllByRole("button", { name: /aller à l'image \d+/i });
+    expect(dots).toHaveLength(CARROUSEL_IMAGES.length);
   });
 
   it("should have proper accessibility attributes", () => {
@@ -41,7 +40,7 @@ describe("Carrousel", () => {
   it("should have first indicator dot marked as current by default", () => {
     render(<Carrousel />);
 
-    const firstDot = screen.getByRole("button", { name: /aller à l'image 1/i });
-    expect(firstDot).toHaveAttribute("aria-current", "true");
+    const dots = screen.getAllByRole("button", { name: /aller à l'image \d+/i });
+    expect(dots[0]).toHaveAttribute("aria-current", "true");
   });
 });

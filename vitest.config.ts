@@ -13,7 +13,7 @@ export default defineConfig({
     testTimeout: 10000, // Increase timeout for tests
     // Exclude files from coverage
     coverage: {
-      enabled: true,
+      enabled: process.env.CI === "true" || !!process.env.COVERAGE,
       reporter: ["text", "json", "html"],
       exclude: [
         "node_modules/**",
@@ -35,6 +35,10 @@ export default defineConfig({
       ],
       include: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
+    },
+    // Use the test-specific TypeScript config
+    typecheck: {
+      tsconfig: "./tsconfig.test.json",
     },
   },
   resolve: {

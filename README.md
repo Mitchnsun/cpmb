@@ -52,6 +52,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 - `yarn type-check` - Vérifie les types TypeScript
 - `yarn test` - Lance les tests en mode watch
 - `yarn test:run` - Exécute tous les tests une fois
+- `yarn test:coverage` - Génère le rapport de couverture de code
 - `yarn test:ui` - Ouvre l'interface utilisateur Vitest
 
 ## 📁 Structure du projet
@@ -96,6 +97,7 @@ Le projet utilise ESLint avec :
 - **eslint-plugin-unused-imports** - Suppression des imports inutiles
 - **eslint-plugin-simple-import-sort** - Tri automatique des imports
 - **eslint-plugin-jsx-a11y** - Vérifications d'accessibilité pour JSX
+- **eslint-plugin-vitest** - Règles ESLint spécialisées pour Vitest
 
 #### Règles personnalisées activées
 
@@ -169,6 +171,9 @@ yarn test
 
 # Exécution unique
 yarn test:run
+
+# Rapport de couverture de code
+yarn test:coverage
 
 # Interface utilisateur
 yarn test:ui

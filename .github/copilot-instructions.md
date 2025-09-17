@@ -80,6 +80,7 @@ The project uses comprehensive ESLint plugins:
 - **eslint-plugin-unused-imports**: Removes unused imports automatically
 - **eslint-plugin-simple-import-sort**: Sorts imports consistently
 - **eslint-plugin-jsx-a11y**: Ensures accessibility compliance
+- **eslint-plugin-vitest**: Provides specialized ESLint rules for Vitest testing framework
 
 ### Import Organization
 
@@ -104,6 +105,24 @@ Imports should be organized in this order:
 }
 ```
 
+### ESLint for Testing
+
+The project includes **eslint-plugin-vitest** which provides specialized linting rules for Vitest tests:
+
+#### Key Vitest ESLint Rules
+
+- **vitest/no-focused-tests**: Prevents `.only()` tests in production code
+- **vitest/no-disabled-tests**: Warns about `.skip()` tests that may be forgotten
+- **vitest/consistent-test-it**: Encourages consistent use of `test` vs `it`
+- **vitest/recommended**: All recommended Vitest best practices enabled
+
+#### Benefits
+
+- **Error Prevention**: Catches common testing mistakes before runtime
+- **Best Practices**: Enforces proper use of Vitest APIs
+- **Code Quality**: Maintains consistent testing patterns across the codebase
+- **Developer Experience**: Provides helpful hints for better test organization
+
 ## 🧪 Testing Framework
 
 ### Testing Stack
@@ -122,7 +141,7 @@ The project uses a modern testing setup:
 
 - Vitest globals are enabled (`describe`, `it`, `expect`, etc. available without imports)
 - TypeScript configured with `"vitest/globals"` and `"@testing-library/jest-dom"` types
-- ESLint configured to recognize Vitest globals in test files
+- ESLint configured to recognize Vitest globals in test files with **eslint-plugin-vitest**
 - Test setup file at `__tests__/setup.ts` for browser API mocks
 
 #### Key Features
@@ -179,6 +198,7 @@ describe('ComponentName', () => {
 
 - **Development**: `yarn test` for watch mode during development
 - **CI/CD**: `yarn test:run` for single run in production pipelines
+- **Coverage**: `yarn test:coverage` for comprehensive code coverage reports
 - **Interactive**: `yarn test:ui` for visual test exploration
 
 ## 🛠️ Development Workflow
@@ -195,6 +215,7 @@ describe('ComponentName', () => {
 - `yarn type-check` - TypeScript type validation
 - `yarn test` - Run tests in watch mode
 - `yarn test:run` - Run tests once
+- `yarn test:coverage` - Generate comprehensive code coverage reports
 - `yarn test:ui` - Open Vitest UI for interactive testing
 
 ### Pre-commit Checklist

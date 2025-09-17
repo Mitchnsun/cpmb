@@ -1,10 +1,11 @@
 import { render, screen } from "@testing-library/react";
+import type { SVGProps } from "react";
 
 import Header from "@/components/Header";
 
 // Mock SVG import
 vi.mock("@/assets/icons/music-note.svg", () => ({
-  default: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="music-note-icon" {...props} />,
+  default: (props: SVGProps<SVGSVGElement>) => <svg data-testid="music-note-icon" {...props} />,
 }));
 
 describe("Header", () => {

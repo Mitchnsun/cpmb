@@ -3,7 +3,10 @@
   "compilerOptions": {
     "composite": false,
     "types": ["vitest/globals", "@testing-library/jest-dom"],
-    "lib": ["ES2017", "dom", "dom.iterable"]
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": ["src/test/**/*", "__tests__/**/*", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}", "vitest.config.ts"]
+  "include": ["__tests__/**/*", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "vitest.config.ts"]
 }
