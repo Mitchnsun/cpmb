@@ -29,7 +29,7 @@ const ArtistArticle = ({ name, media, alt, text, hLevel }: ArtistArticleProps) =
         />
         <div>
           {text.map((paragraph, index) => (
-            <p key={index} className={cn({ "mb-2": index < text.length - 1 })}>
+            <p key={paragraph.slice(0, 50)} className={cn({ "mb-2": index < text.length - 1 })}>
               {paragraph}
             </p>
           ))}

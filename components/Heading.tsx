@@ -25,7 +25,7 @@ interface HeadingProps
 }
 
 const Heading = ({ className, hLevel, variant, children, ...htmlProps }: HeadingProps) => {
-  const headingLevel = hLevel || variant || 1;
+  const headingLevel = hLevel ?? variant ?? 1;
   const headingProps = {
     className: cn(headingVariants({ variant }), className),
     ...htmlProps,

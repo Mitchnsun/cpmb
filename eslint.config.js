@@ -83,6 +83,7 @@ module.exports = [
       "simple-import-sort/exports": "error",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/filename-case": "off",
+      "react/no-array-index-key": "error",
 
       "sonarjs/cognitive-complexity": ["error", 15],
       "security/detect-object-injection": "off",

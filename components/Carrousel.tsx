@@ -109,9 +109,9 @@ const Carrousel = () => {
 
       {/* Dots indicator */}
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-        {images.map((_, index) => (
+        {images.map(({ src }, index) => (
           <button
-            key={index}
+            key={src}
             onClick={() => goToSlide(index)}
             className={`h-3 w-3 rounded-full transition-colors focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none ${
               index === currentIndex ? "bg-white" : "bg-white/50 hover:bg-white/75"
