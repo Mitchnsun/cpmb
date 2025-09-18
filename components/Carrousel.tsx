@@ -5,9 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 
 import { CARROUSEL_IMAGES as images } from "@/assets/contents/carrousel";
 
-const Carrousel = () => {
+interface CarrouselProps {
+  autoplay?: boolean;
+}
+
+const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(autoplay);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -27,12 +31,10 @@ const Carrousel = () => {
 
   // Auto-play functionality
   useEffect(() => {
-    if (!isPlaying) return;
-
     // Avoid autoplay for users who prefer reduced motion.
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!isPlaying || reduce) return;
-    const interval = setInterval(nextSlide, 8000);
+    const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
   }, [isPlaying, nextSlide]);
 
@@ -46,7 +48,7 @@ const Carrousel = () => {
     >
       {/* Images container */}
       <div
-        className="flex h-full transition-transform duration-500 ease-in-out"
+        className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none motion-reduce:duration-0"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
@@ -78,6 +80,7 @@ const Carrousel = () => {
       </button>
 
       <button
+        type="button"
         onClick={() => {
           setIsPlaying(false);
           nextSlide();
@@ -92,9 +95,11 @@ const Carrousel = () => {
 
       {/* Play/Pause button */}
       <button
+        type="button"
         onClick={togglePlayPause}
         className="absolute right-4 bottom-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
         aria-label={isPlaying ? "Mettre en pause" : "Reprendre"}
+        aria-pressed={isPlaying}
       >
         {isPlaying ? (
           <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,6 +117,7 @@ const Carrousel = () => {
         {images.map(({ src }, index) => (
           <button
             key={src}
+            type="button"
             onClick={() => goToSlide(index)}
             className={`h-3 w-3 rounded-full transition-colors focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none ${
               index === currentIndex ? "bg-white" : "bg-white/50 hover:bg-white/75"

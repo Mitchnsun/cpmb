@@ -34,9 +34,10 @@ export default defineConfig({
         "vitest.config.ts",
         "tsconfig*.json",
       ],
-      include: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
+      include: ["components/**/*.{ts,tsx}", "utils/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
-      thresholds: { lines: 0.8, functions: 0.8, branches: 0.75, statements: 0.8 },
+      provider: "v8",
+      thresholds: { lines: 90, functions: 70, branches: 75, statements: 90 },
     },
     // Use the test-specific TypeScript config
     typecheck: {
