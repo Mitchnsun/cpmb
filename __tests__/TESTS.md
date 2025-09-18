@@ -203,7 +203,7 @@ describe("formatDisplayName", () => {
 
 ### Test avec Mocks et Timers (Sans Imports Vitest)
 
-````typescript
+```typescript
 import { render } from "@testing-library/react";
 
 describe("Tests avec mocks", () => {
@@ -223,6 +223,7 @@ describe("Tests avec mocks", () => {
   });
 });
 ```
+
 ## 🔧 Bonnes Pratiques
 
 ### 1. Nommage des Tests
@@ -311,4 +312,3 @@ yarn test:coverage
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [Jest-DOM Matchers](https://github.com/testing-library/jest-dom#custom-matchers)
 - [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
-````

@@ -1,7 +1,8 @@
 /// <reference types="vitest" />
+import path from "node:path";
+
 import react from "@vitejs/plugin-react";
-import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   plugins: [react()],
@@ -35,6 +36,7 @@ export default defineConfig({
       ],
       include: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
+      thresholds: { lines: 0.8, functions: 0.8, branches: 0.75, statements: 0.8 },
     },
     // Use the test-specific TypeScript config
     typecheck: {
