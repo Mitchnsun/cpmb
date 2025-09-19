@@ -54,6 +54,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 - `yarn test:run` - Exécute tous les tests une fois
 - `yarn test:coverage` - Génère le rapport de couverture de code
 - `yarn test:ui` - Ouvre l'interface utilisateur Vitest
+- `yarn test:ci` - Exécute les tests en mode CI (sans watch)
 
 ## 📁 Structure du projet
 
@@ -179,11 +180,9 @@ yarn test:coverage
 yarn test:ui
 ```
 
-### Couverture actuelle
+### Couverture
 
-- **21 tests** répartis sur 3 fichiers
-- **93.59% de couverture** des composants
-- Tests complets pour Header, Footer, et Carrousel
+Les métriques de couverture évoluent dans le temps. Générez le rapport localement avec `yarn test:coverage`.
 
 Pour plus de détails, consultez [TESTS.md](./__tests__/TESTS.md).
 

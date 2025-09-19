@@ -5,9 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 
 import { CARROUSEL_IMAGES as images } from "@/assets/contents/carrousel";
 
-const Carrousel = () => {
+interface CarrouselProps {
+  autoplay?: boolean;
+}
+
+const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(autoplay);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -25,14 +29,16 @@ const Carrousel = () => {
     setIsPlaying((prev) => !prev);
   }, []);
 
+  useEffect(() => {
+    setIsPlaying(autoplay);
+  }, [autoplay]);
+
   // Auto-play functionality
   useEffect(() => {
-    if (!isPlaying) return;
-
     // Avoid autoplay for users who prefer reduced motion.
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!isPlaying || reduce) return;
-    const interval = setInterval(nextSlide, 8000);
+    const interval = setInterval(nextSlide, 6000);
     return () => clearInterval(interval);
   }, [isPlaying, nextSlide]);
 
@@ -42,11 +48,11 @@ const Carrousel = () => {
       aria-label="Carrousel d'images du chœur"
       role="region"
       aria-roledescription="carousel"
-      aria-live="polite"
+      aria-live={isPlaying ? "off" : "polite"}
     >
       {/* Images container */}
       <div
-        className="flex h-full transition-transform duration-500 ease-in-out"
+        className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none motion-reduce:duration-0"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {images.map((image, index) => (
@@ -65,6 +71,7 @@ const Carrousel = () => {
 
       {/* Navigation buttons */}
       <button
+        type="button"
         onClick={() => {
           setIsPlaying(false);
           prevSlide();
@@ -78,6 +85,7 @@ const Carrousel = () => {
       </button>
 
       <button
+        type="button"
         onClick={() => {
           setIsPlaying(false);
           nextSlide();
@@ -92,9 +100,11 @@ const Carrousel = () => {
 
       {/* Play/Pause button */}
       <button
+        type="button"
         onClick={togglePlayPause}
         className="absolute right-4 bottom-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
         aria-label={isPlaying ? "Mettre en pause" : "Reprendre"}
+        aria-pressed={isPlaying}
       >
         {isPlaying ? (
           <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,9 +119,10 @@ const Carrousel = () => {
 
       {/* Dots indicator */}
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-        {images.map((_, index) => (
+        {images.map(({ src }, index) => (
           <button
-            key={index}
+            key={src}
+            type="button"
             onClick={() => goToSlide(index)}
             className={`h-3 w-3 rounded-full transition-colors focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none ${
               index === currentIndex ? "bg-white" : "bg-white/50 hover:bg-white/75"

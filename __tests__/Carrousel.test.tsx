@@ -34,7 +34,13 @@ describe("Carrousel", () => {
     const carrousel = screen.getByRole("region");
     expect(carrousel).toHaveAttribute("aria-label", "Carrousel d'images du chœur");
     expect(carrousel).toHaveAttribute("aria-roledescription", "carousel");
-    expect(carrousel).toHaveAttribute("aria-live", "polite");
+    expect(carrousel).toHaveAttribute("aria-live", "off");
+  });
+
+  it("should have proper accessibility attributes with autoplay off", () => {
+    render(<Carrousel autoplay={false} />);
+
+    expect(screen.getByRole("region")).toHaveAttribute("aria-live", "polite");
   });
 
   it("should have first indicator dot marked as current by default", () => {

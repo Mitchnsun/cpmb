@@ -22,11 +22,6 @@ module.exports = [
   ...compat.extends("next/core-web-vitals"),
   ...compat.config({
     extends: ["prettier"],
-    plugins: ["sonarjs", "security", "jsx-a11y"],
-    rules: {
-      "sonarjs/cognitive-complexity": ["error", 15],
-      "security/detect-object-injection": "off", // Too many false positives
-    },
   }),
   {
     ignores: [
@@ -88,6 +83,10 @@ module.exports = [
       "simple-import-sort/exports": "error",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/filename-case": "off",
+      "react/no-array-index-key": "error",
+
+      "sonarjs/cognitive-complexity": ["error", 15],
+      "security/detect-object-injection": "off",
     },
   },
   // Test files configuration

@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import MailIcon from "@/assets/icons/mail.svg";
 import Carrousel from "@/components/Carrousel";
+import Heading from "@/components/Heading";
 
 /**
  * Home page (App Router, server component).
@@ -9,15 +10,13 @@ import Carrousel from "@/components/Carrousel";
  */
 export default function Home() {
   return (
-    <>
-      <div className="container mx-auto p-4 lg:px-0 lg:pt-8">
+    <div className="p-4">
+      <div className="container mx-auto">
         <Carrousel />
       </div>
-      <section className="p-4 text-zinc-900 lg:p-8">
+      <section className="py-4 text-zinc-900 lg:p-4">
         <article className="container mx-auto">
-          <h1 className="mb-4 text-xl font-bold text-sky-700">
-            Le CPMB a le plaisir de vous présenter son nouveau Chef de Chœur !
-          </h1>
+          <Heading className="mb-4">Le CPMB a le plaisir de vous présenter son nouveau Chef de Chœur !</Heading>
           <div className="flex flex-col items-start gap-8 text-justify sm:flex-row lg:items-center">
             <Image
               src="/media/benoit_dubu.jpg"
@@ -50,13 +49,15 @@ export default function Home() {
           </div>
         </article>
       </section>
-      <section className="bg-sky-50 p-4" aria-labelledby="recrutement-heading">
+      <section className="bg-sky-50 py-4" aria-labelledby="recrutement-heading">
         <div className="container mx-auto py-10">
-          <h2 id="recrutement-heading" className="mb-4 text-xl font-bold text-sky-700">
+          <Heading hLevel={2} variant={1} id="recrutement-heading" className="mb-4">
             Le CPMB recrute !
-          </h2>
+          </Heading>
           <div className="max-w-xl rounded-md bg-white p-4 shadow-md">
-            <h3 className="font-noto text-lg font-bold text-gray-800 uppercase">Nous avons besoin de vos voix !</h3>
+            <Heading hLevel={3} variant={2} className="uppercase">
+              Nous avons besoin de vos voix !
+            </Heading>
             <p className="pt-3">
               Nous recrutons des choristes ayant une expérience chorale et /ou une capacité en déchiffrage.
             </p>
@@ -71,6 +72,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

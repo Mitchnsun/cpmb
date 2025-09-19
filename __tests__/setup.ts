@@ -1,6 +1,20 @@
 import "@testing-library/jest-dom";
 
+import React from "react";
 import { vi } from "vitest";
+
+// Mock Next.js Image component globally
+vi.mock("next/image", () => ({
+  default: (props: any) => {
+    return React.createElement("img", {
+      src: props.src,
+      alt: props.alt,
+      width: props.width,
+      height: props.height,
+      className: props.className,
+    });
+  },
+}));
 
 // Global test setup
 Object.defineProperty(window, "matchMedia", {
