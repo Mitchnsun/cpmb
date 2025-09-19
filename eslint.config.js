@@ -10,7 +10,7 @@ const simpleImportSort = require("eslint-plugin-simple-import-sort");
 const sonarjs = require("eslint-plugin-sonarjs");
 const unicorn = require("eslint-plugin-unicorn");
 const unusedImports = require("eslint-plugin-unused-imports");
-const vitest = require("eslint-plugin-vitest");
+const vitest = require("@vitest/eslint-plugin");
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
@@ -93,7 +93,7 @@ module.exports = [
   {
     files: ["**/*.{test,spec}.{js,jsx,ts,tsx}", "__tests__/**/*.{js,jsx,ts,tsx}"],
     plugins: {
-      vitest: vitest,
+      vitest,
     },
     languageOptions: {
       globals: {
