@@ -1,23 +1,28 @@
-const js = require("@eslint/js");
-const typescriptEslint = require("@typescript-eslint/eslint-plugin");
-const tsParser = require("@typescript-eslint/parser");
-const { FlatCompat } = require("@eslint/eslintrc");
-const importPlugin = require("eslint-plugin-import");
-const jsxA11y = require("eslint-plugin-jsx-a11y");
-const prettier = require("eslint-plugin-prettier");
-const security = require("eslint-plugin-security");
-const simpleImportSort = require("eslint-plugin-simple-import-sort");
-const sonarjs = require("eslint-plugin-sonarjs");
-const unicorn = require("eslint-plugin-unicorn");
-const unusedImports = require("eslint-plugin-unused-imports");
-const vitest = require("@vitest/eslint-plugin");
+import js from "@eslint/js";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import { FlatCompat } from "@eslint/eslintrc";
+import importPlugin from "eslint-plugin-import";
+import jsxA11y from "eslint-plugin-jsx-a11y";
+import prettier from "eslint-plugin-prettier";
+import security from "eslint-plugin-security";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
+import sonarjs from "eslint-plugin-sonarjs";
+import unicorn from "eslint-plugin-unicorn";
+import unusedImports from "eslint-plugin-unused-imports";
+import vitest from "@vitest/eslint-plugin";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
 });
 
-module.exports = [
+const config = [
   js.configs.recommended,
   ...compat.extends("next/core-web-vitals"),
   ...compat.config({
@@ -118,3 +123,5 @@ module.exports = [
     },
   },
 ];
+
+export default config;
