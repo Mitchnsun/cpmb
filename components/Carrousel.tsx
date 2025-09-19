@@ -29,6 +29,10 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     setIsPlaying((prev) => !prev);
   }, []);
 
+  useEffect(() => {
+    setIsPlaying(autoplay);
+  }, [autoplay]);
+
   // Auto-play functionality
   useEffect(() => {
     // Avoid autoplay for users who prefer reduced motion.
@@ -44,7 +48,7 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
       aria-label="Carrousel d'images du chœur"
       role="region"
       aria-roledescription="carousel"
-      aria-live="polite"
+      aria-live={isPlaying ? "off" : "polite"}
     >
       {/* Images container */}
       <div
@@ -67,6 +71,7 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
 
       {/* Navigation buttons */}
       <button
+        type="button"
         onClick={() => {
           setIsPlaying(false);
           prevSlide();
