@@ -106,6 +106,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/presse" className="text-gray-400 hover:text-white">
+                  Presse
+                </Link>
+              </li>
+              <li>
                 <Link href="/mentions-legales" className="text-gray-400 hover:text-white">
                   Mentions légales
                 </Link>

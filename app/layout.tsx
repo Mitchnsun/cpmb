@@ -19,7 +19,23 @@ const notoSans = Noto_Sans({
 export const metadata: Metadata = {
   title: "Chœur des Pays du Mont-Blanc",
   description:
-    "Chœur des Pays du Mont-Blanc : interprétations de qualité pour tous — « Apprendre à écouter, c’est découvrir l’émotion ».",
+    "Chœur des Pays du Mont-Blanc : interprétations de qualité pour tous — « Apprendre à écouter, c'est découvrir l'émotion ».",
+  keywords: [
+    "chœur",
+    "mont-blanc",
+    "haute-savoie",
+    "musique classique",
+    "ensemble vocal",
+    "choristes",
+    "concerts",
+    "gaillard",
+    "annecy",
+    "benoît dubu",
+    "orchestre symphonique",
+    "chant choral",
+    "répétitions",
+    "auditions",
+  ],
 };
 
 export const viewport: Viewport = {
@@ -35,9 +51,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${inter.variable} ${notoSans.variable} font-inter bg-zinc-50 text-zinc-900 antialiased`}>
+      <body
+        className={`${inter.variable} ${notoSans.variable} font-inter flex min-h-screen flex-col bg-zinc-50 text-zinc-900 antialiased`}
+      >
         <Header />
-        <main id="main-content" style={{ minHeight: "calc(100vh - 381px)" }}>
+        <main id="main-content" className="flex-1">
           {children}
         </main>
         <Footer />
