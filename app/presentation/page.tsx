@@ -9,7 +9,16 @@ export const metadata: Metadata = {
   title: "Présentation - Chœur des Pays du Mont-Blanc",
   description:
     "Découvrez le Chœur des Pays du Mont-Blanc, ensemble vocal amateur de 30 choristes dirigé par Benoît Dubu. Créé en 2005, notre chœur propose des concerts de musique classique en Haute-Savoie.",
-  keywords: "chœur, mont-blanc, haute-savoie, musique classique, benoît dubu, choristes, concerts, gaillard",
+  keywords: [
+    "chœur",
+    "mont-blanc",
+    "haute-savoie",
+    "musique classique",
+    "benoît dubu",
+    "choristes",
+    "concerts",
+    "gaillard",
+  ],
 };
 
 export default function Presentation() {

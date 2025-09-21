@@ -1,10 +1,11 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
 
 interface ArticlePageProps {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }
 
 interface ArticleData {
@@ -17,7 +18,7 @@ interface ArticleData {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { slug } = await params;
+  const { slug } = params;
 
   // Rechercher l'article correspondant au slug
   const article = articles.find((article: ArticleData) => article.slug === slug);
@@ -35,15 +36,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 }
 
 // Générer les paramètres statiques pour tous les articles
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return articles.map((article: ArticleData) => ({
     slug: article.slug,
   }));
 }
 
 // Générer les métadonnées pour le SEO
-export async function generateMetadata({ params }: ArticlePageProps) {
-  const { slug } = await params;
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { slug } = params;
   const article = articles.find((article: ArticleData) => article.slug === slug);
 
   if (!article) {

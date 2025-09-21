@@ -11,8 +11,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ artist: string }> }): Promise<Metadata> {
-  const { artist = "" } = await params;
+export async function generateMetadata({ params }: { params: { artist: string } }): Promise<Metadata> {
+  const { artist = "" } = params;
   const data = Artists[artist as keyof typeof Artists];
 
   if (!data || !data.name) {
@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ artist: s
   };
 }
 
-export default async function Artist({ params }: { params: Promise<{ artist: string }> }) {
-  const { artist = "" } = await params;
+export default async function Artist({ params }: { params: { artist: string } }) {
+  const { artist = "" } = params;
 
   const data = Artists[artist as keyof typeof Artists];
 

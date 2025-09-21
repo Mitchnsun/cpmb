@@ -5,7 +5,7 @@ import { cn } from "@/utils/classnames";
 
 interface ArticleProps {
   fullDisplay?: boolean;
-  hLevel?: 1 | 2 | 3 | 4 | 5;
+  hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   link?: string;
   media: Array<{ url: string; alt: string }>;
   publication?: string;
@@ -41,8 +41,8 @@ const Article = ({ fullDisplay, hLevel = 1, link, media, publication, subtitle, 
               key={url}
               src={url}
               alt={alt}
-              width="1024"
-              height="500"
+              width={1024}
+              height={500}
               sizes={fullDisplay ? "100vw" : "(min-width: 1024px) 50vw, 100vw"}
             />
           ))}

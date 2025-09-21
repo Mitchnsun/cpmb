@@ -130,9 +130,9 @@ describe("Article Component", () => {
   });
 
   it("should not render subtitle when not provided", () => {
-    render(<Article title="Test Article" media={mockMedia} />);
+    const { container } = render(<Article title="Test Article" media={mockMedia} />);
 
-    const paragraphs = screen.queryAllByRole("paragraph");
+    const paragraphs = container.querySelectorAll("p");
     expect(paragraphs).toHaveLength(0);
   });
 
