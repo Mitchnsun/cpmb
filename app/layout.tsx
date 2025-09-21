@@ -39,7 +39,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${inter.variable} ${notoSans.variable} font-inter bg-zinc-50 text-zinc-900 antialiased`}>
         <Header />
-        <main id="main-content" style={{ minHeight: "50vh" }}>
+        <main id="main-content" className="min-h-[50vh]">
           {children}
         </main>
         <Footer />
