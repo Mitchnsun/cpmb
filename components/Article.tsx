@@ -37,7 +37,14 @@ const Article = ({ fullDisplay, hLevel = 1, link, media, publication, subtitle, 
       {media && media.length > 0 && (
         <div className={cn("relative mx-auto mt-4 w-full", { "lg:w-1/2": !fullDisplay })}>
           {media.map(({ url, alt }) => (
-            <Image key={url} src={url} alt={alt} width="1024" height="500" sizes="100vw" />
+            <Image
+              key={url}
+              src={url}
+              alt={alt}
+              width="1024"
+              height="500"
+              sizes={fullDisplay ? "100vw" : "(min-width: 1024px) 50vw, 100vw"}
+            />
           ))}
         </div>
       )}
