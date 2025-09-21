@@ -5,6 +5,12 @@ import Artists from "@/assets/contents/artists.json";
 import ArtistArticle from "@/components/ArtistArticle";
 import ScrollToTop from "@/components/ScrollToTop";
 
+export async function generateStaticParams() {
+  return Object.keys(Artists).map((artist) => ({
+    artist,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ artist: string }> }): Promise<Metadata> {
   const { artist = "" } = await params;
   const data = Artists[artist as keyof typeof Artists];

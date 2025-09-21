@@ -146,6 +146,14 @@ exports[`Footer > should render the footer element 1`] = `
             <li>
               <a
                 class="text-gray-400 hover:text-white"
+                href="/presse"
+              >
+                Presse
+              </a>
+            </li>
+            <li>
+              <a
+                class="text-gray-400 hover:text-white"
                 href="/mentions-legales"
               >
                 Mentions légales
