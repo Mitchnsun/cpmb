@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:snapshots": "vitest run -u",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "test:ci": "vitest run --reporter=default"

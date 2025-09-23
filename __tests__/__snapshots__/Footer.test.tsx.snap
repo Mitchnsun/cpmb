@@ -17,7 +17,7 @@ exports[`Footer > should render the footer element 1`] = `
       >
         <img
           alt="Logo Veran Piano"
-          class="m-auto"
+          class="m-auto h-auto"
           height="120"
           src="/logo-veran-pianos.png"
           width="200"
@@ -32,7 +32,7 @@ exports[`Footer > should render the footer element 1`] = `
       >
         <img
           alt="Logo Ville de Gaillard"
-          class="m-auto"
+          class="m-auto h-auto"
           height="120"
           src="/logo-gaillard.png"
           width="200"
@@ -47,7 +47,7 @@ exports[`Footer > should render the footer element 1`] = `
       >
         <img
           alt="Logo Haute-Savoie"
-          class="m-auto"
+          class="m-auto h-auto"
           height="55"
           src="/haute-savoie.svg"
           width="90"
@@ -63,13 +63,13 @@ exports[`Footer > should render the footer element 1`] = `
         <div>
           <img
             alt="Logo Chœur des Pays du Mont-Blanc"
-            class="shrink-0"
+            class="h-auto shrink-0"
             height="55"
             src="/CPMB-logo-blanc.png"
             width="160"
           />
           <p
-            class="mt-4 text-sm text-gray-400"
+            class="mt-4 text-sm text-gray-300"
           >
             Partager la passion de la musique chorale au cœur des Alpes.
           </p>
@@ -81,12 +81,12 @@ exports[`Footer > should render the footer element 1`] = `
             Nos Partenaires
           </h4>
           <ul
-            class="space-y-1 text-sm"
+            class="space-y-1 text-sm text-gray-300"
           >
             <li>
               <a
                 aria-label="Visitez le site de Veran Piano - nouvelle fenêtre"
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="https://www.veran-piano.com/"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -97,7 +97,7 @@ exports[`Footer > should render the footer element 1`] = `
             <li>
               <a
                 aria-label="Visitez le site de la Ville de Gaillard - nouvelle fenêtre"
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="https://www.gaillard.fr/"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -108,7 +108,7 @@ exports[`Footer > should render the footer element 1`] = `
             <li>
               <a
                 aria-label="Visitez le site du Département de la Haute-Savoie - nouvelle fenêtre"
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="https://www.hautesavoie.fr/"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -125,11 +125,11 @@ exports[`Footer > should render the footer element 1`] = `
             Plan du site
           </h4>
           <ul
-            class="space-y-1 text-sm"
+            class="space-y-1 text-sm text-gray-300"
           >
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/"
               >
                 Page d'accueil
@@ -137,7 +137,7 @@ exports[`Footer > should render the footer element 1`] = `
             </li>
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presentation"
               >
                 Présentation
@@ -145,7 +145,7 @@ exports[`Footer > should render the footer element 1`] = `
             </li>
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presse"
               >
                 Presse
@@ -153,7 +153,7 @@ exports[`Footer > should render the footer element 1`] = `
             </li>
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/mentions-legales"
               >
                 Mentions légales
@@ -168,11 +168,11 @@ exports[`Footer > should render the footer element 1`] = `
             Artistes
           </h4>
           <ul
-            class="space-y-1 text-sm"
+            class="space-y-1 text-sm text-gray-300"
           >
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presentation/benoit-dubu"
               >
                 Benoît Dubu
@@ -180,7 +180,7 @@ exports[`Footer > should render the footer element 1`] = `
             </li>
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presentation/agnes-lorincz"
               >
                 Ágnes Lőrincz
@@ -188,7 +188,7 @@ exports[`Footer > should render the footer element 1`] = `
             </li>
             <li>
               <a
-                class="text-gray-400 hover:text-white"
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presentation/marjorie-saunier"
               >
                 Marjorie Saunier
@@ -198,14 +198,14 @@ exports[`Footer > should render the footer element 1`] = `
         </section>
       </div>
       <p
-        class="container mx-auto border-t border-gray-700 py-4 text-center text-sm text-gray-500"
+        class="container mx-auto border-t border-gray-700 py-4 text-center text-sm text-gray-300"
       >
         © 
         2024
          Chœur des Pays du Mont-Blanc. Tous droits réservés - Conçu et développé par 
         <a
           aria-label="Visitez le site de Go Cosmic - nouvelle fenêtre"
-          class="text-sky-600 hover:underline"
+          class="text-sky-400 underline decoration-sky-400 underline-offset-2 hover:text-sky-300 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:outline-none"
           href="https://www.gocosmic.dev/fr"
           rel="noopener noreferrer"
           target="_blank"
