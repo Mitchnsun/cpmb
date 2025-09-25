@@ -146,6 +146,14 @@ exports[`Footer > should render the footer element 1`] = `
             <li>
               <a
                 class="underline-offset-2 hover:text-white focus-visible:underline"
+                href="/nos-concerts"
+              >
+                Nos concerts
+              </a>
+            </li>
+            <li>
+              <a
+                class="underline-offset-2 hover:text-white focus-visible:underline"
                 href="/presse"
               >
                 Presse

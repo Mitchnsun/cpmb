@@ -128,6 +128,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/nos-concerts" className="underline-offset-2 hover:text-white focus-visible:underline">
+                  Nos concerts
+                </Link>
+              </li>
+              <li>
                 <Link href="/presse" className="underline-offset-2 hover:text-white focus-visible:underline">
                   Presse
                 </Link>

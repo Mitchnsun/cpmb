@@ -29,9 +29,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <section className="container mx-auto px-4 py-8">
       <Article {...article} />
-    </main>
+    </section>
   );
 }
 

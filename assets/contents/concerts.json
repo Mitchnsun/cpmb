@@ -1,0 +1,66 @@
+[
+  {
+    "title": "Concert Vivaldi Jenkins, 14 et 15 juin 2025, Boëge et Saint Gervais",
+    "slug": "concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais",
+    "date": ["2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, dirigé par Benoît Dubu, aura le plaisir de vous proposer un concert avec au programme, le Gloria de Vivaldi, des extraits du Gloria de Jenkins. et deux magnifiques pièces de Brahms.\n\nPour l'occasion, le choeur sera accompagné par des solistes et un pianiste professionnels.",
+    "location": "Boëge et Saint-Gervais-les-Bains, France",
+    "media": "/concerts/affiche-concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais.jpg"
+  },
+  {
+    "title": "Concert de Noël, 22 décembre 2024, Gaillard",
+    "slug": "concert-de-noel-22-decembre-2024-gaillard",
+    "date": ["2024-12-22T17:30:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, invité par l'association Choeur et Orgues de Gaillard, a proposé un concert de Noël.\n\nLe choeur, dirigé par Benoît Dubu était accompagné par l'orgue et des solistes professionnels.",
+    "location": "Église Saint-Pierre, Gaillard, France",
+    "media": "/concerts/affiche-concert-de-noel-22-decembre-2024-gaillard.jpg"
+  },
+  {
+    "title": "Concert de Noël, 13 décembre 2024, Vétraz-Monthoux",
+    "slug": "concert-de-noel-13-decembre-2024-vetraz-monthoux",
+    "date": ["2024-12-13T20:00:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, invité par la Municipalité de Vétraz-Monthoux, a proposé, à l'occasion de l'ouverture du Marché de Noël un concert.\n\nLe choeur, dirigé par Benoît Dubu était accompagné par des instrumentistes et des solistes professionnels.",
+    "location": "Église de Vétraz-Monthoux, France",
+    "media": "/concerts/affiche-concert-de-noel-13-decembre-2024-vetraz-monthoux.jpg"
+  },
+  {
+    "title": "Concert Dvorak Rheinberger, 15 et 16 juin 2024, Samoëns et Vongy",
+    "slug": "concert-dvorak-rheinberger-15-et-16-juin-2024-samoens-et-vongy",
+    "date": ["2024-06-15T20:30:00+02:00", "2024-06-16T18:00:00+02:00"],
+    "description": "Le Choeur des Pays du Mont Blanc accompagné à l'orgue par Damien Desbenoit et par quatre solistes professionnels, a proposé les 15 et 16 juin 2024 à l'église de Samoëns et de Vongy un  concert avec au programme la Messe en Ré de Dvorak et le Stabat Mater de Rheinberger",
+    "location": "Samoëns et Vongy, France",
+    "media": "/concerts/affiche-concert-dvorak-rheinberger-15-et-16-juin-2024-samoens-et-vongy.jpg"
+  },
+  {
+    "title": "Concert Dvorak Rheinberger, 28 avril 2024, Beaumont",
+    "slug": "concert-dvorak-rheinberger-28-avril-2024-eglise-de-beaumont",
+    "date": ["2024-04-28T18:00:00+02:00"],
+    "description": "Le Choeur des Pays du Mont Blanc accompagné à l'orgue par Damien Desbenoit et par quatre solistes professionnels, a proposé le 28 avril 2024 à l'église de Beaumont un  concert avec au programme la Messe en Ré de Dvorak et le Stabat Mater de Rheinberger.",
+    "location": "Église Saint-Étienne de Beaumont, France",
+    "media": "/concerts/affiche-concert-dvorak-rheinberger-28-avril-2024-eglise-de-beaumont.jpg"
+  },
+  {
+    "title": "Concert de Noël, 8 décembre 2023, Vétraz-Monthoux",
+    "slug": "concert-de-noel-8-decembre-2023-vetraz-monthoux",
+    "date": ["2023-12-08T20:00:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, invité par la Municipalité de Vétraz-Monthoux a eu le plaisir d'ouvrir le Marché de Noël avec Les Vêpres solennelles pour un confesseur de Mozart et des chants de Noël. ",
+    "location": "Église de Vétraz-Monthoux, France",
+    "media": "/concerts/affiche-concert-de-noel-8-decembre-2023-vetraz-monthoux.jpg"
+  },
+  {
+    "title": "Requiem Michaël Haydn et Vêpres solennelles pour un confesseur de Mozart novembre 2023",
+    "slug": "requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-novembre-2023",
+    "date": ["2023-11-05T17:00:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc de Gaillard s'est associé au choeur d'Evian La Villanelle pour donner un concert.",
+    "location": "Espace Louis Simon, Gaillard, France",
+    "media": "/concerts/affiche-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-novembre-2023.jpg"
+  },
+  {
+    "title": "Requiem Michaël Haydn et Vêpres solennelles pour un confesseur de Mozart juin 2023",
+    "slug": "requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023",
+    "date": ["2023-06-03T20:30:00+02:00", "2023-06-04T18:30:00+02:00"],
+    "description": "Le Requiem de Michaël Haydn et les Vêpres solennelles pour un confesseur de Mozart, accompagnés par un piano et des solistes professionnels.",
+    "location": "La Roche-sur-Foron et Sallanches, France",
+    "media": "/concerts/affiche-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023.jpg"
+  }
+]

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Mentions() {
   return (
-    <main className="p-4 text-zinc-900 xl:p-8">
+    <section className="p-4 text-zinc-900 xl:p-8">
       <article className="container mx-auto text-justify">
         <Heading className="mb-4">Mentions légales</Heading>
         <Heading hLevel={2} variant={2} className="mb-2">
@@ -72,6 +72,6 @@ export default function Mentions() {
         Licences entrepreneur du spectacle : <span className="font-light">PLATESV-D-2022-005692</span> et{" "}
         <span className="font-light">PLATESV-D-2022-005721</span>.
       </p>
-    </main>
+    </section>
   );
 }
