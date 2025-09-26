@@ -24,7 +24,7 @@ const Concert = ({ title, slug, date, description, location, media }: ConcertPro
         alt={`Affiche: ${title}`}
         height={250}
         width={150}
-        className="row-start-1 h-auto w-full md:row-span-2"
+        className="row-start-1 h-full w-full object-cover md:row-span-2"
       />
       <div className="p-2">
         <Heading hLevel={3} variant={2}>

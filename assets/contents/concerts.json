@@ -62,5 +62,81 @@
     "description": "Le Requiem de Michaël Haydn et les Vêpres solennelles pour un confesseur de Mozart, accompagnés par un piano et des solistes professionnels.",
     "location": "La Roche-sur-Foron et Sallanches, France",
     "media": "/concerts/affiche-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023.jpg"
+  },
+  {
+    "title": "Musique Française, 27 novembre 2022, Eglise de Gaillard",
+    "slug": "musique-francaise-27-novembre-2022-eglise-de-gaillard",
+    "date": ["2022-11-27T17:30:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, invité par l'association Choeur et Orgues, a eu le plaisir de proposer un programme de Musique Française.",
+    "location": "Église Saint-Pierre, Gaillard, France",
+    "media": "/concerts/affiche-musique-francaise-27-novembre-2022-eglise-de-gaillard.png"
+  },
+  {
+    "title": "Musique Française, 5 novembre 2022, Espace Louis Simon à Gaillard",
+    "slug": "musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard",
+    "date": ["2022-11-05T17:30:00+01:00"],
+    "description": "Le Choeur des Pays du Mont a eu l'occasion de participer au concert anniversaire du Choeur La Chanson de Gaillard.",
+    "location": "Espace Louis Simon, Gaillard, France",
+    "media": "/concerts/affiche-musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard.jpg"
+  },
+  {
+    "title": "Musique Française, 16 octobre 2022, Grange Batelière Abbaye Hautecombe",
+    "slug": "musique-francaise-16-octobre-2022-grange-bateliere-abbaye-hautecombe",
+    "date": ["2022-10-16"],
+    "description": "Dans le cadre du festival des Voix d'Hautecombe, le Chœur des Pays du Mont Blanc a eu l'immense plaisir de présenter un programme de Musique Française accompagné au piano dans le cadre idyllique de la Grange Batelière de l'abbaye d’Hautecombe le 16 octobre 2022.",
+    "location": "Grange Batelière de l'abbaye d’Hautecombe, France",
+    "media": "/concerts/affiche-musique-francaise-16-octobre-2022-grange-bateliere-abbaye-hautecombe.jpg",
+    "programme": [
+      "Prière du soir, Charles Gounod",
+      "Dieu qu’il la fait bon regarder, Claude Debussy",
+      "Madrigal, Gabriel Fauré",
+      "Les fleurs et les arbres, Camille Saint-Saëns",
+      "Cantique de Jean Racine, Gabriel Fauré",
+      "En paradis, Paul Ladmirault",
+      "Le Charbonnier, Paul Ladmirault",
+      "Chansons écossaises : La jolie Annette au vieux Joseph, Paul Ladmirault",
+      "Chansons écossaises : Marie Morison, Paul Ladmirault",
+      "Chansons écossaises : Le batelier, Paul Ladmirault",
+      "Les djinns, Gabriel Fauré"
+    ]
+  },
+  {
+    "title": "Magnifique Requiem de Mozart à Cluses",
+    "slug": "magnifique-requiem-de-mozart-a-cluses",
+    "date": ["2019-01-26"],
+    "description": "Le CPMB, le Choeur Laudate, l'orchestre de L'AMAmusique et de talentueux jeunes solistes, ont interprété le Requiem de Mozart à guichet fermé au théâtre des Allobroges, à Cluses, le samedi 26 janvier 2019.",
+    "location": "Théâtre des Allobroges, Cluses, France",
+    "media": "/concerts/affiche-magnifique-requiem-de-mozart-a-cluses.jpg"
+  },
+  {
+    "title": "Requiem de Mozart, 18 novembre 2018, église de Gaillard",
+    "slug": "requiem-de-mozart-18-novembre-2018-eglise-de-gaillard",
+    "date": ["2018-11-18T17:30:00+01:00"],
+    "description": "Magnifique moment, en compagnie de l'orchestre de L'AMAmusique, du choeur Laudate de Lausanne, et de quatre talentueux jeunes solistes.\n\nLe Requiem était précédé de l'Andante de la Sinfonia Concertante de Mozart.",
+    "location": "Église Saint-Pierre, Gaillard, France",
+    "media": "/concerts/affiche-requiem-de-mozart-18-novembre-2018-eglise-de-gaillard.jpg"
+  },
+  {
+    "title": "Requiem de Mozart, au Victoria Hall de Genève, le 14 juin 2018",
+    "slug": "magnifique-concert-au-victoria-hall-de-geneve-le-14-juin-2018",
+    "date": ["2018-06-14"],
+    "description": "Le CPMB a interprété le Requiem de Mozart, avec le Choeur Laudate de Lausanne, la Maîtrise du CPMDT, et l'orchestre symphonique de l'AMAmusique.",
+    "location": "Victoria Hall, Genève, Suisse",
+    "media": "/concerts/affiche-magnifique-concert-au-victoria-hall-de-geneve-le-14-juin-2018.jpg"
+  },
+  {
+    "title": "Deux choeurs - un concert de Noël !",
+    "slug": "deux-choeurs-un-concert-de-noel",
+    "date": ["2016-12-09T20:00:00+01:00", "2016-12-10T20:00:00+01:00"],
+    "description": "En cette période de l'Avent, le Choeur des Pays du Mont-Blanc vous invite chaleureusement à assister à son concert de Noël et vous propose de découvrir à cette occasion les Si Fa Soul Singers de Turin (I) !",
+    "location": "Genève (CH) et Samoëns (F)",
+    "media": "/concerts/affiche-deux-choeurs-un-concert-de-noel.jpeg",
+    "programme": [
+      "Choeur des Pays du Mont-Blanc – Oeuvres de B. Britten, J. Rutter et K. Jenkins",
+      "Si Fa Soul Singer – Chants traditionnels gospel et pop",
+      "Valerio Lisci, harpe",
+      "Fabio Gorlier, piano",
+      "Roberto Rega, direction"
+    ]
   }
 ]

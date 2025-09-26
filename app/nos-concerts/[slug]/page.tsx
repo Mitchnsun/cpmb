@@ -46,6 +46,16 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
           </p>
         </div>
         <p className="my-4">{concert.description}</p>
+        {concert.programme && concert.programme.length > 0 && (
+          <>
+            <h4>Au programme: </h4>
+            <ul className="mt-2 list-disc pl-5">
+              {concert.programme?.map((piece) => (
+                <li key={piece}>{piece}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
     </div>
   );
