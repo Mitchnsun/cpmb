@@ -15,7 +15,7 @@ describe("ConcertPage", () => {
   });
 
   it("should render concert when slug is found", async () => {
-    const mockParams = { slug: concerts[0].slug };
+    const mockParams = Promise.resolve({ slug: concerts[0].slug });
 
     render(await ConcertPage({ params: mockParams }));
 
@@ -23,7 +23,7 @@ describe("ConcertPage", () => {
   });
 
   it("should call notFound when slug is not found", async () => {
-    const mockParams = { slug: "non-existent-slug" };
+    const mockParams = Promise.resolve({ slug: "non-existent-slug" });
     const { notFound } = await import("next/navigation");
 
     try {
@@ -43,7 +43,7 @@ describe("ConcertPage", () => {
   });
 
   it("should generate metadata for existing concert", async () => {
-    const mockParams = { slug: concerts[0].slug };
+    const mockParams = Promise.resolve({ slug: concerts[0].slug });
 
     const metadata = await generateMetadata({ params: mockParams });
 
@@ -52,7 +52,7 @@ describe("ConcertPage", () => {
   });
 
   it("should generate default metadata for non-existent concert", async () => {
-    const mockParams = { slug: "non-existent-slug" };
+    const mockParams = Promise.resolve({ slug: "non-existent-slug" });
 
     const metadata = await generateMetadata({ params: mockParams });
 

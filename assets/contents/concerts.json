@@ -62,5 +62,176 @@
     "description": "Le Requiem de Michaël Haydn et les Vêpres solennelles pour un confesseur de Mozart, accompagnés par un piano et des solistes professionnels.",
     "location": "La Roche-sur-Foron et Sallanches, France",
     "media": "/concerts/affiche-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023.jpg"
+  },
+  {
+    "title": "Musique Française, 27 novembre 2022, Eglise de Gaillard",
+    "slug": "musique-francaise-27-novembre-2022-eglise-de-gaillard",
+    "date": ["2022-11-27T17:30:00+01:00"],
+    "description": "Le Choeur des Pays du Mont Blanc, invité par l'association Choeur et Orgues, a eu le plaisir de proposer un programme de Musique Française.",
+    "location": "Église Saint-Pierre, Gaillard, France",
+    "media": "/concerts/affiche-musique-francaise-27-novembre-2022-eglise-de-gaillard.png"
+  },
+  {
+    "title": "Musique Française, 5 novembre 2022, Espace Louis Simon à Gaillard",
+    "slug": "musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard",
+    "date": ["2022-11-05T17:30:00+01:00"],
+    "description": "Le Choeur des Pays du Mont a eu l'occasion de participer au concert anniversaire du Choeur La Chanson de Gaillard.",
+    "location": "Espace Louis Simon, Gaillard, France",
+    "media": "/concerts/affiche-musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard.jpg"
+  },
+  {
+    "title": "Musique Française, 16 octobre 2022, Grange Batelière Abbaye Hautecombe",
+    "slug": "musique-francaise-16-octobre-2022-grange-bateliere-abbaye-hautecombe",
+    "date": ["2022-10-16"],
+    "description": "Dans le cadre du festival des Voix d'Hautecombe, le Chœur des Pays du Mont Blanc a eu l'immense plaisir de présenter un programme de Musique Française accompagné au piano dans le cadre idyllique de la Grange Batelière de l'abbaye d’Hautecombe le 16 octobre 2022.",
+    "location": "Grange Batelière de l'abbaye d’Hautecombe, France",
+    "media": "/concerts/affiche-musique-francaise-16-octobre-2022-grange-bateliere-abbaye-hautecombe.jpg",
+    "programme": [
+      "Prière du soir, Charles Gounod",
+      "Dieu qu’il la fait bon regarder, Claude Debussy",
+      "Madrigal, Gabriel Fauré",
+      "Les fleurs et les arbres, Camille Saint-Saëns",
+      "Cantique de Jean Racine, Gabriel Fauré",
+      "En paradis, Paul Ladmirault",
+      "Le Charbonnier, Paul Ladmirault",
+      "Chansons écossaises : La jolie Annette au vieux Joseph, Paul Ladmirault",
+      "Chansons écossaises : Marie Morison, Paul Ladmirault",
+      "Chansons écossaises : Le batelier, Paul Ladmirault",
+      "Les djinns, Gabriel Fauré"
+    ]
+  },
+  {
+    "title": "Magnifique Requiem de Mozart à Cluses",
+    "slug": "magnifique-requiem-de-mozart-a-cluses",
+    "date": ["2019-01-26"],
+    "description": "Le CPMB, le Choeur Laudate, l'orchestre de L'AMAmusique et de talentueux jeunes solistes, ont interprété le Requiem de Mozart à guichet fermé au théâtre des Allobroges, à Cluses, le samedi 26 janvier 2019.",
+    "location": "Théâtre des Allobroges, Cluses, France",
+    "media": "/concerts/affiche-magnifique-requiem-de-mozart-a-cluses.jpg"
+  },
+  {
+    "title": "Requiem de Mozart, 18 novembre 2018, église de Gaillard",
+    "slug": "requiem-de-mozart-18-novembre-2018-eglise-de-gaillard",
+    "date": ["2018-11-18T17:30:00+01:00"],
+    "description": "Magnifique moment, en compagnie de l'orchestre de L'AMAmusique, du choeur Laudate de Lausanne, et de quatre talentueux jeunes solistes.\n\nLe Requiem était précédé de l'Andante de la Sinfonia Concertante de Mozart.",
+    "location": "Église Saint-Pierre, Gaillard, France",
+    "media": "/concerts/affiche-requiem-de-mozart-18-novembre-2018-eglise-de-gaillard.jpg"
+  },
+  {
+    "title": "Requiem de Mozart, au Victoria Hall de Genève, le 14 juin 2018",
+    "slug": "magnifique-concert-au-victoria-hall-de-geneve-le-14-juin-2018",
+    "date": ["2018-06-14"],
+    "description": "Le CPMB a interprété le Requiem de Mozart, avec le Choeur Laudate de Lausanne, la Maîtrise du CPMDT, et l'orchestre symphonique de l'AMAmusique.",
+    "location": "Victoria Hall, Genève, Suisse",
+    "media": "/concerts/affiche-magnifique-concert-au-victoria-hall-de-geneve-le-14-juin-2018.jpg"
+  },
+  {
+    "title": "Messe en Ut de Mozart",
+    "slug": "messe-en-ut-de-mozart",
+    "date": ["2017-10-08T17:00:00+02:00", "2017-10-15T17:00:00+02:00"],
+    "location": "Temple de la Madeleine, Genève (CH) et Église de Gaillard (F)",
+    "media": "/concerts/affiche-messe-en-ut-de-mozart.png",
+    "programme": [
+      "W.A. Mozart: Messe en Ut KV 427 (417a)",
+      "W.A. Mozart: Laudate Dominum",
+      "F. Mendelssohn: Drei Geistliche Lieder & Fuga",
+      "John Rutter: For the beauty of the earth",
+      "John Rutter: I will sing with the spirit",
+      "John Rutter: A clare benediction",
+      "John Rutter: The Lord bless you and keep you",
+      "John Rutter: The peace of God"
+    ]
+  },
+  {
+    "title": "Deux choeurs - un concert de Noël !",
+    "slug": "deux-choeurs-un-concert-de-noel",
+    "date": ["2016-12-09T20:00:00+01:00", "2016-12-10T20:00:00+01:00"],
+    "description": "En cette période de l'Avent, le Choeur des Pays du Mont-Blanc vous invite chaleureusement à assister à son concert de Noël et vous propose de découvrir à cette occasion les Si Fa Soul Singers de Turin (I) !",
+    "location": "Genève (CH) et Samoëns (F)",
+    "media": "/concerts/affiche-deux-choeurs-un-concert-de-noel.jpeg",
+    "programme": [
+      "Choeur des Pays du Mont-Blanc – Oeuvres de B. Britten, J. Rutter et K. Jenkins",
+      "Si Fa Soul Singer – Chants traditionnels gospel et pop",
+      "Valerio Lisci, harpe",
+      "Fabio Gorlier, piano",
+      "Roberto Rega, direction"
+    ]
+  },
+  {
+    "title": "21-22 mai 2016 – Franz Liszt & Felix Mendelssohn",
+    "slug": "21-22-mai-2016-franz-liszt-felix-mendelssohn",
+    "date": ["2016-05-21T20:00:00+02:00", "2016-05-22T17:30:00+02:00"],
+    "description": "Le Choeur des Pays du Mont-Blanc rencontre le Corale Polifonica di Sommariva Bosco (Turin, I)",
+    "location": "Temple de Chêne-Bougeries (CH) et Eglise Sainte Bernadette à Annecy (F)",
+    "media": "/concerts/affiche-21-22-mai-2016-franz-liszt-felix-mendelssohn.jpg",
+    "programme": ["Franz Liszt – Missa Choralis", "Felix Mendelssohn – Drei geistliche Lieder und Fuge, Op 96"]
+  },
+  {
+    "title": "30 & 31 janvier 2016 – Fauré, Puccini et Purcell",
+    "slug": "30-31-janvier-2016-faure-puccini-et-purcell",
+    "date": ["2016-01-30T20:00:00+01:00", "2016-01-31T17:00:00+01:00"],
+    "description": "Le programme de ce concert, entièrement dédié à la musique de Requiem, propose une vision apaisante et lumineuse de la mort. Aussi ce sont trois exemples les plus illustratifs de cette manière qui seront proposés au public : la Musique pour les funérailles de la Reine Mary de Purcell, le Requiem de Puccini et le Requiem de Fauré. Cette dernière œuvre sera donnée dans sa première version de 1889 pour orchestre de chambre, version qui correspond, si l’on en croit le témoignage de Fauré, à l’inspiration la plus authentique du compositeur lui-même.\n\nPrêtent leur concours à cette production deux solistes de renom, Eva Fiechter, soprano, et Michel Dumonthay, baryton. Le Chœur des Pays du Mont-Blanc sera accompagné par un ensemble instrumental constitué pour l’occasion. Roberto Rega, directeur musical du Chœur des Pays du Mont-Blanc, assure la direction de l’ensemble.",
+    "location": "Temple de la Madeleine, Genève (CH) et Eglise Notre Dame de l'Assomption, Évian (F)",
+    "media": "/concerts/affiche-30-31-janvier-2016-faure-puccini-et-purcell.jpg",
+    "programme": [
+      "Gabriel Fauré - Requiem op. 48",
+      "Giacomo Puccini - Requiem pour alto solo, choeur et orgue",
+      "Henry Purcell - Music for the funeral of Queen Mary, Z860"
+    ]
+  },
+  {
+    "title": "15 novembre 2015 – Fauré, Puccini et Purcell",
+    "slug": "15-novembre-2015-faure-puccini-et-purcell",
+    "date": ["2015-11-15T17:30:00+01:00"],
+    "location": "Eglise Saint-Pierre de Gaillard, France",
+    "description": "Requiem, Fauré \n Requiem, Puccini \n Music for the funeral of Queen Mary, Purcell \n\n Eva Fiechter, Soprano \n Michel Dumonthay, Baryton \n Ensemble instrumental \n Roberto Rega, Direction",
+    "media": "/concerts/affiche-15-novembre-2015-faure-puccini-et-purcell.jpg"
+  },
+  {
+    "title": "25 avril 2015 – Mass of the Children, J. Rutter",
+    "slug": "25-avril-2015-mass-of-the-children-j-rutter",
+    "date": ["2015-04-25T20:30:00+02:00"],
+    "location": "Eglise Saint-Pierre de Gaillard, France",
+    "description": "Poursuivant notre vocation transfrontalière, nous avons choisi de faire appel pour la réalisation de notre concert à un choeur d'enfants genevois, la Maitrise du Conservatoire Populaire de Musique, Danse et Théâtre de Genève. Cet ensemble, placé sous la direction de Magali Dami et Serge Ilg, s'est taillé une grande réputation dans la vie musicale genevoise. La Maîtrise a pu se produire avec de nombreux ensembles comme l'Orchestre de la Suisse Romande, l'ensemble Ars Nova ou le Motet de Genève. Elle est également partenaire du Grand Théâtre de Genève pour les productions nécessitant la participation de choeurs d'enfants et occasionnellement de jeunes solistes.\n\nLe programme de notre concert, entièrement dédié à la musique anglaise d'aujourd'hui et du XIXème siècle, met à l'honeur les enfants dans Mass of the Children de John Rutter. Cette oeuvre, d'un charme mélodique remarquable, a été composée en 2003 par le plus grand représentant actuel de la musique religieuse anglaise. Le Magnificat et Nunc Dimittis de Charles Villiers Stanford, compositeur de l'époque victorienne, complètent le programme.\n\nPrêtent leur concours à cette production deux solistes de renom, Eva Fiechter, soprano et Michel Dumonthay, baryton. Choeur d'enfants, choeur d'adultes et solistes sont accompagnés par la talentueuse Edith Ioja, qui tiendra aussi bien le piano que l'orgue. Roberto Rega, directeur musical du Choeur des Pays du Mont-Blanc, assure la direction de l'ensemble.",
+    "media": "/concerts/affiche-25-avril-2015-mass-of-the-children-j-rutter.jpg"
+  },
+  {
+    "title": "16 Novembre 2013 – Les Quatre Saisons & Misa A Buenos Aires",
+    "slug": "les-4-saisons-misa-tango-16-nov-13",
+    "date": ["2013-11-16T20:30:00+01:00"],
+    "location": "Espace Louis Simon, Gaillard, France",
+    "media": "/concerts/affiche-les-4-saisons-misa-tango-16-nov-13.jpg",
+    "programme": ["Les Quatre Saisons, Astor Piazzolla", "Misa a Buenos Aires (Misatango), Martin Palmeri"]
+  },
+  {
+    "title": "10 Novembre 2013 – Les Quatre Saisons & Misa A Buenos Aires",
+    "slug": "les-4-saisons-misa-tango-10-nov-13",
+    "date": ["2013-11-10T17:00:00+01:00"],
+    "location": "Eglise Saint-Germain, Genève, Suisse",
+    "media": "/concerts/affiche-les-4-saisons-misa-tango-10-nov-13.jpg",
+    "programme": ["Les Quatre Saisons, Astor Piazzolla", "Misa a Buenos Aires (Misatango), Martin Palmeri "]
+  },
+  {
+    "title": "08 Novembre 2013 – Les Quatre Saisons & Misa A Buenos Aires",
+    "slug": "les-4-saisons-misa-tango-08-nov-13",
+    "date": ["2013-11-08T20:30:00+01:00"],
+    "location": "Auditorium de Seynod, France",
+    "media": "/concerts/affiche-les-4-saisons-misa-tango-08-nov-13.jpg",
+    "programme": ["Les Quatre Saisons, Astor Piazzolla", "Misa a Buenos Aires (Misatango), Martin Palmeri "]
+  },
+  {
+    "title": "2010 – Festival du Baroque",
+    "slug": "festival-du-baroque-2010",
+    "date": ["2010-07-09T20:30:00+02"],
+    "location": "Eglise Saint-Jacques, Sallanches, France",
+    "media": "/concerts/affiche-festival-du-baroque-2010.jpg",
+    "description": "FESTIVAL DU BAROQUE DU PAYS DU MONT-BLANC\n\nChoeur et Orchestre Symphonique du Mont-Blanc\n\nDirection : Roberto REGA",
+    "programme": [
+      "Tomaso Giovanni ALBINONI: Sonata a cinque en sol mineur Op. 2 No. 6",
+      "Alessandro MARCELLO: Concerto pour Hautbois et cordes en ré mineur (Emmanuel JOAN, Hautbois)",
+      "Arcangelo CORELLI: Concerto Grosso op. 6, n.4 en ré majeur",
+      "Francesco DURANTE: Magnificat en si bémol majeur",
+      "Antonio LOTTI: Salve Regina, Crucifixus",
+      "Antonio VIVALDI: Psaume 113 en ut majeur, \"In exitu Israel\", Psaume 116 en ré mineur, \"Laudate Dominum\", Psaume 121 en fa majeur, \"Laetatus sum\""
+    ]
   }
 ]

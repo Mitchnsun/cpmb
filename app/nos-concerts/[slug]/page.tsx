@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 import concerts from "@/assets/contents/concerts.json";
 import CalendarIcon from "@/assets/icons/calendar.svg";
@@ -9,13 +10,13 @@ import Heading from "@/components/Heading";
 import { formatFrenchDateTime } from "@/utils/formatDate";
 
 interface ConcertPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 type ConcertData = (typeof concerts)[number];
 
 export default async function ConcertPage({ params }: ConcertPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const concert = concerts.find((c: ConcertData) => c.slug === slug);
 
@@ -36,7 +37,7 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
       </div>
       <section>
         <Heading hLevel={1}>{concert.title}</Heading>
-        <div className="mt-2 flex flex-col lg:flex-row lg:gap-4">
+        <div className="my-2">
           <p className="flex items-center gap-1 text-sm text-gray-500">
             <CalendarIcon />
             {concert.date.map((d) => formatFrenchDateTime(d)).join(", ")}
@@ -45,7 +46,26 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
             <LocationIcon /> {concert.location}
           </p>
         </div>
-        <p className="my-4">{concert.description}</p>
+        {concert.description && (
+          <p className="mb-4">
+            {concert.description?.split("\n").map((line, index, array) => (
+              <span key={uuidv4()}>
+                {line}
+                {index < array.length - 1 && <br />}
+              </span>
+            ))}
+          </p>
+        )}
+        {concert.programme && concert.programme.length > 0 && (
+          <>
+            <h4>Au programme: </h4>
+            <ul className="mt-2 list-disc pl-5">
+              {concert.programme?.map((piece) => (
+                <li key={piece}>{piece}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </section>
     </div>
   );
@@ -56,7 +76,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ConcertPageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const concert = concerts.find((c: ConcertData) => c.slug === slug);
 
   if (!concert) {

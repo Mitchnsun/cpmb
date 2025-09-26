@@ -112,4 +112,54 @@ describe("Concert Component", () => {
     const dateText = screen.getByText("15 juin 2024 à 14h30");
     expect(dateText).toBeInTheDocument();
   });
+
+  it("should render correctly without description", () => {
+    const propsWithoutDescription = {
+      ...defaultProps,
+      description: undefined,
+    };
+
+    render(<Concert {...propsWithoutDescription} />);
+
+    // Title should still be present
+    const heading = screen.getByRole("heading", { level: 3 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("Concert de Noël");
+
+    // Date and location should still be present
+    expect(screen.getByText("13 décembre 2024 à 20h00")).toBeInTheDocument();
+    expect(screen.getByText("Église Saint-Pierre, Gaillard")).toBeInTheDocument();
+
+    // "En savoir plus" link should still be present
+    const link = screen.getByRole("link", { name: "En savoir plus" });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/nos-concerts/concert-noel-2024");
+
+    // No description text should be visible
+    expect(screen.queryByText(/Un magnifique concert de Noël/)).not.toBeInTheDocument();
+  });
+
+  it("should apply correct link classes based on description length", () => {
+    // Test with description longer than 150 characters
+    const longDescription = "A".repeat(200);
+    const propsWithLongDescription = {
+      ...defaultProps,
+      description: longDescription,
+    };
+
+    const { rerender } = render(<Concert {...propsWithLongDescription} />);
+
+    expect(screen.getByRole("link", { name: "En savoir plus" })).toHaveClass("inline-block");
+
+    // Test with description shorter than or equal to 150 characters
+    const shortDescription = "A".repeat(100);
+    const propsWithShortDescription = {
+      ...defaultProps,
+      description: shortDescription,
+    };
+
+    rerender(<Concert {...propsWithShortDescription} />);
+
+    expect(screen.getByRole("link", { name: "En savoir plus" })).toHaveClass("block");
+  });
 });

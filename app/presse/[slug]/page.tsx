@@ -5,7 +5,7 @@ import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
 
 interface ArticlePageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 interface ArticleData {
@@ -18,7 +18,7 @@ interface ArticleData {
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { slug } = params;
+  const { slug } = await params;
 
   // Rechercher l'article correspondant au slug
   const article = articles.find((article: ArticleData) => article.slug === slug);
@@ -44,7 +44,7 @@ export function generateStaticParams() {
 
 // Générer les métadonnées pour le SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const article = articles.find((article: ArticleData) => article.slug === slug);
 
   if (!article) {

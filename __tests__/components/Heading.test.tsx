@@ -76,4 +76,49 @@ describe("Heading Component", () => {
     heading = screen.getByRole("heading", { level: 3 });
     expect(heading).toHaveClass("text-lg");
   });
+
+  it("should render h4 and h5 headings correctly", () => {
+    const { rerender } = render(<Heading hLevel={4}>H4 Title</Heading>);
+    let heading = screen.getByRole("heading", { level: 4 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("H4 Title");
+
+    rerender(<Heading hLevel={5}>H5 Title</Heading>);
+    heading = screen.getByRole("heading", { level: 5 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("H5 Title");
+  });
+
+  it("should render h6 heading correctly", () => {
+    render(<Heading hLevel={6}>H6 Title</Heading>);
+    const heading = screen.getByRole("heading", { level: 6 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("H6 Title");
+  });
+
+  it("should fall back to h1 for invalid heading level", () => {
+    // Type assertion to test edge case with invalid level
+    render(<Heading hLevel={7 as any}>Invalid Level</Heading>);
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("Invalid Level");
+  });
+
+  it("should use variant as heading level when hLevel is not provided", () => {
+    render(<Heading variant={3}>Variant as Level</Heading>);
+    const heading = screen.getByRole("heading", { level: 3 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("Variant as Level");
+  });
+
+  it("should prioritize hLevel over variant", () => {
+    render(
+      <Heading hLevel={2} variant={3}>
+        hLevel Priority
+      </Heading>
+    );
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent("hLevel Priority");
+  });
 });
