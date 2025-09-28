@@ -39,7 +39,7 @@ describe("Concert Component", () => {
     expect(screen.getByText(/Un magnifique concert de Noël/)).toBeInTheDocument();
 
     // Check "En savoir plus" link
-    const link = screen.getByRole("link", { name: "En savoir plus" });
+    const link = screen.getByRole("link", { name: /En savoir plus/i });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/nos-concerts/concert-noel-2024");
   });
@@ -131,7 +131,7 @@ describe("Concert Component", () => {
     expect(screen.getByText("Église Saint-Pierre, Gaillard")).toBeInTheDocument();
 
     // "En savoir plus" link should still be present
-    const link = screen.getByRole("link", { name: "En savoir plus" });
+    const link = screen.getByRole("link", { name: /En savoir plus/i });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/nos-concerts/concert-noel-2024");
 
@@ -149,7 +149,7 @@ describe("Concert Component", () => {
 
     const { rerender } = render(<Concert {...propsWithLongDescription} />);
 
-    expect(screen.getByRole("link", { name: "En savoir plus" })).toHaveClass("inline-block");
+    expect(screen.getByRole("link", { name: /En savoir plus/i })).toHaveClass("inline-block");
 
     // Test with description shorter than or equal to 150 characters
     const shortDescription = "A".repeat(100);
@@ -160,6 +160,6 @@ describe("Concert Component", () => {
 
     rerender(<Concert {...propsWithShortDescription} />);
 
-    expect(screen.getByRole("link", { name: "En savoir plus" })).toHaveClass("block");
+    expect(screen.getByRole("link", { name: /En savoir plus/i })).toHaveClass("block");
   });
 });

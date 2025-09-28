@@ -10,9 +10,10 @@ This is the official website for **Chœur des Pays du Mont-Blanc**, a choir base
 
 ### Core Technologies
 
-- **Framework**: Next.js 15.5.2 with App Router and Turbopack
+- **Framework**: Next.js 15.5.3 with App Router and Turbopack
 - **Language**: TypeScript with strict configuration
 - **Styling**: Tailwind CSS 4.1.13
+- **UI Components**: shadcn/ui with Radix UI primitives
 - **Runtime**: React 19.1.1
 - **Package Manager**: Yarn 4.9.4
 
@@ -32,13 +33,19 @@ This is the official website for **Chœur des Pays du Mont-Blanc**, a choir base
 │   ├── page.tsx           # Homepage component
 │   └── globals.css        # Global styles and Tailwind CSS imports
 ├── components/            # Reusable React components
+│   └── ui/               # shadcn/ui components (drawer, button, etc.)
 ├── assets/               # Asset files (icons, content data)
+├── scripts/              # Utility scripts
+│   └── validate-concerts.js # Data validation script
+├── docs/                 # Project documentation
+│   └── VALIDATION.md     # Validation system documentation
 ├── public/               # Static assets (images, icons, etc.)
 ├── __tests__/            # Unit tests directory
 │   ├── setup.ts          # Test setup configuration
 │   └── *.test.tsx        # Component test files
 ├── .github/              # GitHub configurations and workflows
 ├── .vscode/              # VS Code settings
+├── components.json       # shadcn/ui configuration
 ├── eslint.config.js      # ESLint configuration with advanced plugins
 ├── vitest.config.ts      # Vitest testing configuration
 ├── .prettierrc           # Prettier configuration with TailwindCSS plugin
@@ -65,6 +72,99 @@ This is the official website for **Chœur des Pays du Mont-Blanc**, a choir base
 - Use proper TypeScript interfaces for props
 - Follow React 19 best practices
 - Implement proper accessibility with semantic HTML and ARIA attributes
+
+## 🎨 shadcn/ui Component System
+
+The project uses **shadcn/ui**, a modern component system built on **Radix UI** primitives and **Tailwind CSS**.
+
+### Configuration
+
+shadcn/ui is configured in `components.json`:
+
+```json
+{
+  "style": "new-york", // Modern and elegant design style
+  "baseColor": "slate", // Slate color palette for consistency
+  "cssVariables": true, // CSS variables for theming
+  "iconLibrary": "lucide", // Lucide React icons
+  "rsc": true, // React Server Components support
+  "tsx": true // TypeScript support
+}
+```
+
+### Installed Components
+
+- **Drawer** (`components/ui/drawer.tsx`) - Responsive sliding menu used in header navigation
+- **Utils** (`utils/classnames.ts`) - CSS class management utilities
+
+### Key Dependencies Added
+
+- **@radix-ui/react-dialog** ^1.1.15 - Accessible dialog/modal primitives
+- **vaul** ^1.1.2 - Optimized drawer component for mobile interfaces
+- **lucide-react** ^0.544.0 - Modern icon library with consistent design
+- **class-variance-authority** ^0.7.1 - Component variant management
+- **clsx** ^2.1.1 - Conditional CSS class utility
+- **tailwind-merge** ^3.3.1 - Intelligent Tailwind class merging
+
+### Usage Patterns
+
+```typescript
+// Import shadcn/ui components
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription
+} from "@/components/ui/drawer";
+
+// Responsive drawer implementation
+<Drawer direction="right" open={isOpen} onOpenChange={setIsOpen}>
+  <DrawerTrigger asChild>
+    <button className="lg:hidden" aria-label="Open menu">
+      <MenuIcon />
+    </button>
+  </DrawerTrigger>
+  <DrawerContent className="w-80 sm:w-96">
+    <DrawerHeader>
+      <DrawerTitle>Menu</DrawerTitle>
+      <DrawerDescription>Site navigation</DrawerDescription>
+    </DrawerHeader>
+    {/* Content */}
+  </DrawerContent>
+</Drawer>
+```
+
+### Adding New Components
+
+Use the shadcn/ui CLI to add components:
+
+```bash
+# Add a new component (e.g., button)
+npx shadcn@latest add button
+
+# Component will be created in components/ui/button.tsx
+```
+
+### Design Principles
+
+- **Accessibility First**: All components follow WCAG guidelines with proper ARIA attributes
+- **Responsive Design**: Components adapt seamlessly across device sizes
+- **Customizable**: Fully customizable with Tailwind CSS utilities
+- **Type Safe**: Complete TypeScript support with strict typing
+- **Performance**: Tree-shakable components with minimal bundle impact
+- **Consistency**: Unified design language across the application
+
+### Best Practices
+
+- Always use `asChild` prop when wrapping custom elements
+- Implement proper focus management for keyboard navigation
+- Use semantic HTML elements within component structures
+- Test components with screen readers and keyboard-only navigation
+- Maintain consistent spacing and sizing with Tailwind utilities
+- Follow the established color palette (sky-700, slate variants)
 
 ## 🔧 Code Quality Standards
 
@@ -159,7 +259,15 @@ The project uses a modern testing setup:
 - Use React Testing Library's user-centric queries (`getByRole`, `getByLabelText`)
 - Test behavior and accessibility, not implementation details
 - Mock Next.js components (`Image`, `Link`) for isolated testing
+- **Mock shadcn/ui SVG icons** properly in test files:
+  ```typescript
+  vi.mock("@/assets/icons/menu.svg", () => ({
+    default: (props: SVGProps<SVGSVGElement>) => <svg data-testid="menu-icon" {...props} />,
+  }));
+  ```
 - Test responsive design and interactive elements
+- **Test drawer interactions** and state management
+- Verify accessibility compliance with shadcn/ui components
 
 #### Test Organization
 
@@ -201,7 +309,75 @@ describe('ComponentName', () => {
 - **Coverage**: `yarn test:coverage` for comprehensive code coverage reports
 - **Interactive**: `yarn test:ui` for visual test exploration
 
-## 🛠️ Development Workflow
+## � Data Validation System
+
+The project includes a comprehensive data validation system to ensure data integrity and prevent runtime errors.
+
+### Overview
+
+The validation system automatically checks:
+
+- **Structure Validation**: Required fields (title, slug, date, location, media) and optional fields (description, programme)
+- **Unique Constraints**: Ensures all concert slugs are unique
+- **Data Format**: Validates slug format (URL-friendly), date format (ISO), and field types
+- **Asset Existence**: Verifies that all referenced media files exist in the public directory
+
+### Implementation
+
+- **Standalone Script**: `scripts/validate-concerts.js` - Node.js script with all validation functions
+- **Helper Functions**: Modular validation functions to reduce cognitive complexity
+- **CI/CD Integration**: Automatic validation in GitHub Actions workflow
+- **Error Reporting**: Detailed error messages with field paths and values
+
+### Key Validation Functions
+
+- **`validateConcert(concert, index)`**: Validates a single concert object
+- **`validateConcerts(concerts)`**: Validates array structure and unique slugs
+- **`validateMediaAssets(concerts, publicDir)`**: Checks asset file existence
+- **`validateConcertsWithAssets(concerts, publicDir)`**: Complete validation
+
+### Usage in Development
+
+```bash
+# Validate concerts data
+yarn validate:concerts
+
+# Alternative command
+yarn validate
+```
+
+### CI/CD Validation
+
+Validation runs automatically on:
+
+- Push to main, develop, or feature branches
+- Pull requests to main or develop
+- Changes to data files (`assets/contents/**`) or media files (`public/concerts/**`)
+
+### Validation Rules
+
+**Required Fields:**
+
+- `title`: Non-empty string
+- `slug`: URL-friendly format (lowercase, numbers, hyphens only)
+- `date`: Array of valid ISO date strings
+- `location`: Non-empty string
+- `media`: Path to existing media file
+
+**Optional Fields:**
+
+- `description`: String if provided
+- `programme`: Array of non-empty strings if provided
+
+### Error Handling
+
+The system provides detailed error reporting:
+
+- Field-specific error messages
+- Categorized errors (structure vs assets)
+- Exit codes for CI/CD integration (0 = success, 1 = failure)
+
+## �🛠️ Development Workflow
 
 ### Available Scripts
 
@@ -217,6 +393,8 @@ describe('ComponentName', () => {
 - `yarn test:run` - Run tests once
 - `yarn test:coverage` - Generate comprehensive code coverage reports
 - `yarn test:ui` - Open Vitest UI for interactive testing
+- `yarn validate:concerts` - Validate concerts data structure and asset existence
+- `yarn validate` - Alias for data validation
 
 ### Pre-commit Checklist
 
@@ -224,7 +402,8 @@ describe('ComponentName', () => {
 2. Run `yarn format` to ensure consistent formatting
 3. Run `yarn type-check` to validate TypeScript
 4. Run `yarn test:run` to ensure all tests pass
-5. Test the application with `yarn dev`
+5. Run `yarn validate` to ensure data integrity
+6. Test the application with `yarn dev`
 
 ## 🌐 Content Guidelines
 
@@ -256,6 +435,10 @@ describe('ComponentName', () => {
 - Implement proper loading states
 - Use React 19 features like Server Components when beneficial
 - Leverage Next.js caching strategies
+- **Implement responsive navigation** patterns:
+  - Desktop: Classical navigation (lg+) for quick access
+  - Mobile: Drawer navigation (<lg) for space efficiency
+- Use `"use client"` directive only when needed for interactive components
 
 ## 📝 Code Contribution Guidelines
 
@@ -265,17 +448,22 @@ describe('ComponentName', () => {
 2. **Follow Formatting**: Use Prettier for consistent code style
 3. **Type Safety**: Ensure TypeScript compilation succeeds
 4. **Testing**: Write tests for new components and maintain coverage standards
-5. **Accessibility**: Maintain WCAG compliance using jsx-a11y rules
-6. **Performance**: Consider impact on bundle size and loading times
+5. **Data Validation**: Ensure `yarn validate` passes without errors
+6. **Accessibility**: Maintain WCAG compliance using jsx-a11y rules
+7. **Performance**: Consider impact on bundle size and loading times
 
 ### Component Development
 
 - Create reusable, well-typed components
+- **Prefer shadcn/ui components** for UI elements when available
 - Use semantic HTML elements
 - Implement proper error boundaries where needed
 - Follow React best practices for hooks and state management
 - Write comprehensive tests for all new components
 - Ensure accessibility compliance with ARIA attributes and semantic markup
+- **Test responsive behavior** across different screen sizes
+- **Mock shadcn/ui components** properly in test files
+- Use `asChild` pattern when composing shadcn/ui components
 
 ### File Naming Conventions
 
@@ -320,3 +508,11 @@ describe('ComponentName', () => {
 ---
 
 **Remember**: This project represents an important cultural institution. Maintain professionalism, respect the choir's mission, and ensure all changes enhance the user experience while preserving the site's integrity and purpose.
+
+### Key Implementation Notes
+
+- **shadcn/ui Integration**: The project now uses shadcn/ui for consistent, accessible UI components
+- **Responsive Navigation**: Header implements responsive behavior with classical nav (desktop) and drawer (mobile)
+- **Component Testing**: All shadcn/ui components require proper mocking and accessibility testing
+- **Design System**: Follow the established color palette (sky-700) and spacing patterns for consistency
+- **Data Validation**: The project includes comprehensive data validation with automated CI/CD checks

@@ -14,16 +14,24 @@ const Header = () => (
         Chœur des Pays du Mont-Blanc
       </Link>
       {/* Navigation desktop - visible uniquement sur lg et plus */}
-      <nav className="mr-8 hidden gap-12 lg:flex">
-        <Link href="/presentation" className="font-medium transition-colors hover:text-sky-700">
-          Présentation
-        </Link>
-        <Link href="/nos-concerts" className="font-medium transition-colors hover:text-sky-700">
-          Nos concerts
-        </Link>
-        <Link href="/presse" className="font-medium transition-colors hover:text-sky-700">
-          Presse
-        </Link>
+      <nav aria-label="Navigation principale" className="mr-8 hidden lg:block">
+        <ul className="flex gap-12">
+          <li>
+            <Link href="/presentation" className="font-medium transition-colors hover:text-sky-700">
+              Présentation
+            </Link>
+          </li>
+          <li>
+            <Link href="/nos-concerts" className="font-medium transition-colors hover:text-sky-700">
+              Nos concerts
+            </Link>
+          </li>
+          <li>
+            <Link href="/presse" className="font-medium transition-colors hover:text-sky-700">
+              Presse
+            </Link>
+          </li>
+        </ul>
       </nav>
 
       {/* Menu drawer mobile - visible uniquement en dessous de lg */}

@@ -4,11 +4,6 @@ import { vi } from "vitest";
 import ArticlePage, { generateMetadata, generateStaticParams } from "@/app/presse/[slug]/page";
 import articles from "@/assets/contents/articles.json";
 
-// Mock next/navigation
-vi.mock("next/navigation", () => ({
-  notFound: vi.fn(),
-}));
-
 describe("ArticlePage", () => {
   beforeEach(() => {
     vi.clearAllMocks();

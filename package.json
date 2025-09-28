@@ -16,7 +16,9 @@
     "test:snapshots": "vitest run -u",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "test:ci": "vitest run --reporter=default"
+    "test:ci": "vitest run --reporter=default",
+    "validate:concerts": "node scripts/validate-concerts.js",
+    "validate": "yarn validate:concerts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -27,7 +29,6 @@
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "tailwind-merge": "^3.3.1",
-    "uuid": "^13.0.0",
     "vaul": "^1.1.2"
   },
   "devDependencies": {

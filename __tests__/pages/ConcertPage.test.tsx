@@ -4,11 +4,6 @@ import { vi } from "vitest";
 import ConcertPage, { generateMetadata, generateStaticParams } from "@/app/nos-concerts/[slug]/page";
 import concerts from "@/assets/contents/concerts.json";
 
-// Mock next/navigation
-vi.mock("next/navigation", () => ({
-  notFound: vi.fn(),
-}));
-
 describe("ConcertPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();

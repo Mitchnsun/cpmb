@@ -22,6 +22,7 @@ const HeaderMenu = () => {
     <Drawer direction="right" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <button
+          type="button"
           className="flex items-center justify-center rounded-md p-1 hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
           aria-label="Ouvrir le menu"
         >
@@ -37,6 +38,7 @@ const HeaderMenu = () => {
           </div>
           <DrawerClose asChild>
             <button
+              type="button"
               className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
               aria-label="Fermer le menu"
             >

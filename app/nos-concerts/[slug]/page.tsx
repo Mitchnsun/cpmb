@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
 
 import concerts from "@/assets/contents/concerts.json";
 import CalendarIcon from "@/assets/icons/calendar.svg";
@@ -49,7 +48,8 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
         {concert.description && (
           <p className="mb-4">
             {concert.description?.split("\n").map((line, index, array) => (
-              <span key={uuidv4()}>
+              // eslint-disable-next-line react/no-array-index-key
+              <span key={`line-${index}-${line}`}>
                 {line}
                 {index < array.length - 1 && <br />}
               </span>

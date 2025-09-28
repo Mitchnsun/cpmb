@@ -31,10 +31,6 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     setIsPlaying((prev) => !prev);
   }, []);
 
-  useEffect(() => {
-    setIsPlaying(autoplay);
-  }, [autoplay]);
-
   // Start the autoplay interval
   const startAutoplay = useCallback(() => {
     if (intervalRef.current !== null) return; // already running

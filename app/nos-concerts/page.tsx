@@ -33,7 +33,7 @@ export default function NosConcerts() {
               </li>
             ))
           ) : (
-            <p>Les concerts de cette saison vont être annoncés prochainement</p>
+            <li aria-live="polite">Les concerts de cette saison vont être annoncés prochainement</li>
           )}
         </ul>
       </section>

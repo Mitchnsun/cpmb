@@ -32,17 +32,21 @@ const Concert = ({ title, slug, date, description, location, media }: ConcertPro
           {title}
         </Heading>
         <p className="mt-1 flex items-center gap-1 text-sm text-gray-500">
-          <CalendarIcon className="shrink-0" />
-          {date.map((d) => formatFrenchDateTime(d)).join(", ")}
+          <CalendarIcon className="shrink-0" aria-hidden="true" />
+          {date
+            .map((d) => formatFrenchDateTime(d))
+            .filter(Boolean)
+            .join(", ")}
         </p>
         <p className="flex items-center gap-1 text-sm text-gray-500">
-          <LocationIcon className="shrink-0" /> {location}
+          <LocationIcon className="shrink-0" aria-hidden="true" /> {location}
         </p>
       </div>
-      <p className="col-span-2 p-2 pt-0 text-sm text-gray-800 md:col-start-2 md:row-start-2">
+      <p className="col-span-2 p-2 pt-0 text-sm md:col-start-2 md:row-start-2">
         {description ? <>{truncateAtWord(description, 150)}&nbsp;</> : null}
         <Link
           href={`/nos-concerts/${slug}`}
+          aria-label={`En savoir plus sur ${title}`}
           className={cn("text-sm text-sky-700 underline-offset-2 hover:underline", {
             "inline-block": description && description.length > 150,
             block: description && description.length <= 150,

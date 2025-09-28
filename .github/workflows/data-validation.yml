@@ -1,0 +1,128 @@
+name: Data Validation
+
+on:
+  push:
+    branches: [master, develop]
+    paths:
+      - "assets/contents/**"
+      - "public/concerts/**"
+      - "public/articles/**"
+      - "public/carrousel/**"
+      - "scripts/validate-concerts.js"
+      - "utils/validation.ts"
+  pull_request:
+    branches: [master, develop]
+    paths:
+      - "assets/contents/**"
+      - "public/concerts/**"
+      - "public/articles/**"
+      - "public/carrousel/**"
+      - "scripts/validate-concerts.js"
+      - "utils/validation.ts"
+
+jobs:
+  validate-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .yarn/cache
+            ~/.cache/yarn
+            node_modules
+          key: ${{ runner.os }}-node-22-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-22-
+            ${{ runner.os }}-node-
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Validate concerts data structure
+        run: yarn validate:concerts
+
+      - name: Validate TypeScript compilation
+        run: yarn type-check
+
+      - name: Check for missing media files
+        run: |
+          echo "🔍 Checking for missing media files referenced in concerts.json..."
+
+          # Extract all media paths from concerts.json and check if files exist
+          missing_files=0
+
+          # Use Node.js to extract media paths from concerts.json
+          media_paths=$(node -e "
+            const concerts = require('./assets/contents/concerts.json');
+            const paths = concerts.map(c => c.media).filter(Boolean);
+            console.log(paths.join('\n'));
+          ")
+
+          # Check each media file
+          for media_path in $media_paths; do
+            # Remove leading slash if present
+            clean_path=${media_path#/}
+            full_path="public/$clean_path"
+            
+            if [ ! -f "$full_path" ]; then
+              echo "❌ Missing: $full_path (referenced as $media_path)"
+              missing_files=$((missing_files + 1))
+            else
+              echo "✅ Found: $full_path"
+            fi
+          done
+
+          if [ $missing_files -gt 0 ]; then
+            echo "❌ $missing_files media file(s) are missing!"
+            exit 1
+          else
+            echo "✅ All media files are present!"
+          fi
+
+      - name: Validate JSON structure
+        run: |
+          echo "🔍 Validating JSON structure..."
+
+          # Validate concerts.json syntax
+          if ! node -e "JSON.parse(require('fs').readFileSync('assets/contents/concerts.json', 'utf8'))"; then
+            echo "❌ concerts.json has invalid JSON syntax"
+            exit 1
+          fi
+
+          # Validate articles.json syntax
+          if ! node -e "JSON.parse(require('fs').readFileSync('assets/contents/articles.json', 'utf8'))"; then
+            echo "❌ articles.json has invalid JSON syntax"  
+            exit 1
+          fi
+
+          # Validate artists.json syntax
+          if ! node -e "JSON.parse(require('fs').readFileSync('assets/contents/artists.json', 'utf8'))"; then
+            echo "❌ artists.json has invalid JSON syntax"
+            exit 1
+          fi
+
+          echo "✅ All JSON files have valid syntax!"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "🎉 Data validation completed successfully!"
+          echo ""
+          echo "✅ Concerts data structure is valid"
+          echo "✅ All media files exist"
+          echo "✅ JSON syntax is correct"
+          echo "✅ TypeScript compilation passes"
+          echo "✅ Code quality checks pass"

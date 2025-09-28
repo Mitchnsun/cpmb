@@ -9,7 +9,9 @@
 export function formatFrenchDateTime(isoString: string, options?: { timeZone?: string }): string {
   if (!isoString) return "";
   const timeZone = options?.timeZone ?? "Europe/Paris";
+
   const d = new Date(isoString);
+
   if (Number.isNaN(d.getTime())) return "";
 
   // Check if the original string contains time information
