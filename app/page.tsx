@@ -24,7 +24,7 @@ export default function Home() {
               width={180}
               height={325}
               priority
-              sizes="(min-width: 1024px) 15rem, 100vw"
+              sizes="(min-width: 640px) 180px, 100vw"
               className="mx-auto h-80 w-full max-w-3xs grow-0 rounded-md object-cover lg:m-0 lg:h-auto"
             />
             <div>

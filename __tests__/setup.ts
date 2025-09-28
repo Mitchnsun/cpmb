@@ -16,6 +16,20 @@ vi.mock("next/image", () => ({
   },
 }));
 
+vi.mock("next/navigation", () => ({
+  notFound: vi.fn(() => {
+    throw new Error("NEXT_NOT_FOUND");
+  }),
+}));
+
+// Mock SVG icon modules used as React components in tests
+vi.mock("@/assets/icons/calendar.svg", () => ({
+  default: (props: any) => React.createElement("svg", { ...props }),
+}));
+vi.mock("@/assets/icons/location.svg", () => ({
+  default: (props: any) => React.createElement("svg", { ...props }),
+}));
+
 // Global test setup
 Object.defineProperty(window, "matchMedia", {
   writable: true,

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CARROUSEL_IMAGES as images } from "@/assets/contents/carrousel";
 
@@ -12,6 +12,8 @@ interface CarrouselProps {
 const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoplay);
+  const intervalRef = useRef<number | null>(null);
+  const startTimeoutRef = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -29,18 +31,48 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     setIsPlaying((prev) => !prev);
   }, []);
 
+  // Start the autoplay interval
+  const startAutoplay = useCallback(() => {
+    if (intervalRef.current !== null) return; // already running
+    intervalRef.current = window.setInterval(nextSlide, 6000);
+  }, [nextSlide]);
+
+  // Clear all timers (interval + idle + timeout)
+  const stopAutoplay = useCallback(() => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    // Clear a pending timeout fallback if any
+    if (startTimeoutRef.current !== null) {
+      clearTimeout(startTimeoutRef.current);
+      startTimeoutRef.current = null;
+    }
+  }, []);
+
+  // Idle-ish autoplay scheduling (defer start slightly off the critical path)
+  useEffect(() => {
+    // Respect reduced motion preferences and current play state
+    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Always clear existing timers when dependencies change
+    stopAutoplay();
+    if (!isPlaying || reduce) return;
+
+    // Defer a bit to keep it off the critical path
+    startTimeoutRef.current = window.setTimeout(() => {
+      startAutoplay();
+      startTimeoutRef.current = null;
+    }, 1500);
+
+    return () => {
+      stopAutoplay();
+    };
+  }, [isPlaying, startAutoplay, stopAutoplay]);
+
+  // Ensure we mirror prop changes for autoplay toggling
   useEffect(() => {
     setIsPlaying(autoplay);
   }, [autoplay]);
-
-  // Auto-play functionality
-  useEffect(() => {
-    // Avoid autoplay for users who prefer reduced motion.
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!isPlaying || reduce) return;
-    const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
-  }, [isPlaying, nextSlide]);
 
   return (
     <section
@@ -61,9 +93,10 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
               src={image.src}
               alt={image.alt}
               fill
-              sizes="(min-width: 1024px) 100vw, 100vw"
+              sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 768px) 768px, (min-width: 640px) 640px, 100vw"
               className="object-cover"
               priority={index === 0}
+              fetchPriority={index === 0 ? "high" : "low"}
             />
           </div>
         ))}
