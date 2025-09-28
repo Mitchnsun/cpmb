@@ -70,6 +70,13 @@ const HeaderMenu = () => {
             Presse
           </Link>
           <Link
+            href="/contact"
+            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
+            onClick={() => setIsDrawerOpen(false)}
+          >
+            Contact
+          </Link>
+          <Link
             href="/mentions-legales"
             className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
             onClick={() => setIsDrawerOpen(false)}

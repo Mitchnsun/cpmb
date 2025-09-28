@@ -31,6 +31,11 @@ const Header = () => (
               Presse
             </Link>
           </li>
+          <li>
+            <Link href="/contact" className="font-medium transition-colors hover:text-sky-700">
+              Contact
+            </Link>
+          </li>
         </ul>
       </nav>
 
