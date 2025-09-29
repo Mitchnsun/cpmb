@@ -1,6 +1,31 @@
+import type { Metadata } from "next";
+
 import concerts from "@/assets/contents/concerts.json";
 import Concert from "@/components/Concert";
 import Heading from "@/components/Heading";
+
+export const metadata: Metadata = {
+  title: "Nos concerts - Chœur des Pays du Mont-Blanc",
+  description:
+    "Découvrez tous les concerts du Chœur des Pays du Mont-Blanc : prochains concerts à venir et concerts passés. Musique classique et chant choral en Haute-Savoie.",
+  keywords: [
+    "concerts",
+    "chœur",
+    "mont-blanc",
+    "haute-savoie",
+    "musique classique",
+    "chant choral",
+    "ensemble vocal",
+    "choristes",
+    "benoît dubu",
+    "spectacles",
+    "événements",
+    "gaillard",
+    "annecy",
+    "récitals",
+    "programmation",
+  ],
+};
 
 export default function NosConcerts() {
   const now = Date.now();

@@ -23,10 +23,10 @@ const HeaderMenu = () => {
       <DrawerTrigger asChild>
         <button
           type="button"
-          className="flex items-center justify-center rounded-md p-1 hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
+          className="flex items-center justify-center rounded-md p-1 hover:bg-sky-100 focus:ring-2 focus:ring-sky-100 focus:outline-none"
           aria-label="Ouvrir le menu"
         >
-          <MenuIcon className="h-6 w-6 stroke-gray-700" />
+          <MenuIcon className="h-6 w-6 stroke-gray-100 hover:stroke-gray-700" />
         </button>
       </DrawerTrigger>
 

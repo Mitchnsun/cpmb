@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "cpmb",
   "version": "0.1.0",
   "private": true,
@@ -70,5 +71,5 @@
     "vite": "^7.1.5",
     "vitest": "^3.2.4"
   },
-  "packageManager": "yarn@4.9.4"
+  "packageManager": "yarn@4.10.3"
 }

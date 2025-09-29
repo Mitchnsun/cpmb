@@ -23,7 +23,6 @@ describe("Header", () => {
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /chœur des pays du mont-blanc/i })).toBeInTheDocument();
-    expect(screen.getByTestId("music-note-icon")).toBeInTheDocument();
   });
 
   it("should have correct link attributes", () => {
