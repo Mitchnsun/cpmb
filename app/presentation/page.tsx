@@ -34,11 +34,12 @@ export default function Presentation() {
       >
         <Image
           src="/carrousel/CPMB2.jpg"
-          alt="Description"
+          alt="Le Chœur des Pays du Mont-Blanc en représentation"
           priority
           fill
-          sizes="100vw"
+          sizes="(max-width: 1536px) 100vw, 1536px"
           className="object-cover 2xl:rounded-md"
+          fetchPriority="high"
         />
         <Heading
           hLevel={1}
@@ -80,7 +81,7 @@ export default function Presentation() {
             <a
               href="https://www.gaillard.fr/espace-louis-simon/"
               aria-label="Visitez le site de l'Espace Louis-Simon - nouvelle fenêtre"
-              className="text-sky-600 hover:underline"
+              className="text-sky-700 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
             >

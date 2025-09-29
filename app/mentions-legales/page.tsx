@@ -43,7 +43,7 @@ export default function Mentions() {
           Vous disposez d&apos;un droit d&apos;accès, de rectification, d&apos;effacement, de portabilité, de limitation
           du traitement et d&apos;opposition concernant vos données personnelles. Pour exercer ces droits,
           contactez-nous à l&apos;adresse :{" "}
-          <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-600 hover:underline">
+          <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-700 hover:underline">
             bureau@choeurdespaysdumontblanc.fr
           </a>
         </p>
@@ -53,7 +53,7 @@ export default function Mentions() {
         </Heading>
         <p>
           Pour toute question relative à la protection de vos données personnelles, vous pouvez nous contacter à :{" "}
-          <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-600 hover:underline">
+          <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-700 hover:underline">
             bureau@choeurdespaysdumontblanc.fr
           </a>
         </p>

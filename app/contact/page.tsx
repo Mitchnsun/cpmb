@@ -25,7 +25,7 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold text-gray-800">Adresse e-mail</h3>
                   <p className="mt-1">
-                    <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-600 hover:underline">
+                    <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-700 hover:underline">
                       bureau@choeurdespaysdumontblanc.fr
                     </a>
                   </p>
