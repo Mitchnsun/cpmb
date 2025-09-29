@@ -37,7 +37,7 @@ export default defineConfig({
       include: ["components/**/*.{ts,tsx}", "utils/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
       provider: "v8",
-      thresholds: { lines: 90, functions: 70, branches: 75, statements: 90 },
+      thresholds: { lines: 90, functions: 75, branches: 90, statements: 90 },
     },
     // Use the test-specific TypeScript config
     typecheck: {

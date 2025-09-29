@@ -8,18 +8,6 @@ vi.mock("@/components/ContactForm", () => ({
   default: () => <div data-testid="contact-form">Mocked Contact Form</div>,
 }));
 
-// Mock the Heading component
-vi.mock("@/components/Heading", () => ({
-  default: ({ children, hLevel, variant, className }: any) => {
-    const Tag = `h${hLevel || 1}` as keyof JSX.IntrinsicElements;
-    return (
-      <Tag className={className} data-variant={variant}>
-        {children}
-      </Tag>
-    );
-  },
-}));
-
 describe("ContactPage", () => {
   it("should render the contact page with proper structure", () => {
     render(<ContactPage />);

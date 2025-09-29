@@ -138,6 +138,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link href="/contact" className="underline-offset-2 hover:text-white focus-visible:underline">
+                  Contact
+                </Link>
+              </li>
+              <li>
                 <Link href="/mentions-legales" className="underline-offset-2 hover:text-white focus-visible:underline">
                   Mentions légales
                 </Link>
