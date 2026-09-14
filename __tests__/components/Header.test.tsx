@@ -33,21 +33,28 @@ describe("Header", () => {
     expect(within(logoLink).getByRole("img")).toHaveAttribute("alt", "Chœur des Pays du Mont-Blanc");
   });
 
-  it("should render the three main navigation links", () => {
+  it("should render the four main navigation links", () => {
     render(<Header />);
 
     const nav = screen.getByRole("navigation", { name: /navigation principale/i });
     const links = within(nav).getAllByRole("link");
 
-    expect(links.map((link) => link.textContent)).toEqual(["Accueil", "Nos concerts", "Contact"]);
-    expect(links.map((link) => link.getAttribute("href"))).toEqual(["/", "/nos-concerts", "/contact"]);
+    expect(links.map((link) => link.textContent)).toEqual(["Présentation", "Nos concerts", "Presse", "Contact"]);
+    expect(links.map((link) => link.getAttribute("href"))).toEqual([
+      "/presentation",
+      "/nos-concerts",
+      "/presse",
+      "/contact",
+    ]);
   });
 
   it.each([
-    ["/", "Accueil"],
+    ["/presentation", "Présentation"],
     ["/nos-concerts", "Nos concerts"],
+    ["/presse", "Presse"],
     ["/contact", "Contact"],
     ["/nos-concerts/concert-de-noel-22-decembre-2024-gaillard", "Nos concerts"],
+    ["/presentation/benoit-dubu", "Présentation"],
   ])("should mark the current page as active on %s", (pathname, expectedLabel) => {
     mockPathname(pathname);
     render(<Header />);
@@ -96,9 +103,11 @@ describe("Header", () => {
     expect(menuButton).toHaveAttribute("aria-expanded", "true");
 
     const dialog = screen.getByRole("dialog");
-    expect(within(dialog).getByRole("link", { name: "Accueil" })).toBeInTheDocument();
-    expect(within(dialog).getByRole("link", { name: "Nos concerts" })).toBeInTheDocument();
-    expect(within(dialog).getByRole("link", { name: "Contact" })).toBeInTheDocument();
+    expect(
+      within(dialog)
+        .getAllByRole("link")
+        .map((link) => link.textContent)
+    ).toEqual(["Présentation", "Nos concerts", "Presse", "Contact"]);
 
     const closeButton = screen.getByRole("button", { name: /fermer le menu/i });
     expect(screen.getByTestId("close-icon")).toBeInTheDocument();

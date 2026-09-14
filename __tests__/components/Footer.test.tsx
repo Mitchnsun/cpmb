@@ -22,10 +22,19 @@ describe("Footer", () => {
     const sitemap = screen.getByRole("navigation", { name: "Plan du site" });
     const links = within(sitemap).getAllByRole("link");
 
-    expect(links.map((link) => link.textContent)).toEqual(["Accueil", "Nos concerts", "Contact", "Mentions légales"]);
+    expect(links.map((link) => link.textContent)).toEqual([
+      "Accueil",
+      "Présentation",
+      "Nos concerts",
+      "Presse",
+      "Contact",
+      "Mentions légales",
+    ]);
     expect(links.map((link) => link.getAttribute("href"))).toEqual([
       "/",
+      "/presentation",
       "/nos-concerts",
+      "/presse",
       "/contact",
       "/mentions-legales",
     ]);

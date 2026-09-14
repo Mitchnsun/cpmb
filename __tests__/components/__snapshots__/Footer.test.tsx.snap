@@ -42,9 +42,21 @@ exports[`Footer > should render the footer element 1`] = `
           </a>
           <a
             class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/presentation"
+          >
+            Présentation
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
             href="/nos-concerts"
           >
             Nos concerts
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/presse"
+          >
+            Presse
           </a>
           <a
             class="text-text-on-dark hover:text-teal-light no-underline"
