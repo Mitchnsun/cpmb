@@ -53,14 +53,11 @@ describe("ArtistArticle", () => {
 
     const paragraphs = screen.getAllByText(/paragraphe/);
 
-    // Vérifie que tous les paragraphes sauf le dernier ont la classe mb-2
-    paragraphs.forEach((paragraph, index) => {
-      if (index < paragraphs.length - 1) {
-        expect(paragraph).toHaveClass("mb-2");
-      } else {
-        expect(paragraph).not.toHaveClass("mb-2");
-      }
+    // Tous les paragraphes sauf le dernier portent la classe mb-2
+    paragraphs.slice(0, -1).forEach((paragraph) => {
+      expect(paragraph).toHaveClass("mb-2");
     });
+    expect(paragraphs.at(-1)).not.toHaveClass("mb-2");
   });
 
   it("should render with single paragraph", () => {

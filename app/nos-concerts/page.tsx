@@ -1,23 +1,17 @@
 import concerts from "@/assets/contents/concerts.json";
 import Concert from "@/components/Concert";
 import Heading from "@/components/Heading";
+import { splitConcertsByDate } from "@/utils/concerts";
 
 export default function NosConcerts() {
-  const now = Date.now();
-
-  const parsed = concerts.map((c) => {
-    const times = c.date.map((d) => new Date(d).getTime()).filter((t) => Number.isFinite(t));
-    const nextUpcoming = times.filter((t) => t >= now).sort((a, b) => a - b)[0];
-    const minTime = Math.min(...times);
-    const maxTime = Math.max(...times);
-    return { data: c, times, minTime, maxTime, nextUpcoming } as const;
-  });
-
-  const upcoming = parsed
-    .filter((c) => c.times.some((t) => t >= now))
-    .sort((a, b) => (a.nextUpcoming ?? Infinity) - (b.nextUpcoming ?? Infinity));
-
-  const past = parsed.filter((c) => c.times.every((t) => t < now)).sort((a, b) => b.maxTime - a.maxTime);
+  // La page est prérendue statiquement : la date de référence est celle du
+  // build, pas celle de la visite. Un concert ne bascule donc dans « passés »
+  // qu'au déploiement suivant. Comportement inchangé depuis toujours ; la
+  // reprise de l'agenda (CPMB-11, M3) tranchera entre rendu dynamique et
+  // revalidation. La règle est désactivée ici seulement, en connaissance de
+  // cause — `Date.now()` est effectivement impur.
+  // eslint-disable-next-line react-hooks/purity
+  const { upcoming, past } = splitConcertsByDate(concerts, Date.now());
 
   return (
     <section className="container mx-auto mt-2 p-4">
@@ -27,7 +21,7 @@ export default function NosConcerts() {
         </Heading>
         <ul className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {upcoming.length > 0 ? (
-            upcoming.map(({ data }) => (
+            upcoming.map((data) => (
               <li key={data.slug}>
                 <Concert {...data} />
               </li>
@@ -42,7 +36,7 @@ export default function NosConcerts() {
           Nos concerts passés
         </Heading>
         <ul className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {past.map(({ data }) => (
+          {past.map((data) => (
             <li key={data.slug}>
               <Concert {...data} />
             </li>

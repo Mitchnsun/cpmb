@@ -19,9 +19,7 @@ const headingVariants = cva("font-bold tracking-tight", {
 });
 
 interface HeadingProps
-  extends PropsWithChildren,
-    VariantProps<typeof headingVariants>,
-    HTMLAttributes<HTMLHeadingElement> {
+  extends PropsWithChildren, VariantProps<typeof headingVariants>, HTMLAttributes<HTMLHeadingElement> {
   hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 

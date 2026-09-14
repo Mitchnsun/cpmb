@@ -1,33 +1,28 @@
 import js from "@eslint/js";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import { FlatCompat } from "@eslint/eslintrc";
-import importPlugin from "eslint-plugin-import";
-import jsxA11y from "eslint-plugin-jsx-a11y";
+import vitest from "@vitest/eslint-plugin";
+import next from "eslint-config-next/core-web-vitals";
+import prettierConfig from "eslint-config-prettier";
 import prettier from "eslint-plugin-prettier";
 import security from "eslint-plugin-security";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
-import vitest from "@vitest/eslint-plugin";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
+/**
+ * Flat config native.
+ *
+ * `eslint-config-next` v16 exporte directement des tableaux de flat config : on
+ * étale `core-web-vitals` tel quel — c'est l'équivalent de l'ancien
+ * `next/core-web-vitals` chargé jusqu'ici via `FlatCompat`, désormais inutile.
+ *
+ * Ce paquet fournit lui-même les plugins `react`, `react-hooks`, `import`,
+ * `jsx-a11y`, `@next/next` et `@typescript-eslint`, ainsi que le parseur
+ * TypeScript. Ne pas les réenregistrer ici : ESLint refuse qu'un même plugin
+ * soit défini deux fois, et c'est cette double définition — via des copies
+ * résolues différemment — qui faisait planter le lint au build sur Vercel.
+ */
 const config = [
-  js.configs.recommended,
-  ...compat.extends("next/core-web-vitals"),
-  ...compat.config({
-    extends: ["prettier"],
-  }),
   {
     ignores: [
       "node_modules/**",
@@ -42,21 +37,20 @@ const config = [
       ".yarn/**",
     ],
   },
+  js.configs.recommended,
+  ...next,
+  prettierConfig,
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
-      "@typescript-eslint": typescriptEslint,
       prettier: prettier,
-      import: importPlugin,
       unicorn: unicorn,
       "unused-imports": unusedImports,
       "simple-import-sort": simpleImportSort,
       sonarjs: sonarjs,
       security: security,
-      "jsx-a11y": jsxA11y,
     },
     languageOptions: {
-      parser: tsParser,
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
@@ -74,14 +68,11 @@ const config = [
       },
     },
     rules: {
-      // Existing rules
-      "@typescript-eslint/no-unused-vars": "error",
-      "@typescript-eslint/no-explicit-any": "warn",
       "prefer-const": "error",
       "no-var": "error",
       "no-undef": "off", // TypeScript handles this
+      "no-unused-vars": "off", // remplacée par @typescript-eslint/no-unused-vars
 
-      // New rules from requirement
       "prettier/prettier": "error",
       "unused-imports/no-unused-imports": "error",
       "simple-import-sort/imports": "error",
@@ -92,6 +83,15 @@ const config = [
 
       "sonarjs/cognitive-complexity": ["error", 15],
       "security/detect-object-injection": "off",
+    },
+  },
+  {
+    // Le plugin `@typescript-eslint` n'est fourni par `next/typescript` que sur
+    // les fichiers TypeScript : ses règles ne peuvent être posées qu'ici.
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
   // Test files configuration
@@ -115,11 +115,16 @@ const config = [
     },
     rules: {
       ...vitest.configs.recommended.rules,
-      "@typescript-eslint/no-explicit-any": "off", // Allow any in test mocks
       "sonarjs/no-duplicate-string": "off", // Test descriptions often repeat strings
       "vitest/no-focused-tests": "error",
       "vitest/no-disabled-tests": "warn",
       "vitest/consistent-test-it": "warn",
+    },
+  },
+  {
+    files: ["**/*.{test,spec}.{ts,tsx}", "__tests__/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // Allow any in test mocks
     },
   },
 ];
