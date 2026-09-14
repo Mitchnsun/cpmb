@@ -22,6 +22,8 @@ vi.mock("next/navigation", () => ({
   }),
   // Defaults to the home page; each test can override the value.
   usePathname: vi.fn(() => "/"),
+  // No query string by default; each test can override the value.
+  useSearchParams: vi.fn(() => new URLSearchParams()),
 }));
 
 // Mock SVG icon modules used as React components in tests

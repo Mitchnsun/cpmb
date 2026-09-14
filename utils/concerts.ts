@@ -1,6 +1,7 @@
 import type concerts from "@/assets/contents/concerts.json";
 
-type Concert = (typeof concerts)[number];
+/** Derived from the JSON: widening the data widens the type. */
+export type Concert = (typeof concerts)[number];
 
 export interface SplitConcerts {
   upcoming: Concert[];
@@ -38,3 +39,16 @@ export const splitConcertsByDate = (list: readonly Concert[], now: number): Spli
       .map((item) => item.concert),
   };
 };
+
+/**
+ * Earliest date of a concert that hasn't passed yet, as its original ISO
+ * string, or `undefined` if every date is behind us. The home hero uses it
+ * so a past date can never surface in the "next concert" card.
+ */
+export const nextConcertDate = (concert: Concert, now: number): string | undefined =>
+  concert.date
+    .filter((date) => {
+      const time = new Date(date).getTime();
+      return Number.isFinite(time) && time >= now;
+    })
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())[0];

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useSearchParams } from "next/navigation";
 import { vi } from "vitest";
 
 import ContactForm from "@/components/ContactForm";
@@ -188,5 +189,29 @@ describe("ContactForm", () => {
     const calledUrl = mockLocationHref.mock.calls[0][0];
     expect(calledUrl).toContain("Jean-Luc%20%26%20Marie");
     expect(calledUrl).toContain("caract%C3%A8res");
+  });
+});
+
+describe("ContactForm subject preselection", () => {
+  it("should fill the subject in from the ?objet= parameter", () => {
+    vi.mocked(useSearchParams).mockReturnValueOnce(new URLSearchParams("objet=rejoindre") as never);
+
+    render(<ContactForm />);
+
+    expect(screen.getByLabelText(/Objet/)).toHaveValue("Rejoindre le chœur");
+  });
+
+  it("should leave the subject empty for an unknown parameter", () => {
+    vi.mocked(useSearchParams).mockReturnValueOnce(new URLSearchParams("objet=inconnu") as never);
+
+    render(<ContactForm />);
+
+    expect(screen.getByLabelText(/Objet/)).toHaveValue("");
+  });
+
+  it("should leave the subject empty when there is no parameter at all", () => {
+    render(<ContactForm />);
+
+    expect(screen.getByLabelText(/Objet/)).toHaveValue("");
   });
 });

@@ -4,11 +4,12 @@ import Link from "next/link";
 import artists from "@/assets/contents/artists.json";
 import { LOGO, PARTNER_LOGOS } from "@/assets/contents/medias";
 import { SITEMAP_LINKS } from "@/assets/contents/navigation";
+import Overline from "@/components/Overline";
 
 const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
 
-/** Column title: mono 12px, uppercase, light copper. */
-const columnTitleClassName = "font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase";
+/** Column title: the charter overline, light copper, tracking tightened to 0.14em. */
+const columnTitleClassName = "text-copper-light mb-3.5 tracking-[0.14em]";
 
 /** Column link: text on dark background, light teal on hover. */
 const columnLinkClassName = "text-text-on-dark hover:text-teal-light no-underline";
@@ -36,9 +37,9 @@ const Footer = () => {
         </div>
 
         <nav aria-labelledby="footer-sitemap">
-          <p id="footer-sitemap" className={columnTitleClassName}>
+          <Overline id="footer-sitemap" className={columnTitleClassName}>
             Plan du site
-          </p>
+          </Overline>
           <div className="grid gap-2.5 text-lg">
             {SITEMAP_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} className={columnLinkClassName}>
@@ -49,7 +50,7 @@ const Footer = () => {
         </nav>
 
         <div>
-          <p className={columnTitleClassName}>Contact</p>
+          <Overline className={columnTitleClassName}>Contact</Overline>
           <p className="mb-2.5 text-lg">
             <a
               href={`mailto:${CONTACT_EMAIL}`}
@@ -62,7 +63,7 @@ const Footer = () => {
         </div>
 
         <div>
-          <p className={columnTitleClassName}>Partenaires</p>
+          <Overline className={columnTitleClassName}>Partenaires</Overline>
           <div className="text-text-on-dark grid gap-2.5 text-lg">
             {PARTNER_LOGOS.map(({ name }) => (
               <span key={name}>{name}</span>
@@ -71,9 +72,9 @@ const Footer = () => {
         </div>
 
         <nav aria-labelledby="footer-artists">
-          <p id="footer-artists" className={columnTitleClassName}>
+          <Overline id="footer-artists" className={columnTitleClassName}>
             Artistes
-          </p>
+          </Overline>
           <div className="grid gap-2.5 text-lg">
             {artistKeys.map((artistKey) => (
               <Link key={artistKey} href={`/presentation/${artistKey}`} className={columnLinkClassName}>

@@ -171,6 +171,26 @@ none !important } }` arrête toutes les animations du site.
 Aucune animation n'est déclenchée au défilement : seuls l'égaliseur de
 l'en-tête (en boucle) et le tracé + `fadeUp` du héros s'animent, au chargement.
 
+## Composants partagés
+
+Deux primitives portent les motifs que la charte répète de page en page. On
+les réutilise plutôt que de recomposer les classes à la main : c'est là que
+vivent les états de survol qui neutralisent les couleurs de lien globales de
+`globals.css`.
+
+| Composant    | Rôle                                                      | Variantes                                  |
+| ------------ | --------------------------------------------------------- | ------------------------------------------ |
+| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px) | `onLight`, `onDark`, `onTeal`, `outline`   |
+| `Overline`   | Sur-titre mono 12 px majuscules                           | Couleur et approche passées en `className` |
+
+Les tons de `ButtonLink` disent sur quoi le bouton est posé, pas sa couleur :
+`onLight` sur le fond de page, `onDark` sur le noir de scène, `onTeal` sur le
+bandeau « Nous rejoindre », `outline` pour une action secondaire.
+
+`Overline` porte `tracking-[0.16em]` par défaut ; le pied de page et le
+bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le
+remplacement, pas l'empilement.
+
 ## Bibliothèque de médias
 
 `assets/contents/medias.ts` est le point d'entrée unique des visuels

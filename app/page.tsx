@@ -1,77 +1,41 @@
-import Image from "next/image";
+import concerts from "@/assets/contents/concerts.json";
+import ChoirBanner from "@/components/ChoirBanner";
+import HomeDates from "@/components/HomeDates";
+import HomeHero from "@/components/HomeHero";
+import JoinBanner from "@/components/JoinBanner";
+import PartnersBanner from "@/components/PartnersBanner";
+import { splitConcertsByDate } from "@/utils/concerts";
 
-import MailIcon from "@/assets/icons/mail.svg";
-import Carrousel from "@/components/Carrousel";
-import Heading from "@/components/Heading";
+/** Number of dates listed on the home page, whichever state it is in. */
+const HOME_DATES_COUNT = 3;
 
 /**
- * Home page (App Router, server component).
- * Renders: top carousel, About section, and a recruitment card with accessible labeling.
+ * Home page (App Router, server component) — milestone M2.
+ *
+ * Sections, in order: hero (CPMB-06), "Nous rejoindre" (CPMB-07), dates
+ * (CPMB-08), "Le chœur" (CPMB-09), partners (CPMB-10).
+ *
+ * A single flag drives the two states of the hero card and of the list:
+ * `announced` is true as soon as one concert still lies ahead. It is
+ * computed from the data, never entered by hand.
  */
 export default function Home() {
+  // The page is statically prerendered, so the reference date is the build
+  // date, not the visit date — a concert only moves to "past" on the next
+  // deploy. Same knowing trade-off as `/nos-concerts`; CPMB-11 will settle
+  // it for both pages.
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const { upcoming, past } = splitConcertsByDate(concerts, now);
+  const announced = upcoming.length > 0;
+
   return (
-    <div className="p-4">
-      <div className="container mx-auto">
-        <Carrousel />
-      </div>
-      <section className="py-4 text-zinc-900 lg:p-4">
-        <article className="container mx-auto">
-          <Heading className="mb-4">Le CPMB a le plaisir de vous présenter son nouveau Chef de Chœur !</Heading>
-          <div className="flex flex-col items-start gap-8 text-justify sm:flex-row lg:items-center">
-            <Image
-              src="/media/benoit_dubu.jpg"
-              alt="Portrait de Benoît Dubu"
-              width={180}
-              height={325}
-              priority
-              sizes="(min-width: 640px) 180px, 100vw"
-              className="mx-auto h-80 w-full max-w-3xs grow-0 rounded-md object-cover lg:m-0 lg:h-auto"
-            />
-            <div>
-              <p>Le CPMB est dirigé par Benoît Dubu, Chef de Chœur professionnel depuis le mois de janvier 2024.</p>
-              <p className="pt-1">
-                Le programme de la saison 2024/2025 est un programme &ldquo; autour des <i>Gloria</i> de Vivaldi et de
-                Jenkins &rdquo;.
-              </p>
-              <p className="pt-1">De nombreux concerts sont déjà programmés :</p>
-              <ul className="list-disc pt-1 pl-5">
-                <li>14 juin 2025 : à l&apos;église de Boëge à 20h30.</li>
-                <li>15 juin 2025 : à l&apos;église de Saint Gervais à 18h.</li>
-              </ul>
-              <p className="pt-1">Pour l&apos;occasion, nous serons accompagnés par deux talentueuses solistes :</p>
-              <ul className="list-disc pt-1 pl-5">
-                <li>Helena Duckert : soprano.</li>
-                <li>Chloé Roussel : mezzo-soprano.</li>
-              </ul>
-              <p className="pt-1">Le 12 décembre 2025 : concert de Noël à l&apos;église de Vétraz-Monthoux à 18h.</p>
-              <p className="pt-1">De la très belle musique pour cette nouvelle saison 2024/2025 !</p>
-            </div>
-          </div>
-        </article>
-      </section>
-      <section className="bg-sky-50 py-4" aria-labelledby="recrutement-heading">
-        <div className="container mx-auto py-10">
-          <Heading hLevel={2} variant={1} id="recrutement-heading" className="mb-4">
-            Le CPMB recrute !
-          </Heading>
-          <div className="max-w-xl rounded-md bg-white p-4 shadow-md">
-            <Heading hLevel={3} variant={2} className="uppercase">
-              Nous avons besoin de vos voix !
-            </Heading>
-            <p className="pt-3">
-              Nous recrutons des choristes ayant une expérience chorale et /ou une capacité en déchiffrage.
-            </p>
-            <p>Celles et ceux qui souhaitent venir nous rejoindre peuvent demander des informations par courriel à</p>
-            <p className="flex items-center gap-2 pt-2 md:pl-4">
-              <MailIcon className="h-5 w-5 shrink-0" aria-hidden="true" />
-              <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="break-words text-sky-700 hover:underline">
-                bureau@choeurdespaysdumontblanc.fr
-              </a>
-            </p>
-            <p className="pt-3">N&apos;hésitez pas !</p>
-          </div>
-        </div>
-      </section>
-    </div>
+    <>
+      <HomeHero nextConcert={upcoming[0]} now={now} />
+      <JoinBanner />
+      <HomeDates items={(announced ? upcoming : past).slice(0, HOME_DATES_COUNT)} upcoming={announced} />
+      <ChoirBanner />
+      <PartnersBanner />
+    </>
   );
 }

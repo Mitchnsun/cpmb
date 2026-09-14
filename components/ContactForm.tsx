@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import MailIcon from "@/assets/icons/mail.svg";
@@ -18,11 +19,27 @@ interface FormErrors {
   message?: string;
 }
 
+/**
+ * Subjects reachable from a link: `/contact?objet=rejoindre` arrives from
+ * the home page's "Nous rejoindre" banner with the field already filled in.
+ */
+const SUBJECT_BY_PARAM: Record<string, string> = {
+  rejoindre: "Rejoindre le chœur",
+  concerts: "Question sur les concerts",
+  invitation: "Inviter le chœur",
+};
+
 const ContactForm = () => {
+  // On a statically prerendered page, `useSearchParams` renders this subtree
+  // on the client down from the `<Suspense>` boundary of `app/contact`, so
+  // the preselected subject can safely seed the initial state.
+  const searchParams = useSearchParams();
+  const presetSubject = SUBJECT_BY_PARAM[searchParams.get("objet") ?? ""] ?? "";
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
-    subject: "",
+    subject: presetSubject,
     message: "",
   });
 
