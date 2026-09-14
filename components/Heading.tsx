@@ -8,9 +8,9 @@ const headingVariants = cva("font-bold tracking-tight", {
   variants: {
     variant: {
       0: "",
-      1: "text-h4 text-teal",
-      2: "font-body text-body text-stage-black",
-      3: "text-body",
+      1: "text-xl text-teal",
+      2: "font-body text-lg text-stage-black",
+      3: "text-lg",
     },
   },
   defaultVariants: {

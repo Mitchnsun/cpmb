@@ -17,7 +17,7 @@ exports[`Footer > should render the footer element 1`] = `
           width="160"
         />
         <p
-          class="text-text-on-dark text-label"
+          class="text-text-on-dark text-lg"
         >
           Partager la passion de la musique chorale au cœur des Alpes.
         </p>
@@ -26,13 +26,13 @@ exports[`Footer > should render the footer element 1`] = `
         aria-labelledby="footer-sitemap"
       >
         <p
-          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          class="font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase"
           id="footer-sitemap"
         >
           Plan du site
         </p>
         <div
-          class="text-label grid gap-2.5"
+          class="grid gap-2.5 text-lg"
         >
           <a
             class="text-text-on-dark hover:text-teal-light no-underline"
@@ -74,12 +74,12 @@ exports[`Footer > should render the footer element 1`] = `
       </nav>
       <div>
         <p
-          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          class="font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase"
         >
           Contact
         </p>
         <p
-          class="text-label mb-2.5"
+          class="mb-2.5 text-lg"
         >
           <a
             class="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
@@ -89,19 +89,19 @@ exports[`Footer > should render the footer element 1`] = `
           </a>
         </p>
         <p
-          class="text-text-on-dark text-label"
+          class="text-text-on-dark text-lg"
         >
           Espace Louis-Simon, Gaillard (74240)
         </p>
       </div>
       <div>
         <p
-          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          class="font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase"
         >
           Partenaires
         </p>
         <div
-          class="text-text-on-dark text-label grid gap-2.5"
+          class="text-text-on-dark grid gap-2.5 text-lg"
         >
           <span>
             Ville de Gaillard
@@ -118,13 +118,13 @@ exports[`Footer > should render the footer element 1`] = `
         aria-labelledby="footer-artists"
       >
         <p
-          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          class="font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase"
           id="footer-artists"
         >
           Artistes
         </p>
         <div
-          class="text-label grid gap-2.5"
+          class="grid gap-2.5 text-lg"
         >
           <a
             class="text-text-on-dark hover:text-teal-light no-underline"
@@ -151,7 +151,7 @@ exports[`Footer > should render the footer element 1`] = `
       class="border-stage-border max-w-site mx-auto border-t px-6 pt-5 pb-10"
     >
       <p
-        class="text-text-on-dark-muted text-legal"
+        class="text-text-on-dark-muted text-sm"
       >
         Chœur des Pays du Mont-Blanc — association créée en 2005 à Gaillard, Haute-Savoie.
       </p>

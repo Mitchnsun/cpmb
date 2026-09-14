@@ -6,12 +6,15 @@
    -----------------------------------------------------------------
    Single source for the site's graphic values. No colour, font
    family, title size or radius should be rewritten elsewhere:
-   everything is consumed via the Tailwind classes generated here.
+   everything is consumed via the Tailwind classes generated here —
+   native Tailwind classes where they already match, tokens declared
+   below only where Tailwind has no equivalent. Before adding a new
+   token, read the rule in CLAUDE.md ("Design system"). Full
+   reference and the legacy-token lookup table: docs/CHARTE.md.
 
      --color-teal        -> bg-teal / text-teal / border-teal …
-     --text-h2           -> text-h2 (size + line-height)
      --font-display      -> font-display
-     --radius-button     -> rounded-button
+     --text-h1           -> text-h1 (size + line-height)
      --container-site    -> max-w-site
      --breakpoint-menu   -> menu: / max-menu: variants
      --animate-fade-up   -> animate-fade-up
@@ -35,15 +38,14 @@
   --color-copper-light: #d9a066; /* overlines on dark background */
 
   /* --- Colours: text ------------------------------------------ */
-  --color-text-muted: #4a5560; /* secondary text on light background */
+  --color-muted: #4a5560; /* secondary text on light background */
   --color-text-on-dark: #e6e2d9; /* body text on dark background */
   --color-text-on-dark-muted: #8a94a0; /* footer legal line */
 
   /* --- shadcn/ui alias (drawer): no parallel palette --------- */
   --color-background: var(--color-bg);
   --color-foreground: var(--color-stage-black);
-  --color-muted: var(--color-border);
-  --color-muted-foreground: var(--color-text-muted);
+  --color-muted-foreground: var(--color-muted);
   --color-ring: var(--color-teal);
 
   /* --- Typography ------------------------------------------------ */
@@ -52,34 +54,29 @@
   --font-mono: var(--font-ibm-plex-mono), monospace;
 
   /* --- Title scale ------------------------------------------
-     The clamp()s carry the mobile size themselves: 34px at the
-     narrowest (390px), then a fluid ramp up to the max. */
-  --text-h1-hero: clamp(34px, 5vw, 56px); /* home h1 */
-  --text-h1-hero--line-height: 1.08;
-  --text-h1: clamp(34px, 4.5vw, 50px); /* inner-page h1 */
+     The clamp() carries the mobile size itself: 34px at the
+     narrowest (390px), then a fluid ramp up to the max (56px,
+     the home hero's bound — the tallest title on the site). */
+  --text-h1: clamp(34px, 5vw, 56px);
   --text-h1--line-height: 1.1;
-  --text-h2: 30px; /* section titles */
-  --text-h2--line-height: 1.2;
-  --text-h3: 24px; /* dates, quotes, seasons */
-  --text-h3--line-height: 1.25;
-  --text-h4: 20px; /* subheadings */
-  --text-h4--line-height: 1.3;
 
-  /* --- Text scale ------------------------------------------------- */
-  --text-body: 18px; /* body text */
-  --text-body--line-height: 1.6;
-  --text-label: 17px; /* links, buttons, labels */
-  --text-label--line-height: 1.6;
-  --text-legal: 15px; /* footer legal line */
-  --text-legal--line-height: 1.6;
-  --text-overline: 12px; /* uppercase mono overlines */
-  --text-overline--line-height: 1.4;
-  --text-overline--letter-spacing: 0.16em;
+  /* --- Tailwind scale tuned to the charter -------------------------
+     These override existing Tailwind text tokens instead of adding
+     new ones: no new name enters the namespace, so cn()'s
+     tailwind-merge extension needs no entry for them. See the
+     "Surcharges de l'échelle Tailwind" table in docs/CHARTE.md. */
+  --text-sm: 15px; /* footer legal line (Tailwind default is 14px) */
+  --text-sm--line-height: 1.6;
+  --text-xs--line-height: 1.4; /* uppercase mono overlines */
+  --text-lg--line-height: 1.6; /* body text, links, buttons, labels */
+  --text-xl--line-height: 1.3; /* subheadings */
+  --text-2xl--line-height: 1.25; /* dates, quotes, seasons */
+  --text-3xl--line-height: 1.2; /* section titles (matches Tailwind's default) */
 
   /* --- Radii ----------------------------------------------------- */
-  --radius-button: 8px;
-  --radius-field: 6px;
-  --radius-image: 4px;
+  /* No override needed: rounded-lg (8px), rounded-md (6px) and
+     rounded-sm (4px) already match the charter's button/field/image
+     radii — see docs/CHARTE.md. */
 
   /* --- Layout ----------------------------------------------------- */
   --container-site: 1536px;

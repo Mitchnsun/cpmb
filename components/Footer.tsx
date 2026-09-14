@@ -8,7 +8,7 @@ import { SITEMAP_LINKS } from "@/assets/contents/navigation";
 const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
 
 /** Column title: mono 12px, uppercase, light copper. */
-const columnTitleClassName = "font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase";
+const columnTitleClassName = "font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase";
 
 /** Column link: text on dark background, light teal on hover. */
 const columnLinkClassName = "text-text-on-dark hover:text-teal-light no-underline";
@@ -32,14 +32,14 @@ const Footer = () => {
             height={LOGO.height}
             className="mb-4 h-[58px] w-auto"
           />
-          <p className="text-text-on-dark text-label">Partager la passion de la musique chorale au cœur des Alpes.</p>
+          <p className="text-text-on-dark text-lg">Partager la passion de la musique chorale au cœur des Alpes.</p>
         </div>
 
         <nav aria-labelledby="footer-sitemap">
           <p id="footer-sitemap" className={columnTitleClassName}>
             Plan du site
           </p>
-          <div className="text-label grid gap-2.5">
+          <div className="grid gap-2.5 text-lg">
             {SITEMAP_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} className={columnLinkClassName}>
                 {label}
@@ -50,7 +50,7 @@ const Footer = () => {
 
         <div>
           <p className={columnTitleClassName}>Contact</p>
-          <p className="text-label mb-2.5">
+          <p className="mb-2.5 text-lg">
             <a
               href={`mailto:${CONTACT_EMAIL}`}
               className="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
@@ -58,12 +58,12 @@ const Footer = () => {
               {CONTACT_EMAIL}
             </a>
           </p>
-          <p className="text-text-on-dark text-label">Espace Louis-Simon, Gaillard (74240)</p>
+          <p className="text-text-on-dark text-lg">Espace Louis-Simon, Gaillard (74240)</p>
         </div>
 
         <div>
           <p className={columnTitleClassName}>Partenaires</p>
-          <div className="text-text-on-dark text-label grid gap-2.5">
+          <div className="text-text-on-dark grid gap-2.5 text-lg">
             {PARTNER_LOGOS.map(({ name }) => (
               <span key={name}>{name}</span>
             ))}
@@ -74,7 +74,7 @@ const Footer = () => {
           <p id="footer-artists" className={columnTitleClassName}>
             Artistes
           </p>
-          <div className="text-label grid gap-2.5">
+          <div className="grid gap-2.5 text-lg">
             {artistKeys.map((artistKey) => (
               <Link key={artistKey} href={`/presentation/${artistKey}`} className={columnLinkClassName}>
                 {artists[artistKey].name}
@@ -85,7 +85,7 @@ const Footer = () => {
       </div>
 
       <div className="border-stage-border max-w-site mx-auto border-t px-6 pt-5 pb-10">
-        <p className="text-text-on-dark-muted text-legal">
+        <p className="text-text-on-dark-muted text-sm">
           Chœur des Pays du Mont-Blanc — association créée en 2005 à Gaillard, Haute-Savoie.
         </p>
       </div>

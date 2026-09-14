@@ -12,16 +12,16 @@ Write code, comments, commit messages and docs in **English**. User-facing site 
 
 Node 24 (`.nvmrc`), Yarn 4.18 via `corepack enable`.
 
-| Command | Note |
-| --- | --- |
-| `yarn dev` / `yarn build` / `yarn start` | Turbopack by default |
-| `yarn lint` / `yarn lint:fix` | `next build` no longer lints since Next 16 — lint is its own gate |
-| `yarn format` / `yarn format:check` | Prettier + Tailwind class sort (no CI job runs `format:check`) |
-| `yarn type-check` | `tsc --noEmit` |
-| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter |
-| `yarn test:coverage` | coverage report (v8) |
-| `yarn test:snapshots` | `vitest run -u` — run after any `Footer` change |
-| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js` |
+| Command                                        | Note                                                              |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `yarn dev` / `yarn build` / `yarn start`       | Turbopack by default                                              |
+| `yarn lint` / `yarn lint:fix`                  | `next build` no longer lints since Next 16 — lint is its own gate |
+| `yarn format` / `yarn format:check`            | Prettier + Tailwind class sort (no CI job runs `format:check`)    |
+| `yarn type-check`                              | `tsc --noEmit`                                                    |
+| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter                                  |
+| `yarn test:coverage`                           | coverage report (v8)                                              |
+| `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                   |
+| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                               |
 
 Single test: `yarn vitest run __tests__/components/Header.test.tsx`
 By name: `yarn vitest run -t "should render the header"`
@@ -35,7 +35,7 @@ yarn lint && yarn type-check && yarn test:ci && yarn validate
 ## Architecture
 
 - Routes live in `app/`: `/`, `/presentation` + `/presentation/[artist]`, `/nos-concerts` + `/nos-concerts/[slug]`, `/presse` + `/presse/[slug]`, `/contact`, `/mentions-legales`, `not-found.tsx`. No middleware, no server actions, no `loading.tsx`/`error.tsx`.
-- **Content is local files, not a CMS.** `assets/contents/` is the single source: `concerts.json` (array), `articles.json` (array), `artists.json` (**object keyed by slug** — the key *is* the URL segment), plus typed modules `navigation.ts`, `medias.ts`, `carrousel.ts`. Pages import them directly and prerender.
+- **Content is local files, not a CMS.** `assets/contents/` is the single source: `concerts.json` (array), `articles.json` (array), `artists.json` (**object keyed by slug** — the key _is_ the URL segment), plus typed modules `navigation.ts`, `medias.ts`, `carrousel.ts`. Pages import them directly and prerender.
 - **Types are derived from the JSON, never hand-written**: e.g. `import type concerts from "@/assets/contents/concerts.json"` then `type Concert = (typeof concerts)[number]` (relies on `resolveJsonModule`). Widening the JSON widens the type — don't duplicate an interface.
 - Every dynamic route pairs `generateStaticParams` + `generateMetadata`; `params` is a **Promise** in Next 16 and must be awaited.
 - `components/` is flat PascalCase, one default export per file, no barrel; `components/ui/` holds shadcn (only `drawer.tsx` installed). `utils/` = `cn`, `splitConcertsByDate`, `formatFrenchDateTime`, `truncateAtWord`. Icons are local SVGs imported as components via `@svgr/webpack` (turbopack rule in `next.config.ts` + `types/svg.d.ts`) — **not** lucide, despite the dependency.
@@ -44,9 +44,10 @@ yarn lint && yarn type-check && yarn test:ci && yarn validate
 
 ## Design system
 
-All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 — **there is no `tailwind.config.js`**). Never hardcode a colour, size, radius or font in a component; use the generated classes (`bg-bg`, `text-h2`, `font-display`, `rounded-button`, `max-w-site`, `menu:`/`max-menu:`). Full reference: `docs/CHARTE.md`.
+All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 — **there is no `tailwind.config.js`**). Never hardcode a colour, size, radius or font in a component; use the generated classes (`bg-bg`, `text-3xl`, `font-display`, `rounded-lg`, `max-w-site`, `menu:`/`max-menu:`, `text-h1` for the one custom title size). Full reference: `docs/CHARTE.md`.
 
-- **Always compose classes through `cn()`** (`utils/classnames.ts`). `tailwind-merge` misreads the custom `text-h2`/`text-body` scale as text *colours* and drops it; the `extendTailwindMerge` fix lives only inside `cn`.
+- **Before adding a token to `@theme`, check Tailwind's own scale first** (`node_modules/tailwindcss/theme.css`). If the value already exists, use the native class. If only a detail differs (line-height, most often), override that Tailwind token in `@theme` instead of inventing a new name — it changes no component code and needs no `tailwind-merge` extension. Only declare a new custom token (and document it in `docs/CHARTE.md`) when nothing in Tailwind's scale is close. See "Surcharges de l'échelle Tailwind" and "Règle d'ajout d'un token" in `docs/CHARTE.md`.
+- **Always compose classes through `cn()`** (`utils/classnames.ts`). `tailwind-merge` misreads a custom `text-*` size as a text _colour_ and drops it; the `extendTailwindMerge` fix lives only inside `cn`, and today covers only `text-h1` — every other charter size overrides a native Tailwind size instead.
 - **Two palettes coexist mid-migration.** `Header`, `Footer`, `HeaderNav`, `HeaderMenu`, `Equalizer`, `Heading` already use charte tokens; the `app/` pages plus `Concert`, `Article`, `Carrousel`, `ContactForm` still use the legacy `sky-700`/`zinc`/`gray` palette and `container mx-auto`. This is expected mid-refonte, not a bug — **write new work with charte tokens**.
 - No media queries by design: `clamp()` carries the mobile→desktop title scale, grids use `grid-cols-[repeat(auto-fit,minmax(300px,1fr))]`.
 - `next/font` variables must stay on `<html>`, not `<body>` — `@theme` resolves them at `:root`, and moving them silently kills all typography.

@@ -50,8 +50,8 @@ const HeaderMenu = () => {
       >
         <DrawerHeader className="border-border max-w-site mx-auto flex w-full flex-row items-center justify-between border-b px-6 py-3.5">
           <div>
-            <DrawerTitle className="font-display text-h3 text-stage-black font-semibold">Menu</DrawerTitle>
-            <DrawerDescription className="text-text-muted text-label">Navigation du site</DrawerDescription>
+            <DrawerTitle className="font-display text-stage-black text-2xl font-semibold">Menu</DrawerTitle>
+            <DrawerDescription className="text-muted text-lg">Navigation du site</DrawerDescription>
           </div>
           <DrawerClose asChild>
             <button
@@ -76,8 +76,8 @@ const HeaderMenu = () => {
                 aria-current={isActive ? "page" : undefined}
                 onClick={() => setIsDrawerOpen(false)}
                 className={cn(
-                  "text-label hover:text-copper flex min-h-11 items-center border-b-2 py-2.5",
-                  isActive ? "border-teal text-stage-black" : "text-text-muted border-transparent"
+                  "hover:text-copper flex min-h-11 items-center border-b-2 py-2.5 text-lg",
+                  isActive ? "border-teal text-stage-black" : "text-muted border-transparent"
                 )}
               >
                 {label}

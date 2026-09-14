@@ -3,13 +3,16 @@ import { extendTailwindMerge } from "tailwind-merge";
 
 /**
  * `tailwind-merge` only knows the default scale: without this extension, it
- * would file our charter text sizes (`text-h2`, `text-body`…) under "text
- * colour" and drop them as soon as a colour is applied on the same element.
+ * would file our charter's one custom text size (`text-h1`) under "text
+ * colour" and drop it as soon as a colour is applied on the same element.
+ * Every other charter size now overrides a native Tailwind size (see
+ * app/globals.css) instead of introducing a new name, so it needs no entry
+ * here.
  */
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
-      "font-size": [{ text: ["h1-hero", "h1", "h2", "h3", "h4", "body", "label", "legal", "overline"] }],
+      "font-size": [{ text: ["h1"] }],
     },
   },
 });
