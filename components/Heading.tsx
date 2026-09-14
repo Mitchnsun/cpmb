@@ -3,12 +3,13 @@ import { HTMLAttributes, PropsWithChildren } from "react";
 
 import { cn } from "@/utils/classnames";
 
+/* Colours and sizes come from the design charter: no hardcoded values. */
 const headingVariants = cva("font-bold tracking-tight", {
   variants: {
     variant: {
       0: "",
-      1: "text-xl text-sky-700",
-      2: "font-noto text-lg text-gray-800",
+      1: "text-xl text-teal",
+      2: "font-body text-lg text-stage-black",
       3: "text-lg",
     },
   },
@@ -18,9 +19,7 @@ const headingVariants = cva("font-bold tracking-tight", {
 });
 
 interface HeadingProps
-  extends PropsWithChildren,
-    VariantProps<typeof headingVariants>,
-    HTMLAttributes<HTMLHeadingElement> {
+  extends PropsWithChildren, VariantProps<typeof headingVariants>, HTMLAttributes<HTMLHeadingElement> {
   hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 

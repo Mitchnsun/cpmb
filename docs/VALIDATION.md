@@ -210,5 +210,5 @@ When adding new concerts:
 ## 📚 Documentation associée
 
 - [Configuration du projet Next.js](../README.md)
-- [Guides de contribution](../.github/copilot-instructions.md)
+- [Guides de contribution](../CLAUDE.md)
 - [Script de validation](../scripts/validate-concerts.js)

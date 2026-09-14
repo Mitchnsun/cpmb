@@ -69,10 +69,14 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     };
   }, [isPlaying, startAutoplay, stopAutoplay]);
 
-  // Ensure we mirror prop changes for autoplay toggling
-  useEffect(() => {
+  // Mirror prop changes for autoplay toggling. Adjusting state during render
+  // rather than in an effect avoids a cascading re-render, per
+  // https://react.dev/learn/you-might-not-need-an-effect
+  const [previousAutoplay, setPreviousAutoplay] = useState(autoplay);
+  if (previousAutoplay !== autoplay) {
+    setPreviousAutoplay(autoplay);
     setIsPlaying(autoplay);
-  }, [autoplay]);
+  }
 
   return (
     <section

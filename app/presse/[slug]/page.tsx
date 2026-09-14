@@ -20,10 +20,8 @@ interface ArticleData {
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
 
-  // Rechercher l'article correspondant au slug
   const article = articles.find((article: ArticleData) => article.slug === slug);
 
-  // Si l'article n'est pas trouvé, rediriger vers la page 404
   if (!article) {
     notFound();
   }
@@ -35,14 +33,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   );
 }
 
-// Générer les paramètres statiques pour tous les articles
 export function generateStaticParams() {
   return articles.map((article: ArticleData) => ({
     slug: article.slug,
   }));
 }
 
-// Générer les métadonnées pour le SEO
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = articles.find((article: ArticleData) => article.slug === slug);

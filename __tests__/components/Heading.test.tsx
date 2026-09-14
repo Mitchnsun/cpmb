@@ -9,7 +9,7 @@ describe("Heading Component", () => {
     const title = screen.getByRole("heading", { level: 1 });
     expect(title).toBeInTheDocument();
     expect(title).toHaveTextContent("Test Title");
-    expect(title).toHaveClass("font-bold", "tracking-tight", "text-xl", "text-sky-700");
+    expect(title).toHaveClass("font-bold", "tracking-tight", "text-xl", "text-teal");
   });
 
   it("should render different heading levels", () => {
@@ -66,7 +66,7 @@ describe("Heading Component", () => {
       </Heading>
     );
     let heading = screen.getByRole("heading", { level: 2 });
-    expect(heading).toHaveClass("font-noto", "text-lg", "text-gray-800");
+    expect(heading).toHaveClass("font-body", "text-lg", "text-stage-black");
 
     rerender(
       <Heading variant={3} hLevel={3}>

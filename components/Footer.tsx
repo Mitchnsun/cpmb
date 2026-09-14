@@ -2,183 +2,91 @@ import Image from "next/image";
 import Link from "next/link";
 
 import artists from "@/assets/contents/artists.json";
-import Heading from "@/components/Heading";
+import { LOGO, PARTNER_LOGOS } from "@/assets/contents/medias";
+import { SITEMAP_LINKS } from "@/assets/contents/navigation";
 
+const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
+
+/** Column title: mono 12px, uppercase, light copper. */
+const columnTitleClassName = "font-mono text-xs text-copper-light mb-3.5 tracking-[0.14em] uppercase";
+
+/** Column link: text on dark background, light teal on hover. */
+const columnLinkClassName = "text-text-on-dark hover:text-teal-light no-underline";
+
+/**
+ * Footer on stage black.
+ * Columns lay themselves out via `auto-fit` and stack cleanly below
+ * 700px, no media query needed.
+ */
 const Footer = () => {
-  const artistNames = Object.keys(artists);
+  const artistKeys = Object.keys(artists) as (keyof typeof artists)[];
 
   return (
-    <footer className="font-noto">
-      <section className="container mx-auto flex items-center justify-around gap-6 py-4 text-center">
-        <a
-          href="https://www.veran-piano.com/"
-          aria-label="Visitez le site de Veran Piano - nouvelle fenêtre"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="basis-1/3"
-        >
+    <footer className="bg-stage-black">
+      <div className="max-w-site mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-10 px-6 pt-14 pb-8">
+        <div>
           <Image
-            src="/logo-veran-pianos.png"
-            alt="Logo Veran Piano"
-            width={200}
-            height={120}
-            sizes="200px"
-            className="m-auto h-auto"
+            src={LOGO.src}
+            alt={LOGO.alt}
+            width={LOGO.width}
+            height={LOGO.height}
+            className="mb-4 h-[58px] w-auto"
           />
-        </a>
-        <a
-          href="https://www.gaillard.fr/"
-          aria-label="Visitez le site de la Ville de Gaillard - nouvelle fenêtre"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="basis-1/3"
-        >
-          <Image
-            src="/logo-gaillard.png"
-            alt="Logo Ville de Gaillard"
-            width={200}
-            height={120}
-            sizes="200px"
-            className="m-auto h-auto"
-          />
-        </a>
-        <a
-          href="https://www.hautesavoie.fr/"
-          aria-label="Visitez le site du Département de la Haute-Savoie - nouvelle fenêtre"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="basis-1/3"
-        >
-          <Image
-            src="/haute-savoie.svg"
-            alt="Logo Haute-Savoie"
-            width={90}
-            height={55}
-            sizes="90px"
-            className="m-auto h-auto"
-          />
-        </a>
-      </section>
-      <div className="bg-gray-800 px-4">
-        <div className="container mx-auto flex flex-col items-start gap-4 py-4 lg:flex-row lg:gap-24">
-          <div>
-            <Image
-              src="/CPMB-logo-blanc.png"
-              alt="Logo Chœur des Pays du Mont-Blanc"
-              className="h-auto shrink-0"
-              sizes="160px"
-              width={160}
-              height={55}
-            />
-            <p className="mt-4 text-sm text-gray-300">Partager la passion de la musique chorale au cœur des Alpes.</p>
-          </div>
-          <section>
-            <Heading hLevel={4} variant={3} className="mb-2 text-white">
-              Nos Partenaires
-            </Heading>
-            <ul className="space-y-1 text-sm text-gray-300">
-              <li>
-                <a
-                  href="https://www.veran-piano.com/"
-                  aria-label="Visitez le site de Veran Piano - nouvelle fenêtre"
-                  className="underline-offset-2 hover:text-white focus-visible:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Veran Piano
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.gaillard.fr/"
-                  aria-label="Visitez le site de la Ville de Gaillard - nouvelle fenêtre"
-                  className="underline-offset-2 hover:text-white focus-visible:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Ville de Gaillard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.hautesavoie.fr/"
-                  aria-label="Visitez le site du Département de la Haute-Savoie - nouvelle fenêtre"
-                  className="underline-offset-2 hover:text-white focus-visible:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Département de la Haute-Savoie
-                </a>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <Heading hLevel={4} variant={3} className="mb-2 text-white">
-              Plan du site
-            </Heading>
-            <ul className="space-y-1 text-sm text-gray-300">
-              <li>
-                <Link href="/" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Page d&apos;accueil
-                </Link>
-              </li>
-              <li>
-                <Link href="/presentation" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Présentation
-                </Link>
-              </li>
-              <li>
-                <Link href="/nos-concerts" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Nos concerts
-                </Link>
-              </li>
-              <li>
-                <Link href="/presse" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Presse
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/mentions-legales" className="underline-offset-2 hover:text-white focus-visible:underline">
-                  Mentions légales
-                </Link>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <Heading hLevel={4} variant={3} className="mb-2 text-white">
-              Artistes
-            </Heading>
-            <ul className="space-y-1 text-sm text-gray-300">
-              {artistNames.map((artistKey) => (
-                <li key={artistKey}>
-                  <Link
-                    href={`/presentation/${artistKey}`}
-                    className="underline-offset-2 hover:text-white focus-visible:underline"
-                  >
-                    {artists[artistKey as keyof typeof artists].name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <p className="text-text-on-dark text-lg">Partager la passion de la musique chorale au cœur des Alpes.</p>
         </div>
-        <p className="container mx-auto border-t border-gray-700 py-4 text-center text-sm text-gray-300">
-          &copy; {new Date().getFullYear()} Chœur des Pays du Mont-Blanc. Tous droits réservés - Conçu et développé
-          par&nbsp;
-          <a
-            href="https://www.gocosmic.dev/fr"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visitez le site de Go Cosmic - nouvelle fenêtre"
-            className="text-sky-400 underline decoration-sky-400 underline-offset-2 hover:text-sky-300 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:outline-none"
-          >
-            Go Cosmic
-          </a>
+
+        <nav aria-labelledby="footer-sitemap">
+          <p id="footer-sitemap" className={columnTitleClassName}>
+            Plan du site
+          </p>
+          <div className="grid gap-2.5 text-lg">
+            {SITEMAP_LINKS.map(({ href, label }) => (
+              <Link key={href} href={href} className={columnLinkClassName}>
+                {label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+
+        <div>
+          <p className={columnTitleClassName}>Contact</p>
+          <p className="mb-2.5 text-lg">
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
+            >
+              {CONTACT_EMAIL}
+            </a>
+          </p>
+          <p className="text-text-on-dark text-lg">Espace Louis-Simon, Gaillard (74240)</p>
+        </div>
+
+        <div>
+          <p className={columnTitleClassName}>Partenaires</p>
+          <div className="text-text-on-dark grid gap-2.5 text-lg">
+            {PARTNER_LOGOS.map(({ name }) => (
+              <span key={name}>{name}</span>
+            ))}
+          </div>
+        </div>
+
+        <nav aria-labelledby="footer-artists">
+          <p id="footer-artists" className={columnTitleClassName}>
+            Artistes
+          </p>
+          <div className="grid gap-2.5 text-lg">
+            {artistKeys.map((artistKey) => (
+              <Link key={artistKey} href={`/presentation/${artistKey}`} className={columnLinkClassName}>
+                {artists[artistKey].name}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      </div>
+
+      <div className="border-stage-border max-w-site mx-auto border-t px-6 pt-5 pb-10">
+        <p className="text-text-on-dark-muted text-sm">
+          Chœur des Pays du Mont-Blanc — association créée en 2005 à Gaillard, Haute-Savoie.
         </p>
       </div>
     </footer>

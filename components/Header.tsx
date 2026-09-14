@@ -1,48 +1,31 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import MusicNote from "@/assets/icons/music-note.svg";
+import { LOGO } from "@/assets/contents/medias";
+import Equalizer from "@/components/Equalizer";
 import HeaderMenu from "@/components/HeaderMenu";
+import HeaderNav from "@/components/HeaderNav";
 
+/**
+ * Sticky header, identical on every page.
+ * The source logo is white: `brightness-0` turns it black on the light background.
+ */
 const Header = () => (
-  <header className="sticky top-0 z-50 border-b border-solid border-b-gray-200 bg-white px-4 py-3 shadow-sm lg:px-10">
-    <div className="flex items-center justify-between">
-      <Link
-        href="/"
-        className="font-noto flex items-center gap-2 text-xl leading-tight font-bold tracking-tighter text-inherit no-underline"
-      >
-        <MusicNote className="h-6 w-6 fill-sky-700" aria-hidden />
-        Chœur des Pays du Mont-Blanc
+  <header className="border-border bg-bg/[0.94] sticky top-0 z-20 border-b backdrop-blur-sm">
+    <div className="max-w-site mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-3">
+      <Link href="/" className="text-stage-black hover:text-stage-black flex items-center gap-3">
+        <Image
+          src={LOGO.src}
+          alt={LOGO.alt}
+          width={LOGO.width}
+          height={LOGO.height}
+          priority
+          className="h-[46px] w-auto shrink-0 brightness-0"
+        />
+        <Equalizer />
       </Link>
-      {/* Navigation desktop - visible uniquement sur lg et plus */}
-      <nav aria-label="Navigation principale" className="mr-8 hidden lg:block">
-        <ul className="flex gap-12">
-          <li>
-            <Link href="/presentation" className="font-medium transition-colors hover:text-sky-700">
-              Présentation
-            </Link>
-          </li>
-          <li>
-            <Link href="/nos-concerts" className="font-medium transition-colors hover:text-sky-700">
-              Nos concerts
-            </Link>
-          </li>
-          <li>
-            <Link href="/presse" className="font-medium transition-colors hover:text-sky-700">
-              Presse
-            </Link>
-          </li>
-          <li>
-            <Link href="/contact" className="font-medium transition-colors hover:text-sky-700">
-              Contact
-            </Link>
-          </li>
-        </ul>
-      </nav>
-
-      {/* Menu drawer mobile - visible uniquement en dessous de lg */}
-      <div className="lg:hidden">
-        <HeaderMenu />
-      </div>
+      <HeaderNav />
+      <HeaderMenu />
     </div>
   </header>
 );

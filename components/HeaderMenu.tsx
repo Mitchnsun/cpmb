@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+import { isNavLinkActive, NAV_LINKS } from "@/assets/contents/navigation";
 import CloseIcon from "@/assets/icons/close.svg";
 import MenuIcon from "@/assets/icons/menu.svg";
 import {
@@ -14,75 +16,74 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { cn } from "@/utils/classnames";
 
+/**
+ * Mobile menu, shown below 700px.
+ * The panel fills the screen on the page background. The Drawer primitive
+ * (Radix Dialog) provides `aria-expanded` on the trigger, closing on
+ * `Escape`, and a focus trap while the panel is open.
+ */
 const HeaderMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <Drawer direction="right" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+    /* `autoFocus`: without it vaul cancels the opening auto-focus, focus
+       stays on the trigger, and the focus trap never arms. */
+    <Drawer autoFocus direction="right" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <button
           type="button"
-          className="flex items-center justify-center rounded-md p-1 hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
+          className="menu:hidden text-stage-black hover:text-copper flex size-11 items-center justify-center"
           aria-label="Ouvrir le menu"
         >
-          <MenuIcon className="h-6 w-6 stroke-gray-700" />
+          <MenuIcon className="size-6 stroke-current" aria-hidden />
         </button>
       </DrawerTrigger>
 
-      <DrawerContent className="w-80 sm:w-96">
-        <DrawerHeader className="flex flex-row items-center justify-between border-b border-gray-200 p-4">
+      <DrawerContent
+        className={cn(
+          "bg-bg h-full border-none",
+          "data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:sm:max-w-none"
+        )}
+      >
+        <DrawerHeader className="border-border max-w-site mx-auto flex w-full flex-row items-center justify-between border-b px-6 py-3.5">
           <div>
-            <DrawerTitle>Menu</DrawerTitle>
-            <DrawerDescription>Navigation du site</DrawerDescription>
+            <DrawerTitle className="font-display text-stage-black text-2xl font-semibold">Menu</DrawerTitle>
+            <DrawerDescription className="text-muted text-lg">Navigation du site</DrawerDescription>
           </div>
           <DrawerClose asChild>
             <button
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
+              className="text-stage-black hover:text-copper flex size-11 items-center justify-center"
               aria-label="Fermer le menu"
             >
-              <CloseIcon className="h-5 w-5 stroke-gray-700" />
+              <CloseIcon className="size-6 stroke-current" aria-hidden />
             </button>
           </DrawerClose>
         </DrawerHeader>
 
-        <nav className="flex flex-col p-4">
-          <Link
-            href="/presentation"
-            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
-            onClick={() => setIsDrawerOpen(false)}
-          >
-            Présentation
-          </Link>
-          <Link
-            href="/nos-concerts"
-            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
-            onClick={() => setIsDrawerOpen(false)}
-          >
-            Nos concerts
-          </Link>
-          <Link
-            href="/presse"
-            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
-            onClick={() => setIsDrawerOpen(false)}
-          >
-            Presse
-          </Link>
-          <Link
-            href="/contact"
-            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
-            onClick={() => setIsDrawerOpen(false)}
-          >
-            Contact
-          </Link>
-          <Link
-            href="/mentions-legales"
-            className="rounded-md px-4 py-3 text-left font-medium hover:bg-gray-100 focus:ring-2 focus:ring-sky-700 focus:outline-none"
-            onClick={() => setIsDrawerOpen(false)}
-          >
-            Mentions légales
-          </Link>
+        {/* No `aria-label` here: the containing panel is already titled "Menu". */}
+        <nav className="max-w-site mx-auto flex w-full flex-col px-6 py-4">
+          {NAV_LINKS.map(({ href, label }) => {
+            const isActive = isNavLinkActive(href, pathname);
+
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => setIsDrawerOpen(false)}
+                className={cn(
+                  "hover:text-copper flex min-h-11 items-center border-b-2 py-2.5 text-lg",
+                  isActive ? "border-teal text-stage-black" : "text-muted border-transparent"
+                )}
+              >
+                {label}
+              </Link>
+            );
+          })}
         </nav>
       </DrawerContent>
     </Drawer>

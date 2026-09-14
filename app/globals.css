@@ -1,44 +1,139 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@theme inline {
-  --font-inter: var(--font-inter);
-  --font-noto: var(--font-noto-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+/* =================================================================
+   Chœur des Pays du Mont-Blanc — design charter
+   -----------------------------------------------------------------
+   Single source for the site's graphic values. No colour, font
+   family, title size or radius should be rewritten elsewhere:
+   everything is consumed via the Tailwind classes generated here —
+   native Tailwind classes where they already match, tokens declared
+   below only where Tailwind has no equivalent. Before adding a new
+   token, read the rule in CLAUDE.md ("Design system"). Full
+   reference and the legacy-token lookup table: docs/CHARTE.md.
+
+     --color-teal        -> bg-teal / text-teal / border-teal …
+     --font-display      -> font-display
+     --text-h1           -> text-h1 (size + line-height)
+     --container-site    -> max-w-site
+     --breakpoint-menu   -> menu: / max-menu: variants
+     --animate-fade-up   -> animate-fade-up
+   ================================================================= */
+@theme {
+  /* --- Colours: light backgrounds ---------------------------------- */
+  --color-bg: #f6f4ef; /* page background, warm off-white */
+  --color-surface: #ffffff; /* cards, panels, fields */
+  --color-border: #ddd8ce; /* rules and dividers on light background */
+
+  /* --- Colours: stage black ----------------------------------------- */
+  --color-stage-black: #0b0e14; /* dark backgrounds, main text */
+  --color-stage-surface: #11161f; /* cards on dark background */
+  --color-stage-border: #2a3442; /* rules on dark background, staff */
+
+  /* --- Colours: accents ----------------------------------------------- */
+  --color-teal: #0e6e92;
+  --color-teal-dark: #0b5876; /* teal button hover */
+  --color-teal-light: #18a6d0; /* accents on dark background */
+  --color-copper: #96511f;
+  --color-copper-light: #d9a066; /* overlines on dark background */
+
+  /* --- Colours: text ------------------------------------------ */
+  --color-muted: #4a5560; /* secondary text on light background */
+  --color-text-on-dark: #e6e2d9; /* body text on dark background */
+  --color-text-on-dark-muted: #8a94a0; /* footer legal line */
+
+  /* --- shadcn/ui alias (drawer): no parallel palette --------- */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-stage-black);
+  --color-muted-foreground: var(--color-muted);
+  --color-ring: var(--color-teal);
+
+  /* --- Typography ------------------------------------------------ */
+  --font-display: var(--font-cormorant-garamond), Georgia, serif;
+  --font-body: var(--font-source-sans-3), system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), monospace;
+
+  /* --- Title scale ------------------------------------------
+     The clamp() carries the mobile size itself: 34px at the
+     narrowest (390px), then a fluid ramp up to the max (56px,
+     the home hero's bound — the tallest title on the site). */
+  --text-h1: clamp(34px, 5vw, 56px);
+  --text-h1--line-height: 1.1;
+
+  /* --- Tailwind scale tuned to the charter -------------------------
+     These override existing Tailwind text tokens instead of adding
+     new ones: no new name enters the namespace, so cn()'s
+     tailwind-merge extension needs no entry for them. See the
+     "Surcharges de l'échelle Tailwind" table in docs/CHARTE.md. */
+  --text-sm: 15px; /* footer legal line (Tailwind default is 14px) */
+  --text-sm--line-height: 1.6;
+  --text-xs--line-height: 1.4; /* uppercase mono overlines */
+  --text-lg--line-height: 1.6; /* body text, links, buttons, labels */
+  --text-xl--line-height: 1.3; /* subheadings */
+  --text-2xl--line-height: 1.25; /* dates, quotes, seasons */
+  --text-3xl--line-height: 1.2; /* section titles (matches Tailwind's default) */
+
+  /* --- Radii ----------------------------------------------------- */
+  /* No override needed: rounded-lg (8px), rounded-md (6px) and
+     rounded-sm (4px) already match the charter's button/field/image
+     radii — see docs/CHARTE.md. */
+
+  /* --- Layout ----------------------------------------------------- */
+  --container-site: 1536px;
+  --breakpoint-menu: 700px; /* mobile menu breakpoint */
+
+  /* --- Animations ------------------------------------------------- */
+  --animate-staff-draw: staffDraw 2.4s ease-out both;
+  --animate-ridge-draw: ridgeDraw 2.8s ease-out both;
+  --animate-breathe: breathe 2.6s ease-in-out infinite;
+  --animate-fade-up: fadeUp 0.8s ease-out both;
+}
+
+/* The four charter @keyframes live in the global stylesheet; they are
+   also driven by inline durations/delays (equalizer). */
+@keyframes staffDraw {
+  from {
+    stroke-dashoffset: 1400;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ridgeDraw {
+  from {
+    stroke-dashoffset: 2400;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
 }
 
 @supports (padding: max(0px)) {
@@ -50,44 +145,15 @@
   }
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
-
 @layer base {
   * {
     @apply border-border;
+  }
+  a {
+    @apply text-teal;
+  }
+  a:hover {
+    @apply text-copper;
   }
   :is(a, button, input, textarea, select, summary) {
     @apply outline-ring/50;

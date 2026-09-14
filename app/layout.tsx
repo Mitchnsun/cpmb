@@ -1,19 +1,34 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
-const inter = Inter({
-  variable: "--font-inter",
+/**
+ * `next/font` self-hosts the woff2 files and applies `font-display: swap`
+ * by default, so text stays readable while loading (no FOIT).
+ */
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant-garamond",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+const sourceSans3 = Source_Sans_3({
+  variable: "--font-source-sans-3",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "600"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin", "latin-ext"],
+  weight: ["400"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,6 +53,10 @@ export const metadata: Metadata = {
   ],
 };
 
+/**
+ * Mobile zoom must stay possible: no scale lock, no max scale. Expected output:
+ * `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`
+ */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -50,10 +69,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body
-        className={`${inter.variable} ${notoSans.variable} font-inter flex min-h-screen flex-col bg-zinc-50 text-zinc-900 antialiased`}
-      >
+    /*
+     * `next/font` variables must stay on `<html>`, not `<body>`: the
+     * `--font-display` / `--font-body` / `--font-mono` tokens are declared on
+     * `:root` and reference these variables. Declared lower, they'd be
+     * unresolved and typography would fall back to the default font.
+     *
+     * scroll-pt-20: offsets the sticky header (74px) when landing on an anchor.
+     */
+    <html
+      lang="fr"
+      className={`${cormorantGaramond.variable} ${sourceSans3.variable} ${ibmPlexMono.variable} scroll-pt-20`}
+    >
+      <body className="font-body bg-bg text-stage-black flex min-h-screen flex-col text-pretty antialiased">
         <Header />
         <main id="main-content" className="flex-1">
           {children}

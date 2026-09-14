@@ -10,12 +10,12 @@ Site web moderne développé avec Next.js pour présenter le Chœur des Pays du 
 
 ## 🚀 Technologies utilisées
 
-- **Framework** : [Next.js 15.5.3](https://nextjs.org/) avec Turbopack
+- **Framework** : [Next.js 16](https://nextjs.org/) (Turbopack par défaut)
 - **Langage** : TypeScript
 - **Styling** : [Tailwind CSS 4.1.13](https://tailwindcss.com/)
 - **Composants UI** : [shadcn/ui](https://ui.shadcn.com/) avec [Radix UI](https://www.radix-ui.com/)
-- **Runtime** : React 19.1.1
-- **Gestionnaire de paquets** : Yarn 4.9.4
+- **Runtime** : React 19.3
+- **Gestionnaire de paquets** : Yarn 4.18.0
 - **Tests** : [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/)
 - **Linting** : ESLint avec configuration Next.js + plugins avancés
 - **Formatage** : Prettier avec support TailwindCSS
@@ -24,8 +24,8 @@ Site web moderne développé avec Next.js pour présenter le Chœur des Pays du 
 
 ### Prérequis
 
-- Node.js (version 18+ recommandée)
-- Yarn 4.9.4
+- Node.js 24 (voir `.nvmrc` ; la CI utilise la même version)
+- Yarn 4.18.0, activé par Corepack : `corepack enable`
 
 ### Installation des dépendances
 
@@ -43,10 +43,10 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 
 ### Scripts disponibles
 
-- `yarn dev` - Lance le serveur de développement avec Turbopack
+- `yarn dev` - Lance le serveur de développement (Turbopack)
 - `yarn build` - Compile l'application pour la production
 - `yarn start` - Lance l'application en mode production
-- `yarn lint` - Vérifie le code avec ESLint
+- `yarn lint` - Vérifie le code avec ESLint (`next build` ne lint plus depuis Next.js 16 : le lint vit en CI)
 - `yarn lint:fix` - Corrige automatiquement les erreurs ESLint
 - `yarn format` - Formate le code avec Prettier
 - `yarn format:check` - Vérifie si le code est formaté selon Prettier
@@ -72,6 +72,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 ├── scripts/                # Scripts utilitaires
 │   └── validate-concerts.js # Script de validation des données
 ├── docs/                   # Documentation du projet
+│   ├── CHARTE.md          # Charte graphique : tokens, échelles, médias
 │   └── VALIDATION.md      # Documentation du système de validation
 ├── __tests__/              # Tests unitaires et d'intégration
 │   ├── setup.ts           # Configuration globale des tests
@@ -91,23 +92,41 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 └── next.config.ts         # Configuration Next.js
 ```
 
+## 🚀 Déploiement (Vercel)
+
+> **À faire une fois, dans les réglages du projet Vercel.** Ajouter la variable
+> d'environnement `ENABLE_EXPERIMENTAL_COREPACK=1`.
+>
+> Sans elle, Vercel n'active pas Corepack : il détecte `yarn.lock`, l'installe
+> avec **Yarn 1** — qui ne sait pas lire un lockfile Yarn 4 — et réinstalle donc
+> tout en résolvant les plages `^` vers les dernières versions publiées. Les
+> déploiements n'utilisent alors pas les mêmes versions que la CI, et la dérive
+> se manifeste par des erreurs qui n'apparaissent nulle part ailleurs. C'est
+> reconnaissable dans les logs de build : les avertissements au format
+> `warning <paquet>@<version>: ...` sont ceux de Yarn 1, là où Yarn 4 préfixe
+> ses messages par `➤ YN00xx`.
+
 ## 🔧 Configuration
 
 ### ESLint
 
-Le projet utilise ESLint avec :
+Le projet utilise ESLint en **flat config** (`eslint.config.mjs`) avec :
 
-- Configuration Next.js (`next/core-web-vitals`)
+- Configuration Next.js (`eslint-config-next/core-web-vitals`), étalée
+  directement — plus de `FlatCompat`
 - Support TypeScript complet
 - **eslint-plugin-prettier** - Intégration Prettier dans ESLint
-- **eslint-plugin-import** - Validation des imports
 - **eslint-plugin-sonarjs** - Détection des code smells et problèmes de complexité
 - **eslint-plugin-security** - Identification des vulnérabilités potentielles
 - **eslint-plugin-unicorn** - Suggestions d'améliorations modernes JavaScript
 - **eslint-plugin-unused-imports** - Suppression des imports inutiles
 - **eslint-plugin-simple-import-sort** - Tri automatique des imports
-- **eslint-plugin-jsx-a11y** - Vérifications d'accessibilité pour JSX
 - **eslint-plugin-vitest** - Règles ESLint spécialisées pour Vitest
+
+Les plugins `react`, `react-hooks`, `import`, `jsx-a11y`, `@next/next` et
+`@typescript-eslint` sont fournis et enregistrés par `eslint-config-next` : ne
+pas les réenregistrer dans `eslint.config.mjs`, ESLint refuse qu'un même plugin
+soit défini deux fois.
 
 #### Règles personnalisées activées
 
@@ -118,7 +137,9 @@ Le projet utilise ESLint avec :
   'simple-import-sort/imports': 'error',
   'simple-import-sort/exports': 'error',
   'unicorn/prevent-abbreviations': 'off',
-  'unicorn/filename-case': 'off'
+  'unicorn/filename-case': 'off',
+  'sonarjs/cognitive-complexity': ['error', 15],
+  'security/detect-object-injection': 'off'
 }
 ```
 
@@ -135,7 +156,11 @@ Configuration de formatage automatique avec :
 Configuration avec PostCSS pour un styling moderne et responsive. Le projet utilise :
 
 - **Tailwind CSS 4.1.13** - Framework CSS utility-first
-- **Variables CSS** - Système de théorisation avec shadcn/ui
+- **Charte du site** - Couleurs, polices, échelles de titres, rayons, conteneur
+  et animations sont déclarés dans un unique bloc `@theme` de `app/globals.css`
+  et consommés comme des classes Tailwind (`bg-bg`, `text-h2`, `font-display`,
+  `rounded-button`, `max-w-site`…). Voir [CHARTE.md](./docs/CHARTE.md) — aucune
+  valeur graphique ne doit être réécrite dans un composant.
 - **Plugin Prettier** - Tri automatique des classes par ordre logique
 - **tw-animate-css** ^1.4.0 - Animations CSS supplémentaires
 
@@ -338,6 +363,13 @@ La validation s'exécute automatiquement dans GitHub Actions lors de :
 ```
 
 Pour plus de détails sur le système de validation, consultez [VALIDATION.md](./docs/VALIDATION.md).
+
+## 🎼 Charte graphique
+
+La refonte du site s'appuie sur une charte unique documentée dans
+[CHARTE.md](./docs/CHARTE.md) : palette, typographie (Cormorant Garamond,
+Source Sans 3, IBM Plex Mono), échelle de titres h1 → h4 avec ses tailles
+mobiles, rayons, grilles fluides, animations et bibliothèque de médias.
 
 ## ��� Déploiement
 
