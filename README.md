@@ -72,6 +72,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 ├── scripts/                # Scripts utilitaires
 │   └── validate-concerts.js # Script de validation des données
 ├── docs/                   # Documentation du projet
+│   ├── CHARTE.md          # Charte graphique : tokens, échelles, médias
 │   └── VALIDATION.md      # Documentation du système de validation
 ├── __tests__/              # Tests unitaires et d'intégration
 │   ├── setup.ts           # Configuration globale des tests
@@ -135,7 +136,11 @@ Configuration de formatage automatique avec :
 Configuration avec PostCSS pour un styling moderne et responsive. Le projet utilise :
 
 - **Tailwind CSS 4.1.13** - Framework CSS utility-first
-- **Variables CSS** - Système de théorisation avec shadcn/ui
+- **Charte du site** - Couleurs, polices, échelles de titres, rayons, conteneur
+  et animations sont déclarés dans un unique bloc `@theme` de `app/globals.css`
+  et consommés comme des classes Tailwind (`bg-bg`, `text-h2`, `font-display`,
+  `rounded-button`, `max-w-site`…). Voir [CHARTE.md](./docs/CHARTE.md) — aucune
+  valeur graphique ne doit être réécrite dans un composant.
 - **Plugin Prettier** - Tri automatique des classes par ordre logique
 - **tw-animate-css** ^1.4.0 - Animations CSS supplémentaires
 
@@ -338,6 +343,13 @@ La validation s'exécute automatiquement dans GitHub Actions lors de :
 ```
 
 Pour plus de détails sur le système de validation, consultez [VALIDATION.md](./docs/VALIDATION.md).
+
+## 🎼 Charte graphique
+
+La refonte du site s'appuie sur une charte unique documentée dans
+[CHARTE.md](./docs/CHARTE.md) : palette, typographie (Cormorant Garamond,
+Source Sans 3, IBM Plex Mono), échelle de titres h1 → h4 avec ses tailles
+mobiles, rayons, grilles fluides, animations et bibliothèque de médias.
 
 ## ��� Déploiement
 

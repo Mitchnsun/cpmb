@@ -3,13 +3,14 @@ import { HTMLAttributes, PropsWithChildren } from "react";
 
 import { cn } from "@/utils/classnames";
 
+/* Couleurs et tailles prises dans la charte (CPMB-01) : aucune valeur en dur. */
 const headingVariants = cva("font-bold tracking-tight", {
   variants: {
     variant: {
       0: "",
-      1: "text-xl text-sky-700",
-      2: "font-noto text-lg text-gray-800",
-      3: "text-lg",
+      1: "text-h4 text-teal",
+      2: "font-body text-body text-stage-black",
+      3: "text-body",
     },
   },
   defaultVariants: {

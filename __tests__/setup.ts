@@ -20,6 +20,8 @@ vi.mock("next/navigation", () => ({
   notFound: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
   }),
+  // Par défaut on est sur l'accueil ; chaque test peut surcharger la valeur.
+  usePathname: vi.fn(() => "/"),
 }));
 
 // Mock SVG icon modules used as React components in tests
@@ -29,6 +31,24 @@ vi.mock("@/assets/icons/calendar.svg", () => ({
 vi.mock("@/assets/icons/location.svg", () => ({
   default: (props: any) => React.createElement("svg", { ...props }),
 }));
+
+// jsdom n'implémente ni la capture de pointeur ni la propriété `transform`.
+// vaul (le panneau du menu mobile) s'appuie sur les deux pour gérer le glisser :
+// on comble ces trous pour éviter de faux échecs sur un clic dans le panneau.
+if (!Element.prototype.setPointerCapture) {
+  Element.prototype.setPointerCapture = vi.fn();
+  Element.prototype.releasePointerCapture = vi.fn();
+  Element.prototype.hasPointerCapture = vi.fn(() => false);
+}
+
+const nativeGetComputedStyle = window.getComputedStyle.bind(window);
+window.getComputedStyle = ((element: Element, pseudoElement?: string | null) => {
+  const style = nativeGetComputedStyle(element, pseudoElement ?? undefined);
+  if (!style.transform) {
+    Object.defineProperty(style, "transform", { value: "none", configurable: true });
+  }
+  return style;
+}) as typeof window.getComputedStyle;
 
 // Global test setup
 Object.defineProperty(window, "matchMedia", {

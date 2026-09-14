@@ -9,7 +9,7 @@ describe("Heading Component", () => {
     const title = screen.getByRole("heading", { level: 1 });
     expect(title).toBeInTheDocument();
     expect(title).toHaveTextContent("Test Title");
-    expect(title).toHaveClass("font-bold", "tracking-tight", "text-xl", "text-sky-700");
+    expect(title).toHaveClass("font-bold", "tracking-tight", "text-h4", "text-teal");
   });
 
   it("should render different heading levels", () => {
@@ -26,7 +26,7 @@ describe("Heading Component", () => {
       </Heading>
     );
     const title = screen.getByRole("heading", { level: 1 });
-    expect(title).toHaveClass("text-red-500", "font-bold", "text-xl");
+    expect(title).toHaveClass("text-red-500", "font-bold", "text-h4");
   });
 
   it("should accept and apply HTML attributes", () => {
@@ -66,7 +66,7 @@ describe("Heading Component", () => {
       </Heading>
     );
     let heading = screen.getByRole("heading", { level: 2 });
-    expect(heading).toHaveClass("font-noto", "text-lg", "text-gray-800");
+    expect(heading).toHaveClass("font-body", "text-body", "text-stage-black");
 
     rerender(
       <Heading variant={3} hLevel={3}>
@@ -74,7 +74,7 @@ describe("Heading Component", () => {
       </Heading>
     );
     heading = screen.getByRole("heading", { level: 3 });
-    expect(heading).toHaveClass("text-lg");
+    expect(heading).toHaveClass("text-body");
   });
 
   it("should render h4 and h5 headings correctly", () => {

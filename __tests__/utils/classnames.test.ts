@@ -101,3 +101,19 @@ describe("cn utility function", () => {
     expect(cn("text-[14px]", "text-[16px]")).toBe("text-[16px]");
   });
 });
+
+describe("cn with the CPMB charter scale", () => {
+  it("should keep a charter font size next to a charter text colour", () => {
+    expect(cn("text-body", "text-text-muted")).toBe("text-body text-text-muted");
+    expect(cn("text-h2", "text-copper")).toBe("text-h2 text-copper");
+  });
+
+  it("should still let a later font size win over an earlier one", () => {
+    expect(cn("text-body", "text-label")).toBe("text-label");
+    expect(cn("text-h1", "text-h1-hero")).toBe("text-h1-hero");
+  });
+
+  it("should still let a later colour win over an earlier one", () => {
+    expect(cn("text-text-muted", "text-stage-black")).toBe("text-stage-black");
+  });
+});

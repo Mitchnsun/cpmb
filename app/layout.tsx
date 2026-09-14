@@ -1,19 +1,35 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { Inter, Noto_Sans } from "next/font/google";
+import { Cormorant_Garamond, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
-const inter = Inter({
-  variable: "--font-inter",
+/**
+ * Polices de la charte (CPMB-01).
+ * `next/font` auto-héberge les fichiers woff2 et applique `font-display: swap`
+ * par défaut : le texte reste lisible pendant le chargement (pas de FOIT).
+ */
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant-garamond",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
-const notoSans = Noto_Sans({
-  variable: "--font-noto-sans",
+const sourceSans3 = Source_Sans_3({
+  variable: "--font-source-sans-3",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "600"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin", "latin-ext"],
+  weight: ["400"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,6 +54,11 @@ export const metadata: Metadata = {
   ],
 };
 
+/**
+ * CPMB-04 — le zoom mobile doit rester possible : aucun verrouillage d'échelle
+ * ici, ni blocage du zoom, ni échelle maximale. Rendu attendu :
+ * `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`
+ */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -50,10 +71,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
-      <body
-        className={`${inter.variable} ${notoSans.variable} font-inter flex min-h-screen flex-col bg-zinc-50 text-zinc-900 antialiased`}
-      >
+    /*
+     * Les variables de `next/font` sont portées par `<html>`, pas par `<body>` :
+     * les tokens `--font-display` / `--font-body` / `--font-mono` de la charte
+     * sont déclarés sur `:root` et y référencent ces variables. Déclarées plus
+     * bas, elles seraient introuvables au moment du calcul et toute la
+     * typographie retomberait sur la police par défaut.
+     *
+     * scroll-pt-20 : compense l'en-tête collant (74px) à l'arrivée sur une ancre.
+     */
+    <html
+      lang="fr"
+      className={`${cormorantGaramond.variable} ${sourceSans3.variable} ${ibmPlexMono.variable} scroll-pt-20`}
+    >
+      <body className="font-body bg-bg text-stage-black flex min-h-screen flex-col text-pretty antialiased">
         <Header />
         <main id="main-content" className="flex-1">
           {children}

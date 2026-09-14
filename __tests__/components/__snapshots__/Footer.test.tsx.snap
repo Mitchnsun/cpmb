@@ -3,231 +3,145 @@
 exports[`Footer > should render the footer element 1`] = `
 <div>
   <footer
-    class="font-noto"
+    class="bg-stage-black"
   >
-    <section
-      class="container mx-auto flex items-center justify-around gap-6 py-4 text-center"
-    >
-      <a
-        aria-label="Visitez le site de Veran Piano - nouvelle fenêtre"
-        class="basis-1/3"
-        href="https://www.veran-piano.com/"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <img
-          alt="Logo Veran Piano"
-          class="m-auto h-auto"
-          height="120"
-          src="/logo-veran-pianos.png"
-          width="200"
-        />
-      </a>
-      <a
-        aria-label="Visitez le site de la Ville de Gaillard - nouvelle fenêtre"
-        class="basis-1/3"
-        href="https://www.gaillard.fr/"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <img
-          alt="Logo Ville de Gaillard"
-          class="m-auto h-auto"
-          height="120"
-          src="/logo-gaillard.png"
-          width="200"
-        />
-      </a>
-      <a
-        aria-label="Visitez le site du Département de la Haute-Savoie - nouvelle fenêtre"
-        class="basis-1/3"
-        href="https://www.hautesavoie.fr/"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <img
-          alt="Logo Haute-Savoie"
-          class="m-auto h-auto"
-          height="55"
-          src="/haute-savoie.svg"
-          width="90"
-        />
-      </a>
-    </section>
     <div
-      class="bg-gray-800 px-4"
+      class="max-w-site mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-10 px-6 pt-14 pb-8"
     >
-      <div
-        class="container mx-auto flex flex-col items-start gap-4 py-4 lg:flex-row lg:gap-24"
-      >
-        <div>
-          <img
-            alt="Logo Chœur des Pays du Mont-Blanc"
-            class="h-auto shrink-0"
-            height="55"
-            src="/CPMB-logo-blanc.png"
-            width="160"
-          />
-          <p
-            class="mt-4 text-sm text-gray-300"
-          >
-            Partager la passion de la musique chorale au cœur des Alpes.
-          </p>
-        </div>
-        <section>
-          <h4
-            class="font-bold tracking-tight text-lg mb-2 text-white"
-          >
-            Nos Partenaires
-          </h4>
-          <ul
-            class="space-y-1 text-sm text-gray-300"
-          >
-            <li>
-              <a
-                aria-label="Visitez le site de Veran Piano - nouvelle fenêtre"
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="https://www.veran-piano.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Veran Piano
-              </a>
-            </li>
-            <li>
-              <a
-                aria-label="Visitez le site de la Ville de Gaillard - nouvelle fenêtre"
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="https://www.gaillard.fr/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Ville de Gaillard
-              </a>
-            </li>
-            <li>
-              <a
-                aria-label="Visitez le site du Département de la Haute-Savoie - nouvelle fenêtre"
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="https://www.hautesavoie.fr/"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Département de la Haute-Savoie
-              </a>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h4
-            class="font-bold tracking-tight text-lg mb-2 text-white"
-          >
-            Plan du site
-          </h4>
-          <ul
-            class="space-y-1 text-sm text-gray-300"
-          >
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/"
-              >
-                Page d'accueil
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/presentation"
-              >
-                Présentation
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/nos-concerts"
-              >
-                Nos concerts
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/presse"
-              >
-                Presse
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/contact"
-              >
-                Contact
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/mentions-legales"
-              >
-                Mentions légales
-              </a>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h4
-            class="font-bold tracking-tight text-lg mb-2 text-white"
-          >
-            Artistes
-          </h4>
-          <ul
-            class="space-y-1 text-sm text-gray-300"
-          >
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/presentation/benoit-dubu"
-              >
-                Benoît Dubu
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/presentation/agnes-lorincz"
-              >
-                Ágnes Lőrincz
-              </a>
-            </li>
-            <li>
-              <a
-                class="underline-offset-2 hover:text-white focus-visible:underline"
-                href="/presentation/marjorie-saunier"
-              >
-                Marjorie Saunier
-              </a>
-            </li>
-          </ul>
-        </section>
-      </div>
-      <p
-        class="container mx-auto border-t border-gray-700 py-4 text-center text-sm text-gray-300"
-      >
-        © 
-        2024
-         Chœur des Pays du Mont-Blanc. Tous droits réservés - Conçu et développé par 
-        <a
-          aria-label="Visitez le site de Go Cosmic - nouvelle fenêtre"
-          class="text-sky-400 underline decoration-sky-400 underline-offset-2 hover:text-sky-300 focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800 focus-visible:outline-none"
-          href="https://www.gocosmic.dev/fr"
-          rel="noopener noreferrer"
-          target="_blank"
+      <div>
+        <img
+          alt="Chœur des Pays du Mont-Blanc"
+          class="mb-4 h-[58px] w-auto"
+          height="55"
+          src="/CPMB-logo-blanc.png"
+          width="160"
+        />
+        <p
+          class="text-text-on-dark text-label"
         >
-          Go Cosmic
-        </a>
+          Partager la passion de la musique chorale au cœur des Alpes.
+        </p>
+      </div>
+      <nav
+        aria-labelledby="footer-sitemap"
+      >
+        <p
+          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          id="footer-sitemap"
+        >
+          Plan du site
+        </p>
+        <div
+          class="text-label grid gap-2.5"
+        >
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/"
+          >
+            Accueil
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/nos-concerts"
+          >
+            Nos concerts
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/contact"
+          >
+            Contact
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/mentions-legales"
+          >
+            Mentions légales
+          </a>
+        </div>
+      </nav>
+      <div>
+        <p
+          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+        >
+          Contact
+        </p>
+        <p
+          class="text-label mb-2.5"
+        >
+          <a
+            class="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
+            href="mailto:bureau@choeurdespaysdumontblanc.fr"
+          >
+            bureau@choeurdespaysdumontblanc.fr
+          </a>
+        </p>
+        <p
+          class="text-text-on-dark text-label"
+        >
+          Espace Louis-Simon, Gaillard (74240)
+        </p>
+      </div>
+      <div>
+        <p
+          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+        >
+          Partenaires
+        </p>
+        <div
+          class="text-text-on-dark text-label grid gap-2.5"
+        >
+          <span>
+            Ville de Gaillard
+          </span>
+          <span>
+            Département de la Haute-Savoie
+          </span>
+          <span>
+            Véran Pianos
+          </span>
+        </div>
+      </div>
+      <nav
+        aria-labelledby="footer-artists"
+      >
+        <p
+          class="font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase"
+          id="footer-artists"
+        >
+          Artistes
+        </p>
+        <div
+          class="text-label grid gap-2.5"
+        >
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/presentation/benoit-dubu"
+          >
+            Benoît Dubu
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/presentation/agnes-lorincz"
+          >
+            Ágnes Lőrincz
+          </a>
+          <a
+            class="text-text-on-dark hover:text-teal-light no-underline"
+            href="/presentation/marjorie-saunier"
+          >
+            Marjorie Saunier
+          </a>
+        </div>
+      </nav>
+    </div>
+    <div
+      class="border-stage-border max-w-site mx-auto border-t px-6 pt-5 pb-10"
+    >
+      <p
+        class="text-text-on-dark-muted text-legal"
+      >
+        Chœur des Pays du Mont-Blanc — association créée en 2005 à Gaillard, Haute-Savoie.
       </p>
     </div>
   </footer>
