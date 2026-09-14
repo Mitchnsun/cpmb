@@ -19,18 +19,18 @@ import {
 import { cn } from "@/utils/classnames";
 
 /**
- * Menu mobile (CPMB-02), affiché sous 700px.
- * Le panneau occupe tout l'écran sur le fond de page. Le primitif Drawer
- * (Radix Dialog) fournit `aria-expanded` sur le déclencheur, la fermeture par
- * `Échap` et le piège de focus tant que le panneau est ouvert.
+ * Mobile menu, shown below 700px.
+ * The panel fills the screen on the page background. The Drawer primitive
+ * (Radix Dialog) provides `aria-expanded` on the trigger, closing on
+ * `Escape`, and a focus trap while the panel is open.
  */
 const HeaderMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const pathname = usePathname();
 
   return (
-    /* `autoFocus` : sans lui vaul annule l'auto-focus d'ouverture, le focus
-       reste sur le déclencheur et le piège de focus ne s'arme jamais. */
+    /* `autoFocus`: without it vaul cancels the opening auto-focus, focus
+       stays on the trigger, and the focus trap never arms. */
     <Drawer autoFocus direction="right" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <button
@@ -64,7 +64,7 @@ const HeaderMenu = () => {
           </DrawerClose>
         </DrawerHeader>
 
-        {/* Pas d'`aria-label` ici : le panneau qui la contient est déjà intitulé « Menu ». */}
+        {/* No `aria-label` here: the containing panel is already titled "Menu". */}
         <nav className="max-w-site mx-auto flex w-full flex-col px-6 py-4">
           {NAV_LINKS.map(({ href, label }) => {
             const isActive = isNavLinkActive(href, pathname);

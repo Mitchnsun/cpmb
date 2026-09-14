@@ -31,7 +31,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
 
   const data = Artists[artist as keyof typeof Artists];
 
-  // Si data est null, undefined ou vide, retourner une 404
+  // Return a 404 when data is null, undefined, or empty
   if (!data || !data.name) {
     notFound();
   }

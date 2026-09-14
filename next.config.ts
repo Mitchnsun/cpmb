@@ -3,11 +3,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     /**
-     * CPMB-05 — WebP (et AVIF) servis automatiquement, avec repli JPEG/PNG
-     * pour les navigateurs qui ne les acceptent pas.
+     * WebP (and AVIF) served automatically, with a JPEG/PNG fallback for
+     * browsers that don't accept them.
      */
     formats: ["image/avif", "image/webp"],
-    /** Largeurs du `srcset` généré pour les images pleine largeur. */
+    /** Widths of the `srcset` generated for full-width images. */
     deviceSizes: [640, 750, 828, 1024, 1440, 1920],
   },
   turbopack: {

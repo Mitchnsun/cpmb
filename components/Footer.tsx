@@ -7,16 +7,16 @@ import { SITEMAP_LINKS } from "@/assets/contents/navigation";
 
 const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
 
-/** Titre de colonne : mono 12px, majuscules, cuivre clair. */
+/** Column title: mono 12px, uppercase, light copper. */
 const columnTitleClassName = "font-mono text-overline text-copper-light mb-3.5 tracking-[0.14em] uppercase";
 
-/** Lien de colonne : texte sur fond sombre, turquoise clair au survol. */
+/** Column link: text on dark background, light teal on hover. */
 const columnLinkClassName = "text-text-on-dark hover:text-teal-light no-underline";
 
 /**
- * Pied de page sur noir de scène (CPMB-03).
- * Les colonnes se répartissent d'elles-mêmes en `auto-fit` et s'empilent
- * proprement sous 700px, sans media query.
+ * Footer on stage black.
+ * Columns lay themselves out via `auto-fit` and stack cleanly below
+ * 700px, no media query needed.
  */
 const Footer = () => {
   const artistKeys = Object.keys(artists) as (keyof typeof artists)[];

@@ -17,16 +17,13 @@ describe("ArtistArticle", () => {
   it("should render the artist article with all elements", () => {
     render(<ArtistArticle {...mockProps} />);
 
-    // Vérifie que l'article est rendu
     const article = screen.getByRole("article");
     expect(article).toBeInTheDocument();
     expect(article).toHaveClass("container", "mx-auto", "text-justify");
 
-    // Vérifie que le titre est rendu avec le nom de l'artiste
     const heading = screen.getByRole("heading", { name: mockProps.name });
     expect(heading).toBeInTheDocument();
 
-    // Vérifie que l'image est rendue avec les bonnes propriétés
     const image = screen.getByRole("img", { name: mockProps.alt });
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("src", mockProps.media);
@@ -34,7 +31,6 @@ describe("ArtistArticle", () => {
     expect(image).toHaveAttribute("width", "200");
     expect(image).toHaveAttribute("height", "300");
 
-    // Vérifie que tous les paragraphes de texte sont rendus
     mockProps.text.forEach((paragraph) => {
       expect(screen.getByText(paragraph)).toBeInTheDocument();
     });
@@ -53,7 +49,7 @@ describe("ArtistArticle", () => {
 
     const paragraphs = screen.getAllByText(/paragraphe/);
 
-    // Tous les paragraphes sauf le dernier portent la classe mb-2
+    // All paragraphs except the last carry the mb-2 class
     paragraphs.slice(0, -1).forEach((paragraph) => {
       expect(paragraph).toHaveClass("mb-2");
     });
@@ -81,7 +77,6 @@ describe("ArtistArticle", () => {
 
     render(<ArtistArticle {...emptyTextProps} />);
 
-    // Vérifie que l'article et l'image sont toujours rendus
     expect(screen.getByRole("article")).toBeInTheDocument();
     expect(screen.getByRole("img")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: mockProps.name })).toBeInTheDocument();

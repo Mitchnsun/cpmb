@@ -54,7 +54,7 @@ describe("Footer", () => {
     expect(screen.getByText("Ville de Gaillard")).toBeInTheDocument();
     expect(screen.getByText("Département de la Haute-Savoie")).toBeInTheDocument();
     expect(screen.getByText("Véran Pianos")).toBeInTheDocument();
-    // Seul le logo du chœur est une image dans le pied de page.
+    // Only the choir logo is an image in the footer.
     expect(screen.getAllByRole("img")).toHaveLength(1);
   });
 

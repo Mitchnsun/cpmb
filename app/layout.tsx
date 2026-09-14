@@ -7,9 +7,8 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
 /**
- * Polices de la charte (CPMB-01).
- * `next/font` auto-héberge les fichiers woff2 et applique `font-display: swap`
- * par défaut : le texte reste lisible pendant le chargement (pas de FOIT).
+ * `next/font` self-hosts the woff2 files and applies `font-display: swap`
+ * by default, so text stays readable while loading (no FOIT).
  */
 const cormorantGaramond = Cormorant_Garamond({
   variable: "--font-cormorant-garamond",
@@ -55,8 +54,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * CPMB-04 — le zoom mobile doit rester possible : aucun verrouillage d'échelle
- * ici, ni blocage du zoom, ni échelle maximale. Rendu attendu :
+ * Mobile zoom must stay possible: no scale lock, no max scale. Expected output:
  * `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`
  */
 export const viewport: Viewport = {
@@ -72,13 +70,12 @@ export default function RootLayout({
 }>) {
   return (
     /*
-     * Les variables de `next/font` sont portées par `<html>`, pas par `<body>` :
-     * les tokens `--font-display` / `--font-body` / `--font-mono` de la charte
-     * sont déclarés sur `:root` et y référencent ces variables. Déclarées plus
-     * bas, elles seraient introuvables au moment du calcul et toute la
-     * typographie retomberait sur la police par défaut.
+     * `next/font` variables must stay on `<html>`, not `<body>`: the
+     * `--font-display` / `--font-body` / `--font-mono` tokens are declared on
+     * `:root` and reference these variables. Declared lower, they'd be
+     * unresolved and typography would fall back to the default font.
      *
-     * scroll-pt-20 : compense l'en-tête collant (74px) à l'arrivée sur une ancre.
+     * scroll-pt-20: offsets the sticky header (74px) when landing on an anchor.
      */
     <html
       lang="fr"

@@ -20,7 +20,7 @@ vi.mock("next/navigation", () => ({
   notFound: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
   }),
-  // Par défaut on est sur l'accueil ; chaque test peut surcharger la valeur.
+  // Defaults to the home page; each test can override the value.
   usePathname: vi.fn(() => "/"),
 }));
 
@@ -32,9 +32,9 @@ vi.mock("@/assets/icons/location.svg", () => ({
   default: (props: any) => React.createElement("svg", { ...props }),
 }));
 
-// jsdom n'implémente ni la capture de pointeur ni la propriété `transform`.
-// vaul (le panneau du menu mobile) s'appuie sur les deux pour gérer le glisser :
-// on comble ces trous pour éviter de faux échecs sur un clic dans le panneau.
+// jsdom implements neither pointer capture nor the `transform` property.
+// vaul (the mobile menu panel) relies on both to handle dragging, so we
+// polyfill them here to avoid false failures on a click inside the panel.
 if (!Element.prototype.setPointerCapture) {
   Element.prototype.setPointerCapture = vi.fn();
   Element.prototype.releasePointerCapture = vi.fn();

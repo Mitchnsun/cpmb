@@ -10,17 +10,17 @@ import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 
 /**
- * Flat config native.
+ * Native flat config.
  *
- * `eslint-config-next` v16 exporte directement des tableaux de flat config : on
- * étale `core-web-vitals` tel quel — c'est l'équivalent de l'ancien
- * `next/core-web-vitals` chargé jusqu'ici via `FlatCompat`, désormais inutile.
+ * `eslint-config-next` v16 exports flat config arrays directly, so we spread
+ * `core-web-vitals` as-is — the equivalent of the old `next/core-web-vitals`
+ * previously loaded via `FlatCompat`, now unneeded.
  *
- * Ce paquet fournit lui-même les plugins `react`, `react-hooks`, `import`,
- * `jsx-a11y`, `@next/next` et `@typescript-eslint`, ainsi que le parseur
- * TypeScript. Ne pas les réenregistrer ici : ESLint refuse qu'un même plugin
- * soit défini deux fois, et c'est cette double définition — via des copies
- * résolues différemment — qui faisait planter le lint au build sur Vercel.
+ * This package itself provides the `react`, `react-hooks`, `import`,
+ * `jsx-a11y`, `@next/next`, and `@typescript-eslint` plugins, plus the
+ * TypeScript parser. Do not re-register them here: ESLint refuses a plugin
+ * defined twice, and that double definition — via differently resolved
+ * copies — is what broke the lint step of the Vercel build.
  */
 const config = [
   {
@@ -71,7 +71,7 @@ const config = [
       "prefer-const": "error",
       "no-var": "error",
       "no-undef": "off", // TypeScript handles this
-      "no-unused-vars": "off", // remplacée par @typescript-eslint/no-unused-vars
+      "no-unused-vars": "off", // replaced by @typescript-eslint/no-unused-vars
 
       "prettier/prettier": "error",
       "unused-imports/no-unused-imports": "error",
@@ -86,8 +86,8 @@ const config = [
     },
   },
   {
-    // Le plugin `@typescript-eslint` n'est fourni par `next/typescript` que sur
-    // les fichiers TypeScript : ses règles ne peuvent être posées qu'ici.
+    // `next/typescript` only provides the `@typescript-eslint` plugin on
+    // TypeScript files, so its rules can only be set here.
     files: ["**/*.{ts,tsx}"],
     rules: {
       "@typescript-eslint/no-unused-vars": "error",

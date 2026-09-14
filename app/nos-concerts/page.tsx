@@ -4,12 +4,10 @@ import Heading from "@/components/Heading";
 import { splitConcertsByDate } from "@/utils/concerts";
 
 export default function NosConcerts() {
-  // La page est prérendue statiquement : la date de référence est celle du
-  // build, pas celle de la visite. Un concert ne bascule donc dans « passés »
-  // qu'au déploiement suivant. Comportement inchangé depuis toujours ; la
-  // reprise de l'agenda (CPMB-11, M3) tranchera entre rendu dynamique et
-  // revalidation. La règle est désactivée ici seulement, en connaissance de
-  // cause — `Date.now()` est effectivement impur.
+  // The page is statically prerendered, so the reference date is the build
+  // date, not the visit date — a concert only moves to "past" on the next
+  // deploy. CPMB-11 will decide between dynamic rendering and revalidation;
+  // the rule is disabled here knowingly, since `Date.now()` is indeed impure.
   // eslint-disable-next-line react-hooks/purity
   const { upcoming, past } = splitConcertsByDate(concerts, Date.now());
 

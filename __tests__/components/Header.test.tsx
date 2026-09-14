@@ -75,7 +75,7 @@ describe("Header", () => {
     const equalizer = container.querySelector('[aria-hidden="true"]');
     expect(equalizer).toBeInTheDocument();
     expect(equalizer?.children).toHaveLength(9);
-    // Barres 5 et 9 en cuivre, les sept autres en turquoise.
+    // Bars 5 and 9 are copper, the other seven are teal.
     const barColors = [...(equalizer?.children ?? [])].map((bar) =>
       bar.className.includes("bg-copper") ? "copper" : "teal"
     );
@@ -122,7 +122,7 @@ describe("Header", () => {
 
     await user.click(screen.getByRole("button", { name: /ouvrir le menu/i }));
 
-    // Sans focus à l'intérieur du panneau, le piège de focus ne s'arme pas.
+    // Without focus inside the panel, the focus trap doesn't arm.
     const dialog = screen.getByRole("dialog");
     expect(dialog.contains(document.activeElement)).toBe(true);
   });

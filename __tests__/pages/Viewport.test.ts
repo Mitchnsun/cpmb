@@ -2,10 +2,10 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 /**
- * CPMB-04 — le zoom mobile doit rester possible.
- * Next.js centralise la balise viewport dans l'export `viewport` du layout
- * racine : ce test empêche la réintroduction de `user-scalable=no` ou d'un
- * `maximum-scale`, ici ou dans une page qui réécrirait la balise.
+ * Mobile zoom must stay possible. Next.js centralizes the viewport tag in
+ * the root layout's `viewport` export: this test prevents reintroducing
+ * `user-scalable=no` or a `maximum-scale`, here or in a page that would
+ * rewrite the tag.
  */
 const SOURCES = ["app/layout.tsx", "app/page.tsx", "app/contact/page.tsx", "app/nos-concerts/page.tsx"];
 

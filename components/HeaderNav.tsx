@@ -7,9 +7,9 @@ import { isNavLinkActive, NAV_LINKS } from "@/assets/contents/navigation";
 import { cn } from "@/utils/classnames";
 
 /**
- * Navigation principale de l'en-tête (CPMB-02), masquée sous 700px au profit
- * du menu mobile. Le lien actif est souligné d'un filet turquoise ; les autres
- * portent un filet transparent pour éviter tout décalage de hauteur.
+ * Header's main navigation, hidden below 700px in favor of the mobile menu.
+ * The active link is underlined with a teal rule; others carry a transparent
+ * rule to avoid any height shift.
  */
 const HeaderNav = () => {
   const pathname = usePathname();

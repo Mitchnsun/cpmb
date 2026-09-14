@@ -1,11 +1,11 @@
 import { cn } from "@/utils/classnames";
 
 /**
- * Signature animée de l'en-tête (CPMB-02) : neuf barres qui « respirent ».
- * Durées de 2,1s à 3,2s et retards de 0 à 1,4s, tous différents d'une barre à
- * l'autre pour éviter l'effet de battement. Les barres 5 et 9 sont en cuivre.
- * Purement décoratif : hors de l'ordre de lecture des lecteurs d'écran, et
- * arrêté par la règle globale `prefers-reduced-motion`.
+ * Header's animated signature: nine bars that "breathe".
+ * Durations from 2.1s to 3.2s and delays from 0 to 1.4s, each different to
+ * avoid a beating effect. Bars 5 and 9 are copper. Purely decorative: out of
+ * screen readers' reading order, and stopped by the global
+ * `prefers-reduced-motion` rule.
  */
 const BARS = [
   { duration: "2.6s", delay: "0s", accent: false },
@@ -20,8 +20,8 @@ const BARS = [
 ] as const;
 
 const Equalizer = () => (
-  /* Sous 260px — un écran de 390px zoomé à 200% — la signature n'a plus la
-     place de tenir à côté du logo : elle s'efface plutôt que de déborder. */
+  /* Below 260px — a 390px screen zoomed to 200% — the signature no longer
+     fits next to the logo, so it hides instead of overflowing. */
   <span aria-hidden="true" className="flex h-5 items-end gap-0.5 max-[260px]:hidden">
     {BARS.map(({ duration, delay, accent }) => (
       <span

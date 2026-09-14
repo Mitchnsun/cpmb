@@ -7,8 +7,8 @@ import HeaderMenu from "@/components/HeaderMenu";
 import HeaderNav from "@/components/HeaderNav";
 
 /**
- * En-tête collant (CPMB-02), identique sur toutes les pages.
- * Le logo fourni est blanc : `brightness-0` le rend noir sur le fond clair.
+ * Sticky header, identical on every page.
+ * The source logo is white: `brightness-0` turns it black on the light background.
  */
 const Header = () => (
   <header className="border-border bg-bg/[0.94] sticky top-0 z-20 border-b backdrop-blur-sm">

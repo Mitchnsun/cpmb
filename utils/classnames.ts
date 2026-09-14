@@ -2,10 +2,9 @@ import { type ClassValue, clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
 /**
- * `tailwind-merge` ne connaît que l'échelle par défaut : sans cette extension,
- * il rangerait nos tailles de texte de la charte (`text-h2`, `text-body`…)
- * dans le groupe « couleur de texte » et les supprimerait dès qu'une couleur
- * est appliquée sur le même élément.
+ * `tailwind-merge` only knows the default scale: without this extension, it
+ * would file our charter text sizes (`text-h2`, `text-body`…) under "text
+ * colour" and drop them as soon as a colour is applied on the same element.
  */
 const twMerge = extendTailwindMerge({
   extend: {

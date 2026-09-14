@@ -8,13 +8,13 @@ export interface SplitConcerts {
 }
 
 /**
- * Répartit les concerts entre « à venir » et « passés » par rapport à `now`,
- * et les ordonne : les prochains d'abord pour les premiers, les plus récents
- * d'abord pour les seconds. Un concert sur plusieurs dates reste « à venir »
- * tant qu'une de ses dates n'est pas passée.
+ * Splits concerts into "upcoming" and "past" relative to `now`, and orders
+ * them: soonest first for upcoming, most recent first for past. A concert
+ * with several dates stays "upcoming" as long as one of its dates hasn't
+ * passed yet.
  *
- * `now` est un paramètre plutôt qu'un `Date.now()` interne : la fonction reste
- * pure et testable, et l'appelant garde la main sur la date de référence.
+ * `now` is a parameter rather than an internal `Date.now()` so the function
+ * stays pure and testable, and the caller controls the reference date.
  */
 export const splitConcertsByDate = (list: readonly Concert[], now: number): SplitConcerts => {
   const parsed = list.map((concert) => {

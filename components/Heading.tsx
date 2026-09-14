@@ -3,7 +3,7 @@ import { HTMLAttributes, PropsWithChildren } from "react";
 
 import { cn } from "@/utils/classnames";
 
-/* Couleurs et tailles prises dans la charte (CPMB-01) : aucune valeur en dur. */
+/* Colours and sizes come from the design charter: no hardcoded values. */
 const headingVariants = cva("font-bold tracking-tight", {
   variants: {
     variant: {

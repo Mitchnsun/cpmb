@@ -1,45 +1,46 @@
 /**
- * CPMB-05 — Bibliothèque de médias.
+ * Media library.
  *
- * Point d'entrée unique des visuels éditoriaux du site : chaque entrée porte
- * son `alt` rédigé, ses dimensions natives (pas de décalage au chargement) et
- * son cadrage voulu. Les pages consomment ces objets plutôt que des chemins
- * en dur.
+ * Single entry point for the site's editorial visuals: each entry carries a
+ * written `alt`, its native dimensions (no layout shift on load), and its
+ * intended crop. Pages consume these objects instead of hardcoded paths.
+ * Not all entries below are consumed by a page yet — `HOME_HERO` and
+ * friends are the contract for upcoming milestones.
  *
- * Les `objectPosition` sont volontaires : ils gardent les visages dans le
- * cadre quand la photo est recadrée en bandeau.
+ * `objectPosition` values are deliberate: they keep faces in frame when the
+ * photo is cropped into a banner.
  *
- * Formats et largeurs : `next/image` sert automatiquement de l'AVIF/WebP avec
- * un JPEG de secours et génère le `srcset` aux largeurs déclarées dans
- * `next.config.ts` (640, 1024, 1440, 1920). Rien à écrire à la main.
+ * Formats and widths: `next/image` automatically serves AVIF/WebP with a
+ * JPEG fallback, and generates the `srcset` at the widths declared in
+ * `next.config.ts` (640, 1024, 1440, 1920). Nothing to write by hand.
  */
 
 export interface SiteImage {
-  /** Chemin public du fichier source. */
+  /** Public path of the source file. */
   src: string;
-  /** Texte alternatif rédigé, ou "" si le visuel est purement décoratif. */
+  /** Written alt text, or "" if the visual is purely decorative. */
   alt: string;
-  /** Dimensions natives, pour réserver la place et éviter tout CLS. */
+  /** Native dimensions, to reserve space and avoid any CLS. */
   width: number;
   height: number;
-  /** Cadrage à appliquer quand l'image est recadrée (`object-fit: cover`). */
+  /** Crop to apply when the image is cropped (`object-fit: cover`). */
   objectPosition?: string;
-  /** Une seule image du site est prioritaire : le héros de l'accueil. */
+  /** Only one image on the site is priority: the home hero. */
   priority?: boolean;
-  /** Indice de largeur de rendu pour le choix du `srcset`. */
+  /** Rendered-width hint for `srcset` selection. */
   sizes?: string;
 }
 
 export interface PartnerLogo extends SiteImage {
-  /** Nom affiché du partenaire. */
+  /** Displayed partner name. */
   name: string;
-  /** Site officiel du partenaire. */
+  /** Partner's official site. */
   href: string;
-  /** Hauteur maximale de rendu dans le bandeau partenaires, en pixels. */
+  /** Max rendered height in the partners banner, in pixels. */
   maxHeight: number;
 }
 
-/** Logo blanc sur fond transparent. En-tête : 46px. Pied de page : 58px. */
+/** White logo on transparent background. Header: 46px. Footer: 58px. */
 export const LOGO: SiteImage = {
   src: "/CPMB-logo-blanc.png",
   alt: "Chœur des Pays du Mont-Blanc",
@@ -47,7 +48,7 @@ export const LOGO: SiteImage = {
   height: 55,
 };
 
-/** Héros de la page d'accueil — seule image chargée en priorité du site. */
+/** Home page hero — the only priority-loaded image on the site. */
 export const HOME_HERO: SiteImage = {
   src: "/carrousel/CPMB-2023.jpg",
   alt: "Le Chœur des Pays du Mont-Blanc et son orchestre en concert",
@@ -58,7 +59,7 @@ export const HOME_HERO: SiteImage = {
   sizes: "100vw",
 };
 
-/** Bandeau « Le chœur » de l'accueil, cadré en 4/3. */
+/** Home page "Le chœur" banner, cropped 4/3. */
 export const CHOIR_PORTRAIT: SiteImage = {
   src: "/carrousel/CPMB2.jpg",
   alt: "Le chœur en concert, écharpes turquoise, dirigé par Benoît Dubu",
@@ -68,7 +69,7 @@ export const CHOIR_PORTRAIT: SiteImage = {
   sizes: "(min-width: 700px) 50vw, 100vw",
 };
 
-/** Bandeau de la page « Nos concerts ». */
+/** "Nos concerts" page banner. */
 export const CONCERTS_BANNER: SiteImage = {
   src: "/carrousel/CPMB-novembre-2023.jpg",
   alt: "Choristes lisant leurs partitions en concert",
@@ -78,7 +79,7 @@ export const CONCERTS_BANNER: SiteImage = {
   sizes: "100vw",
 };
 
-/** Bandeau de la page « Contact ». */
+/** "Contact" page banner. */
 export const CONTACT_BANNER: SiteImage = {
   src: "/carrousel/Hautecombe-16.10.22.jpg",
   alt: "Les choristes du Chœur des Pays du Mont-Blanc, écharpes turquoise",
@@ -88,7 +89,7 @@ export const CONTACT_BANNER: SiteImage = {
   sizes: "100vw",
 };
 
-/** Logos des partenaires — bandeau de l'accueil. */
+/** Partner logos — home page banner. */
 export const PARTNER_LOGOS: readonly PartnerLogo[] = [
   {
     name: "Ville de Gaillard",
@@ -123,10 +124,10 @@ export const PARTNER_LOGOS: readonly PartnerLogo[] = [
 ] as const;
 
 /**
- * Affiches de concert : elles vivent dans `concerts.json` (champ `media`),
- * une par concert. En vignette elles se cadrent en portrait 3/4.
+ * Concert posters live in `concerts.json` (`media` field), one per concert.
+ * As a thumbnail they're cropped to portrait 3/4.
  */
 export const POSTER_ASPECT_RATIO = "3 / 4";
 
-/** Alt par défaut d'une affiche, à partir du titre du concert. */
+/** Default alt text for a poster, built from the concert title. */
 export const posterAlt = (concertTitle: string): string => `Affiche du concert : ${concertTitle}`;

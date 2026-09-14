@@ -15,7 +15,6 @@ export default function Contact() {
         <Heading className="mb-6">Contactez-nous</Heading>
 
         <div className="grid gap-8 md:grid-cols-2">
-          {/* Informations de contact */}
           <div className="space-y-6">
             <div>
               <Heading hLevel={2} variant={2} className="mb-4">
@@ -42,7 +41,6 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Formulaire de contact */}
           <div>
             <Heading hLevel={2} variant={2} className="mb-4">
               Envoyez-nous un message
