@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -27,9 +27,9 @@ jobs:
             .yarn/cache
             ~/.cache/yarn
             node_modules
-          key: ${{ runner.os }}-node-22-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-24-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-22-
+            ${{ runner.os }}-node-24-
             ${{ runner.os }}-node-
 
       - name: Enable Corepack
@@ -52,7 +52,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -61,9 +61,9 @@ jobs:
             .yarn/cache
             ~/.cache/yarn
             node_modules
-          key: ${{ runner.os }}-node-22-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-24-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-22-
+            ${{ runner.os }}-node-24-
             ${{ runner.os }}-node-
 
       - name: Enable Corepack
@@ -86,7 +86,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: ".nvmrc"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -95,9 +95,9 @@ jobs:
             .yarn/cache
             ~/.cache/yarn
             node_modules
-          key: ${{ runner.os }}-node-22-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-24-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-22-
+            ${{ runner.os }}-node-24-
             ${{ runner.os }}-node-
 
       - name: Enable Corepack

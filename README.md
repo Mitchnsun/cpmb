@@ -15,7 +15,7 @@ Site web moderne développé avec Next.js pour présenter le Chœur des Pays du 
 - **Styling** : [Tailwind CSS 4.1.13](https://tailwindcss.com/)
 - **Composants UI** : [shadcn/ui](https://ui.shadcn.com/) avec [Radix UI](https://www.radix-ui.com/)
 - **Runtime** : React 19.3
-- **Gestionnaire de paquets** : Yarn 4.9.4
+- **Gestionnaire de paquets** : Yarn 4.18.0
 - **Tests** : [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/)
 - **Linting** : ESLint avec configuration Next.js + plugins avancés
 - **Formatage** : Prettier avec support TailwindCSS
@@ -24,8 +24,8 @@ Site web moderne développé avec Next.js pour présenter le Chœur des Pays du 
 
 ### Prérequis
 
-- Node.js 20.9+ (requis par Next.js 16 ; la CI utilise Node 22)
-- Yarn 4.9.4, activé par Corepack : `corepack enable`
+- Node.js 24 (voir `.nvmrc` ; la CI utilise la même version)
+- Yarn 4.18.0, activé par Corepack : `corepack enable`
 
 ### Installation des dépendances
 

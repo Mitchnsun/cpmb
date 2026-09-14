@@ -1,0 +1,78 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+Official site of the **Chœur des Pays du Mont-Blanc** (choeurdespaysdumontblanc.fr), repo `Mitchnsun/cpmb`, default branch **`master`** (no `main`). Next.js 16 App Router + React 19 + TypeScript strict + Tailwind CSS 4, fully statically generated from local files — no CMS, no database, no API routes.
+
+Write code, comments, commit messages and docs in **English**. User-facing site copy stays **French** (it serves a French choir). Commits follow Conventional Commits with a scope (`feat(...)`, `fix(...)`, `tech(...)`, `chore(...)`); the redesign epic is #17, tracked in tickets `CPMB-NN`.
+
+## Commands
+
+Node 24 (`.nvmrc`), Yarn 4.18 via `corepack enable`.
+
+| Command | Note |
+| --- | --- |
+| `yarn dev` / `yarn build` / `yarn start` | Turbopack by default |
+| `yarn lint` / `yarn lint:fix` | `next build` no longer lints since Next 16 — lint is its own gate |
+| `yarn format` / `yarn format:check` | Prettier + Tailwind class sort (no CI job runs `format:check`) |
+| `yarn type-check` | `tsc --noEmit` |
+| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter |
+| `yarn test:coverage` | coverage report (v8) |
+| `yarn test:snapshots` | `vitest run -u` — run after any `Footer` change |
+| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js` |
+
+Single test: `yarn vitest run __tests__/components/Header.test.tsx`
+By name: `yarn vitest run -t "should render the header"`
+
+Full pre-push gate mirroring CI (`.github/workflows/ci.yml`: lint / test:ci / type-check+build; `data-validation.yml` additionally on `assets/contents/**` and `public/{concerts,articles,carrousel}/**`):
+
+```bash
+yarn lint && yarn type-check && yarn test:ci && yarn validate
+```
+
+## Architecture
+
+- Routes live in `app/`: `/`, `/presentation` + `/presentation/[artist]`, `/nos-concerts` + `/nos-concerts/[slug]`, `/presse` + `/presse/[slug]`, `/contact`, `/mentions-legales`, `not-found.tsx`. No middleware, no server actions, no `loading.tsx`/`error.tsx`.
+- **Content is local files, not a CMS.** `assets/contents/` is the single source: `concerts.json` (array), `articles.json` (array), `artists.json` (**object keyed by slug** — the key *is* the URL segment), plus typed modules `navigation.ts`, `medias.ts`, `carrousel.ts`. Pages import them directly and prerender.
+- **Types are derived from the JSON, never hand-written**: e.g. `import type concerts from "@/assets/contents/concerts.json"` then `type Concert = (typeof concerts)[number]` (relies on `resolveJsonModule`). Widening the JSON widens the type — don't duplicate an interface.
+- Every dynamic route pairs `generateStaticParams` + `generateMetadata`; `params` is a **Promise** in Next 16 and must be awaited.
+- `components/` is flat PascalCase, one default export per file, no barrel; `components/ui/` holds shadcn (only `drawer.tsx` installed). `utils/` = `cn`, `splitConcertsByDate`, `formatFrenchDateTime`, `truncateAtWord`. Icons are local SVGs imported as components via `@svgr/webpack` (turbopack rule in `next.config.ts` + `types/svg.d.ts`) — **not** lucide, despite the dependency.
+- `@/*` → repo root, declared in **both** `tsconfig.json` and `vitest.config.ts` — keep them in sync.
+- `assets/contents/navigation.ts` is the single nav source feeding the header, the mobile drawer and the footer sitemap; `isNavLinkActive` marks `/presse/<slug>` as active for "Presse". `__tests__/contents/navigation.test.ts` asserts the exact list and order, so a nav change requires a test change.
+
+## Design system
+
+All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 — **there is no `tailwind.config.js`**). Never hardcode a colour, size, radius or font in a component; use the generated classes (`bg-bg`, `text-h2`, `font-display`, `rounded-button`, `max-w-site`, `menu:`/`max-menu:`). Full reference: `docs/CHARTE.md`.
+
+- **Always compose classes through `cn()`** (`utils/classnames.ts`). `tailwind-merge` misreads the custom `text-h2`/`text-body` scale as text *colours* and drops it; the `extendTailwindMerge` fix lives only inside `cn`.
+- **Two palettes coexist mid-migration.** `Header`, `Footer`, `HeaderNav`, `HeaderMenu`, `Equalizer`, `Heading` already use charte tokens; the `app/` pages plus `Concert`, `Article`, `Carrousel`, `ContactForm` still use the legacy `sky-700`/`zinc`/`gray` palette and `container mx-auto`. This is expected mid-refonte, not a bug — **write new work with charte tokens**.
+- No media queries by design: `clamp()` carries the mobile→desktop title scale, grids use `grid-cols-[repeat(auto-fit,minmax(300px,1fr))]`.
+- `next/font` variables must stay on `<html>`, not `<body>` — `@theme` resolves them at `:root`, and moving them silently kills all typography.
+- Animations: the four keyframes declared in `globals.css`, nothing scroll-triggered, a global `prefers-reduced-motion` rule kills them all.
+- `assets/contents/medias.ts` is half-wired: only `LOGO`/`PARTNER_LOGOS` are consumed today; `HOME_HERO` and friends are the contract for upcoming milestones. Its test enforces exactly one `priority` image site-wide, while several pages currently hardcode `priority` — a known contradiction, not something to silently "fix".
+
+## Content & validation
+
+Adding a concert: append to `assets/contents/concerts.json`, drop the poster in `public/concerts/`, run `yarn validate`. Required fields: `title` / `slug` / `date` (non-empty array of ISO strings) / `location` / `media`; optional: `description` / `programme`. Slug must match `^[a-z0-9]+(?:-[a-z0-9]+)*$` and be unique; `media` must resolve to a real file under `public/`. Full rules and error catalogue: `docs/VALIDATION.md`.
+
+`scripts/validate-concerts.js` is dependency-free CommonJS (so CI runs it with no build step) and validates **concerts only** — `articles.json`/`artists.json` only get a JSON-syntax check in the workflow.
+
+## Testing
+
+- `__tests__/` mirrors source (`components/`, `pages/`, `contents/`, `utils/`), files named `<Source>.test.tsx?`.
+- Vitest `globals: true` — **do not import** `describe`/`it`/`expect`/`vi`.
+- `__tests__/setup.ts` globally mocks `next/image` (→ plain `<img>`, so assert on `img`), `next/navigation` (`notFound()` **throws** `"NEXT_NOT_FOUND"` — page tests catch that; `usePathname()` returns `"/"`, overridable per test), and the `calendar.svg`/`location.svg` icon modules; it also polyfills `setPointerCapture` and `getComputedStyle().transform` because vaul (the drawer) needs them in jsdom.
+- Coverage is scoped to `components/**` + `utils/**`, auto-enabled when `CI=true` or `COVERAGE` is set, and CI enforces **lines 90 / statements 90 / branches 90 / functions 75** (`vitest.config.ts`).
+- `HeaderMenu` passes `autoFocus` to `<Drawer>` deliberately — without it vaul never arms its focus trap.
+
+## Gotchas
+
+- ESLint flat config in `eslint.config.mjs`. `eslint-config-next/core-web-vitals` already registers `react`, `react-hooks`, `import`, `jsx-a11y`, `@next/next`, `@typescript-eslint` — **re-registering any of them makes ESLint fail** (this previously broke the Vercel build). Local plugins: prettier, unicorn, unused-imports, simple-import-sort, sonarjs, security. Notable rules: `sonarjs/cognitive-complexity: 15`, `react/no-array-index-key: error`, `vitest/no-focused-tests: error`.
+- Prettier: double quotes, semicolons, `printWidth: 120`, `trailingComma: "es5"`.
+- `app/nos-concerts/page.tsx` calls `Date.now()` at render with an intentional `react-hooks/purity` disable. The page is statically prerendered, so a concert only moves to "passés" on the next deploy (CPMB-11 will address this) — don't "fix" it blindly.
+- `ContactForm` has no backend: it validates client-side and opens a `mailto:` link. There are no env vars or secrets in this project.
+- Vercel deploys need `ENABLE_EXPERIMENTAL_COREPACK=1`, otherwise Yarn 1 silently re-resolves the Yarn 4 lockfile (see README for the log signature to spot this).
+- Workflow drift: `ci.yml` triggers on `main`/`master` while `data-validation.yml` triggers on `master`/`develop`; only `master` exists. `data-validation.yml` also path-filters on `utils/validation.ts`, which doesn't exist.
+- A fresh `npx shadcn add` emits `@/lib/utils` imports; this repo uses `@/utils/classnames` — fix the import path after generating a component.

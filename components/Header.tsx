@@ -12,7 +12,7 @@ import HeaderNav from "@/components/HeaderNav";
  */
 const Header = () => (
   <header className="border-border bg-bg/[0.94] sticky top-0 z-20 border-b backdrop-blur-sm">
-    <div className="max-w-site mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-3.5">
+    <div className="max-w-site mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-3">
       <Link href="/" className="text-stage-black hover:text-stage-black flex items-center gap-3">
         <Image
           src={LOGO.src}

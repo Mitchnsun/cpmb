@@ -82,7 +82,7 @@
   --radius-image: 4px;
 
   /* --- Mise en page ----------------------------------------------- */
-  --container-site: 1180px;
+  --container-site: 1536px;
   --breakpoint-menu: 700px; /* bascule du menu mobile (CPMB-02) */
 
   /* --- Animations ------------------------------------------------- */
