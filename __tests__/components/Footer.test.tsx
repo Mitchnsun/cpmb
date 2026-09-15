@@ -48,12 +48,15 @@ describe("Footer", () => {
     expect(screen.getByText("Espace Louis-Simon, Gaillard (74240)")).toBeInTheDocument();
   });
 
-  it("should name the partners as plain text, without logos", () => {
+  it("should link to the partners' sites, without logos", () => {
     render(<Footer />);
 
-    expect(screen.getByText("Ville de Gaillard")).toBeInTheDocument();
-    expect(screen.getByText("Département de la Haute-Savoie")).toBeInTheDocument();
-    expect(screen.getByText("Véran Pianos")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ville de Gaillard" })).toHaveAttribute("href", "https://www.gaillard.fr/");
+    expect(screen.getByRole("link", { name: "Département de la Haute-Savoie" })).toHaveAttribute(
+      "href",
+      "https://www.hautesavoie.fr/"
+    );
+    expect(screen.getByRole("link", { name: "Véran Pianos" })).toHaveAttribute("href", "https://www.veran-piano.com/");
     // Only the choir logo is an image in the footer.
     expect(screen.getAllByRole("img")).toHaveLength(1);
   });
@@ -74,6 +77,12 @@ describe("Footer", () => {
     expect(
       screen.getByText("Chœur des Pays du Mont-Blanc — association créée en 2005 à Gaillard, Haute-Savoie.")
     ).toBeInTheDocument();
+  });
+
+  it("should render the copyright line with the current year", () => {
+    render(<Footer />);
+
+    expect(screen.getByText(`© ${new Date().getFullYear()} — Tous droits réservés`)).toBeInTheDocument();
   });
 
   it("should not leave any dead link", () => {

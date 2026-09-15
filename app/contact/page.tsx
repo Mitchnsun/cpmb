@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import ContactForm from "@/components/ContactForm";
 import Heading from "@/components/Heading";
@@ -45,7 +46,11 @@ export default function Contact() {
             <Heading hLevel={2} variant={2} className="mb-4">
               Envoyez-nous un message
             </Heading>
-            <ContactForm />
+            {/* `useSearchParams` reads `?objet=` to preselect the subject: on a
+                statically prerendered page it needs a boundary above it. */}
+            <Suspense>
+              <ContactForm />
+            </Suspense>
           </div>
         </div>
       </div>

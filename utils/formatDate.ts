@@ -1,51 +1,105 @@
 /**
- * Format an ISO date string like "2024-12-13T20:00:00+01:00" into
- * French format: "12 décembre 2024 à 18h30".
- * For date-only strings like "2024-12-13", returns: "12 décembre 2024".
- * - Uses Europe/Paris timezone so displayed time matches local FR time.
- * - Pads minutes to 2 digits and shows hours without leading zero.
- * - Only displays time if the original string contains time information.
+ * French date formatting used across the site.
+ *
+ * Three levels, all built on the same `Intl` parts so a date reads the same
+ * everywhere: the date alone, the time alone, and the two joined. Everything
+ * is rendered in the `Europe/Paris` timezone, so the displayed time matches
+ * the local time of the concert regardless of where the page is built.
  */
-export function formatFrenchDateTime(isoString: string, options?: { timeZone?: string }): string {
-  if (!isoString) return "";
-  const timeZone = options?.timeZone ?? "Europe/Paris";
 
-  const d = new Date(isoString);
+const PARIS = "Europe/Paris";
 
-  if (Number.isNaN(d.getTime())) return "";
+interface FormatOptions {
+  timeZone?: string;
+}
 
-  // Check if the original string contains time information
-  const hasTime = isoString.includes("T");
+interface DateParts {
+  day: string;
+  month: string;
+  year: string;
+}
 
-  // Intl for day/month/year in French
-  const dtf = new Intl.DateTimeFormat("fr-FR", {
-    timeZone,
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-  const parts = dtf.formatToParts(d);
-  const day = parts.find((p) => p.type === "day")?.value ?? "";
-  const month = parts.find((p) => p.type === "month")?.value ?? "";
-  const year = parts.find((p) => p.type === "year")?.value ?? "";
+/** Day / month / year of an ISO string, or `null` if it isn't a valid date. */
+const dateParts = (isoString: string, timeZone: string): DateParts | null => {
+  if (!isoString) return null;
 
-  // If no time in original string, return date only
-  if (!hasTime) {
-    return `${Number(day)} ${month} ${year}`;
-  }
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return null;
 
-  // Separate formatter for time (24h)
-  const time = new Intl.DateTimeFormat("fr-FR", {
-    timeZone,
+  const parts = new Intl.DateTimeFormat("fr-FR", { timeZone, day: "2-digit", month: "long", year: "numeric" })
+    .formatToParts(date)
+    .reduce<Record<string, string>>((acc, part) => ({ ...acc, [part.type]: part.value }), {});
+
+  return { day: String(Number(parts.day ?? "")), month: parts.month ?? "", year: parts.year ?? "" };
+};
+
+/**
+ * "2025-06-14T20:30:00+02:00" → "14 juin 2025".
+ * Returns "" for an empty or invalid input.
+ */
+export function formatFrenchDate(isoString: string, options?: FormatOptions): string {
+  const parts = dateParts(isoString, options?.timeZone ?? PARIS);
+  return parts ? `${parts.day} ${parts.month} ${parts.year}` : "";
+}
+
+/**
+ * "2025-06-14T20:30:00+02:00" → "20h30".
+ * A date-only string ("2025-06-14") carries no time: returns "".
+ */
+export function formatFrenchTime(isoString: string, options?: FormatOptions): string {
+  if (!isoString.includes("T")) return "";
+
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone: options?.timeZone ?? PARIS,
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
   })
-    .format(d)
-    .replace(/^0/, "") // remove leading zero in hour (e.g., 08 → 8)
-    .replace(":", "h"); // 18:30 → 18h30
+    .format(date)
+    .replace(/^0/, "") // 08h30 → 8h30
+    .replace(":", "h");
+}
 
-  return `${Number(day)} ${month} ${year} à ${time}`;
+/**
+ * "2024-12-13T20:00:00+01:00" → "13 décembre 2024 à 20h00".
+ * A date-only string returns the date alone.
+ */
+export function formatFrenchDateTime(isoString: string, options?: FormatOptions): string {
+  const date = formatFrenchDate(isoString, options);
+  if (!date) return "";
+
+  const time = formatFrenchTime(isoString, options);
+  return time ? `${date} à ${time}` : date;
+}
+
+/** Joins days the French way: ["a", "b", "c"] → "a, b et c". */
+const joinDays = (days: readonly string[]): string =>
+  days.length > 1 ? `${days.slice(0, -1).join(", ")} et ${days.at(-1)}` : (days[0] ?? "");
+
+/**
+ * Several dates of a single concert, as one readable line — the epic's rule
+ * is "dates spelled out in French". Consecutive dates sharing a month state
+ * it once: ["2025-06-14", "2025-06-15"] → "14 et 15 juin 2025".
+ */
+export function formatFrenchDateList(isoStrings: readonly string[], options?: FormatOptions): string {
+  const timeZone = options?.timeZone ?? PARIS;
+  const groups: { label: string; days: string[] }[] = [];
+
+  isoStrings.forEach((isoString) => {
+    const parts = dateParts(isoString, timeZone);
+    if (!parts) return;
+
+    const label = `${parts.month} ${parts.year}`;
+    const current = groups.at(-1);
+
+    if (current?.label === label) current.days.push(parts.day);
+    else groups.push({ label, days: [parts.day] });
+  });
+
+  return groups.map(({ label, days }) => `${joinDays(days)} ${label}`).join(", ");
 }
 
 export default formatFrenchDateTime;

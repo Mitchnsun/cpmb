@@ -1,4 +1,4 @@
-import { splitConcertsByDate } from "@/utils/concerts";
+import { nextConcertDate, splitConcertsByDate } from "@/utils/concerts";
 
 type Concert = Parameters<typeof splitConcertsByDate>[0][number];
 
@@ -70,5 +70,31 @@ describe("splitConcertsByDate", () => {
 
   it("should handle an empty list", () => {
     expect(splitConcertsByDate([], NOW)).toEqual({ upcoming: [], past: [] });
+  });
+});
+
+describe("nextConcertDate", () => {
+  it("should return the earliest date still ahead", () => {
+    const next = concert("gloria", ["2025-06-14T20:30:00+02:00", "2025-06-16T18:00:00+02:00"]);
+
+    expect(nextConcertDate(next, NOW)).toBe("2025-06-16T18:00:00+02:00");
+  });
+
+  it("should skip the dates already passed", () => {
+    const next = concert("gloria", ["2025-06-14T20:30:00+02:00", "2025-12-12T18:00:00+01:00"]);
+
+    expect(nextConcertDate(next, NOW)).toBe("2025-12-12T18:00:00+01:00");
+  });
+
+  it("should return undefined when every date is behind us", () => {
+    const old = concert("noel-2024", ["2024-12-22T17:30:00+01:00"]);
+
+    expect(nextConcertDate(old, NOW)).toBeUndefined();
+  });
+
+  it("should ignore an unparsable date", () => {
+    const broken = concert("broken", ["pas-une-date", "2025-12-12T18:00:00+01:00"]);
+
+    expect(nextConcertDate(broken, NOW)).toBe("2025-12-12T18:00:00+01:00");
   });
 });
