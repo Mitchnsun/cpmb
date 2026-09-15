@@ -178,10 +178,18 @@ les réutilise plutôt que de recomposer les classes à la main : c'est là que
 vivent les états de survol qui neutralisent les couleurs de lien globales de
 `globals.css`.
 
-| Composant    | Rôle                                                      | Variantes                                  |
-| ------------ | --------------------------------------------------------- | ------------------------------------------ |
-| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px) | `onLight`, `onDark`, `onTeal`, `outline`   |
-| `Overline`   | Sur-titre mono 12 px majuscules                           | Couleur et approche passées en `className` |
+| Composant    | Rôle                                                          | Variantes                                  |
+| ------------ | ------------------------------------------------------------- | ------------------------------------------ |
+| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px)     | `onLight`, `onDark`, `onTeal`, `outline`   |
+| `Overline`   | Sur-titre mono 12 px majuscules                               | Couleur et approche passées en `className` |
+| `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels         |
+| `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive) |
+
+`PageBanner` porte l'en-tête de toutes les pages intérieures (concerts, fiche
+concert, presse, présentation, mentions légales) : avec une photo il applique
+le dégradé 90° de la charte et une crête décorative non animée ; sans photo il
+reste en noir de scène. `InfoPanel` est l'« encart d'information » de la
+charte : fond blanc, filet 1 px, bord gauche de 3 px à la couleur de l'accent.
 
 Les tons de `ButtonLink` disent sur quoi le bouton est posé, pas sa couleur :
 `onLight` sur le fond de page, `onDark` sur le noir de scène, `onTeal` sur le

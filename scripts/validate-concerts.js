@@ -62,6 +62,29 @@ function validateDateField(concert, index, errors) {
   }
 }
 
+function validateOptionalStringArray(concert, field, index, errors) {
+  if (concert[field] === undefined) return;
+
+  if (!Array.isArray(concert[field])) {
+    errors.push({
+      field: `concert[${index}].${field}`,
+      message: `${field.charAt(0).toUpperCase() + field.slice(1)} must be an array if provided`,
+      value: concert[field],
+    });
+    return;
+  }
+
+  concert[field].forEach((item, itemIndex) => {
+    if (typeof item !== "string" || item.trim() === "") {
+      errors.push({
+        field: `concert[${index}].${field}[${itemIndex}]`,
+        message: `Each ${field} item must be a non-empty string`,
+        value: item,
+      });
+    }
+  });
+}
+
 function validateOptionalFields(concert, index, errors) {
   if (concert.description !== undefined && typeof concert.description !== "string") {
     errors.push({
@@ -71,25 +94,8 @@ function validateOptionalFields(concert, index, errors) {
     });
   }
 
-  if (concert.programme !== undefined) {
-    if (!Array.isArray(concert.programme)) {
-      errors.push({
-        field: `concert[${index}].programme`,
-        message: "Programme must be an array if provided",
-        value: concert.programme,
-      });
-    } else {
-      concert.programme.forEach((item, itemIndex) => {
-        if (typeof item !== "string" || item.trim() === "") {
-          errors.push({
-            field: `concert[${index}].programme[${itemIndex}]`,
-            message: "Each programme item must be a non-empty string",
-            value: item,
-          });
-        }
-      });
-    }
-  }
+  validateOptionalStringArray(concert, "programme", index, errors);
+  validateOptionalStringArray(concert, "performers", index, errors);
 }
 
 // Inline validation functions to avoid import issues

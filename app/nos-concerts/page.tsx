@@ -1,46 +1,44 @@
-import concerts from "@/assets/contents/concerts.json";
-import Concert from "@/components/Concert";
-import Heading from "@/components/Heading";
-import { splitConcertsByDate } from "@/utils/concerts";
+import type { Metadata } from "next";
 
+import concerts from "@/assets/contents/concerts.json";
+import { CONCERTS_BANNER } from "@/assets/contents/medias";
+import PageBanner from "@/components/PageBanner";
+import PastSeasons from "@/components/PastSeasons";
+import UpcomingConcerts from "@/components/UpcomingConcerts";
+import { groupConcertsBySeason, splitConcertsByDate } from "@/utils/concerts";
+
+export const metadata: Metadata = {
+  title: "Nos concerts - Chœur des Pays du Mont-Blanc",
+  description:
+    "Les prochains concerts du Chœur des Pays du Mont-Blanc et les saisons passées : dates, lieux et programmes en Haute-Savoie.",
+  keywords: ["chœur", "mont-blanc", "concerts", "agenda", "haute-savoie", "musique classique", "saison"],
+};
+
+/**
+ * The page is prerendered, then rebuilt at most once an hour: the split
+ * between upcoming and past concerts happens at Paris midnight, and without
+ * this a concert would only move sections on the next deploy (CPMB-11).
+ */
+export const revalidate = 3600;
+
+/**
+ * "Nos concerts" page — milestone M3.
+ *
+ * Banner (CPMB-12), the season still ahead or its empty state (CPMB-12),
+ * then the past seasons as an accordion (CPMB-13). Both lists come from the
+ * same data: no concert is filed by hand into one section or the other.
+ */
 export default function NosConcerts() {
-  // The page is statically prerendered, so the reference date is the build
-  // date, not the visit date — a concert only moves to "past" on the next
-  // deploy. CPMB-11 will decide between dynamic rendering and revalidation;
-  // the rule is disabled here knowingly, since `Date.now()` is indeed impure.
+  /* Rebuilt hourly (see `revalidate`), so the reference date stays fresh. */
   // eslint-disable-next-line react-hooks/purity
-  const { upcoming, past } = splitConcertsByDate(concerts, Date.now());
+  const now = Date.now();
+  const { upcoming, past } = splitConcertsByDate(concerts, now);
 
   return (
-    <section className="container mx-auto mt-2 p-4">
-      <section>
-        <Heading hLevel={1} variant={0} className="mb-8 border-b-2 border-sky-700 pb-2 text-2xl lg:w-1/2">
-          Nos prochains concerts
-        </Heading>
-        <ul className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {upcoming.length > 0 ? (
-            upcoming.map((data) => (
-              <li key={data.slug}>
-                <Concert {...data} />
-              </li>
-            ))
-          ) : (
-            <li aria-live="polite">Les concerts de cette saison vont être annoncés prochainement</li>
-          )}
-        </ul>
-      </section>
-      <section className="mt-10">
-        <Heading hLevel={2} variant={0} className="mb-8 border-b-2 border-sky-700 pb-2 text-2xl lg:w-1/2">
-          Nos concerts passés
-        </Heading>
-        <ul className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {past.map((data) => (
-            <li key={data.slug}>
-              <Concert {...data} />
-            </li>
-          ))}
-        </ul>
-      </section>
-    </section>
+    <>
+      <PageBanner overline="Agenda" title="Nos concerts" image={CONCERTS_BANNER} />
+      <UpcomingConcerts items={upcoming} />
+      <PastSeasons seasons={groupConcertsBySeason(past)} />
+    </>
   );
 }

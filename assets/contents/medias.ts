@@ -79,6 +79,16 @@ export const CONCERTS_BANNER: SiteImage = {
   sizes: "100vw",
 };
 
+/** "Présentation" page banner — same photo as "Le chœur", cropped full width. */
+export const PRESENTATION_BANNER: SiteImage = {
+  src: "/carrousel/CPMB2.jpg",
+  alt: "Le Chœur des Pays du Mont-Blanc en représentation",
+  width: 2512,
+  height: 1669,
+  objectPosition: "center 35%",
+  sizes: "100vw",
+};
+
 /** "Contact" page banner. */
 export const CONTACT_BANNER: SiteImage = {
   src: "/carrousel/Hautecombe-16.10.22.jpg",

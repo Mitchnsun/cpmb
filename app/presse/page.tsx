@@ -4,6 +4,7 @@ import Link from "next/link";
 import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
 import Heading from "@/components/Heading";
+import PageBanner from "@/components/PageBanner";
 
 export const metadata: Metadata = {
   title: "Presse - Chœur des Pays du Mont-Blanc",
@@ -17,23 +18,23 @@ export default function Presse() {
   const rest = articles.slice(1);
 
   return (
-    <section className="container mx-auto mt-2 p-4">
-      <Heading hLevel={1} variant={0} className="mb-8 border-b-2 border-sky-700 pb-2 text-2xl lg:w-1/2">
-        Presse
-      </Heading>
-      <Article hLevel={2} {...lastArticles} />
-      <Heading hLevel={3} variant={2} className="mt-12 mb-4 border-b-2 border-sky-700 pb-1 lg:w-1/2">
-        Autres articles
-      </Heading>
-      <ul className="space-y-2">
-        {rest.map((article) => (
-          <li key={article.slug}>
-            <Link href={`/presse/${article.slug}`} className="text-sky-700 hover:underline">
-              {article.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <>
+      <PageBanner overline="Revue de presse" title="Presse" />
+      <section className="container mx-auto mt-2 p-4">
+        <Article hLevel={2} {...lastArticles} />
+        <Heading hLevel={3} variant={2} className="mt-12 mb-4 border-b-2 border-sky-700 pb-1 lg:w-1/2">
+          Autres articles
+        </Heading>
+        <ul className="space-y-2">
+          {rest.map((article) => (
+            <li key={article.slug}>
+              <Link href={`/presse/${article.slug}`} className="text-sky-700 hover:underline">
+                {article.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }

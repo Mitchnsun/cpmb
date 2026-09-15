@@ -9,10 +9,19 @@ import {
   LOGO,
   PARTNER_LOGOS,
   posterAlt,
+  PRESENTATION_BANNER,
   type SiteImage,
 } from "@/assets/contents/medias";
 
-const ALL_IMAGES: SiteImage[] = [LOGO, HOME_HERO, CHOIR_PORTRAIT, CONCERTS_BANNER, CONTACT_BANNER, ...PARTNER_LOGOS];
+const ALL_IMAGES: SiteImage[] = [
+  LOGO,
+  HOME_HERO,
+  CHOIR_PORTRAIT,
+  CONCERTS_BANNER,
+  CONTACT_BANNER,
+  PRESENTATION_BANNER,
+  ...PARTNER_LOGOS,
+];
 
 describe("medias", () => {
   it("should point at files that exist in public/", () => {
@@ -38,6 +47,7 @@ describe("medias", () => {
     expect(CHOIR_PORTRAIT.objectPosition).toBe("center 42%");
     expect(CONCERTS_BANNER.objectPosition).toBe("center 40%");
     expect(CONTACT_BANNER.objectPosition).toBe("center 35%");
+    expect(PRESENTATION_BANNER.objectPosition).toBe("center 35%");
   });
 
   it("should build a poster alt from the concert title", () => {

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
 import Artists from "@/assets/contents/artists.json";
+import { PRESENTATION_BANNER } from "@/assets/contents/medias";
 import ArtistArticle from "@/components/ArtistArticle";
 import Heading from "@/components/Heading";
+import PageBanner from "@/components/PageBanner";
 
 export const metadata: Metadata = {
   title: "Présentation - Chœur des Pays du Mont-Blanc",
@@ -28,27 +29,7 @@ export default function Presentation() {
 
   return (
     <>
-      <section
-        className="relative mx-auto mb-4 h-80 w-full md:h-96 lg:mb-8 xl:h-128 2xl:mt-8"
-        style={{ maxWidth: 1536 }}
-      >
-        <Image
-          src="/carrousel/CPMB2.jpg"
-          alt="Le Chœur des Pays du Mont-Blanc en représentation"
-          priority
-          fill
-          sizes="(max-width: 1536px) 100vw, 1536px"
-          className="object-cover 2xl:rounded-md"
-          fetchPriority="high"
-        />
-        <Heading
-          hLevel={1}
-          variant={0}
-          className="absolute bottom-8 w-full text-center text-5xl text-white text-shadow-sm md:text-6xl lg:text-7xl"
-        >
-          Présentation
-        </Heading>
-      </section>
+      <PageBanner overline="Le chœur" title="Présentation" image={PRESENTATION_BANNER} />
       <section className="px-4">
         <article className="container mx-auto text-justify">
           <Heading hLevel={2} className="mb-2">
