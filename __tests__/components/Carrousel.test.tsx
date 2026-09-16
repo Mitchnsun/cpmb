@@ -104,6 +104,26 @@ describe("Carrousel", () => {
     expect(screen.getByRole("button", { name: "Reprendre le défilement" })).toBeInTheDocument();
   });
 
+  it("should pause on the pause button, even when the click brings focus with it", async () => {
+    // Clicking a button focuses it first. With the focus takeover applying
+    // here too, it set `isPlaying` to false and the click then toggled that
+    // fresh value back to true: the control swallowed its own press.
+    render(<Carrousel />);
+
+    await user.click(screen.getByRole("button", { name: "Mettre le défilement en pause" }));
+
+    const toggle = screen.getByRole("button", { name: "Reprendre le défilement" });
+    expect(toggle).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("region")).toHaveAttribute("aria-live", "polite");
+
+    await user.click(toggle);
+
+    expect(screen.getByRole("button", { name: "Mettre le défilement en pause" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+  });
+
   it("should wrap around from the first photo to the last", async () => {
     render(<Carrousel />);
 

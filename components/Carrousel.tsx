@@ -41,6 +41,8 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [enlarged, setEnlarged] = useState<SiteImage | null>(null);
   /* The slide the lightbox was opened from, to focus again on close. */
   const openerRef = useRef<HTMLButtonElement>(null);
+  /* Named so the focus takeover below can leave this one control alone. */
+  const playToggleRef = useRef<HTMLButtonElement>(null);
   const intervalRef = useRef<number | null>(null);
   const startTimeoutRef = useRef<number | null>(null);
 
@@ -117,11 +119,17 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
         aria-label="Photos du chœur"
         aria-roledescription="carrousel"
         aria-live={isScrolling ? "off" : "polite"}
-        /* Tabbing in is enough to take control. Left running, the next tick
-           would move the slide the visitor just reached, handing them a
-           control that is now `aria-hidden` and out of the tab order while
-           it still holds focus. Bubbles, so any control inside counts. */
-        onFocus={() => setIsPlaying(false)}
+        /* Reaching the gallery is enough to take control. Left running, the
+           next tick would move the slide the visitor just reached, handing
+           them a control that is now `aria-hidden` and out of the tab order
+           while it still holds focus. Bubbles, so any control inside counts
+           — except the play toggle, which already says what the state should
+           be: a press focuses it first, and pausing here would only leave
+           its own click toggling the value back. */
+        onFocus={(event) => {
+          if (playToggleRef.current?.contains(event.target)) return;
+          setIsPlaying(false);
+        }}
       >
         {/* No frame at all: transparent and unruled, the photo sits straight
             on the page. A border drew a box around what a contained strip
@@ -217,6 +225,7 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
           {reduceMotion ? null : (
             <button
               type="button"
+              ref={playToggleRef}
               onClick={() => setIsPlaying((playing) => !playing)}
               className="text-muted hover:text-teal focus-visible:outline-teal ml-2 flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-2"
               aria-label={isScrolling ? "Mettre le défilement en pause" : "Reprendre le défilement"}
