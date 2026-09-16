@@ -29,7 +29,8 @@ interface LightboxProps {
  * blowing one up past its own pixels would only soften it.
  *
  * The dark margin around the photo closes it, as a viewer is expected to,
- * and closing returns focus to `returnFocusTo`.
+ * and closing returns focus to `returnFocusTo`. The layer's title stays
+ * generic: the photo is described once, by the image it belongs to.
  */
 const Lightbox = ({ image, onClose, returnFocusTo }: LightboxProps) => (
   <Dialog.Root open={image !== null} onOpenChange={(open) => !open && onClose()}>
@@ -48,8 +49,11 @@ const Lightbox = ({ image, onClose, returnFocusTo }: LightboxProps) => (
         }}
         className="fixed inset-0 z-50 flex items-center justify-center p-6 focus:outline-none"
       >
-        {/* The alt already describes the photo: the title names the layer. */}
-        <Dialog.Title className="sr-only">{image?.alt}</Dialog.Title>
+        {/* Generic on purpose. The image's own `alt` describes the photo, and
+            the slide that opened the layer already named it: titling the
+            dialog with that same text made a screen reader say it three times
+            over — dialog, heading, image. The title says what the layer is. */}
+        <Dialog.Title className="sr-only">Photo agrandie</Dialog.Title>
 
         {image ? (
           <Image

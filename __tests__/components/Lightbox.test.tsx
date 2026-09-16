@@ -22,10 +22,14 @@ describe("Lightbox", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("should name the layer with the photo's own description", () => {
+  it("should name the layer generically, leaving the photo described once", () => {
+    // Titling the dialog with the alt made a screen reader announce the same
+    // description three times over: dialog, heading, then the image itself.
     render(<Lightbox image={photo} onClose={vi.fn()} />);
 
-    expect(screen.getByRole("dialog", { name: photo.alt })).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Photo agrandie" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: photo.alt })).not.toBeInTheDocument();
+    expect(screen.getByAltText(photo.alt)).toBeInTheDocument();
   });
 
   it("should show the photo whole, at its native dimensions", () => {

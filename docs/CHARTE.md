@@ -243,6 +243,11 @@ diapositive est un bouton qui ouvre la photo dans `Lightbox` ; le défilement
 s'arrête dès que le visiteur prend la main, et ne démarre pas du tout sous
 `prefers-reduced-motion`.
 
+Le titre de `Lightbox` reste **générique** (« Photo agrandie ») : la photo
+est décrite une seule fois, par l'`alt` de son image. Reprendre cet `alt`
+comme nom du dialogue le faisait annoncer trois fois de suite — dialogue,
+titre, image — après la diapositive qui le portait déjà.
+
 Seules les flèches sont posées sur la photo, et uniquement sur ses côtés :
 un cadre 21/9 ne fait que 117 px de haut sur un écran de 320 px, donc une
 flèche centrée et un bouton en coin ne peuvent pas y tenir leurs 44 px sans

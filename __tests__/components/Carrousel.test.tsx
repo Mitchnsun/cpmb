@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
@@ -135,7 +135,10 @@ describe("Carrousel", () => {
 
     await user.click(screen.getByRole("button", { name: /^Agrandir la photo/ }));
 
-    expect(screen.getByRole("dialog", { name: CARROUSEL_IMAGES[0].alt })).toBeInTheDocument();
+    // The layer is named for what it is; the photo it holds carries the
+    // description, so opening one never says the same thing twice.
+    const dialog = screen.getByRole("dialog", { name: "Photo agrandie" });
+    expect(within(dialog).getByAltText(CARROUSEL_IMAGES[0].alt)).toBeInTheDocument();
   });
 
   it("should keep the dots and the pause out of the photo frame", () => {
