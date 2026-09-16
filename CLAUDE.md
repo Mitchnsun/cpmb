@@ -22,6 +22,7 @@ Node 24 (`.nvmrc`), Yarn 4.18 via `corepack enable`.
 | `yarn test:coverage`                           | coverage report (v8)                                              |
 | `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                   |
 | `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                               |
+| `yarn audit:a11y`                              | axe + Playwright, **needs a server already running** (see below)  |
 
 Single test: `yarn vitest run __tests__/components/Header.test.tsx`
 By name: `yarn vitest run -t "should render the header"`
@@ -31,6 +32,15 @@ Full pre-push gate mirroring CI (`.github/workflows/ci.yml`: lint / test:ci / ty
 ```bash
 yarn lint && yarn type-check && yarn test:ci && yarn validate
 ```
+
+`yarn audit:a11y` (`scripts/audit-a11y.mjs`) is the CPMB-16 recette, replayable: 10 pages × 4 widths (390/768/1440, plus 720 for 1440 at 200 % zoom), axe-core plus its own checks — horizontal overflow, single `h1`, keyboard sweep, the drawer's focus trap, `prefers-reduced-motion`, unique page titles. It audits a running build, not the dev server:
+
+```bash
+yarn build && yarn start &
+AUDIT_URL=http://127.0.0.1:3000 yarn audit:a11y   # exits non-zero on a blocking finding
+```
+
+It deliberately serves photos from `public/` instead of `/_next/image` (hundreds of variants in a row starve the optimiser) and waits for the entry animations before measuring contrast (text read mid-fade is half transparent). Findings and the manual half of the recette: `docs/RECETTE-A11Y.md`.
 
 ## Architecture
 
