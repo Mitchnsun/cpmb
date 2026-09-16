@@ -3,14 +3,17 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import concerts from "@/assets/contents/concerts.json";
-import { posterAlt } from "@/assets/contents/medias";
+import { CONCERTS_BANNER, posterAlt } from "@/assets/contents/medias";
 import ButtonLink, { buttonLinkVariants } from "@/components/ButtonLink";
 import InfoPanel from "@/components/InfoPanel";
 import PageBanner from "@/components/PageBanner";
 import { cn } from "@/utils/classnames";
 import { type Concert, concertSeason, nextConcertDate, seasonId } from "@/utils/concerts";
 import { formatFrenchDateTime } from "@/utils/formatDate";
-import { concertIcsPath } from "@/utils/site";
+import { META_DESCRIPTION_LENGTH, pageMetadata } from "@/utils/metadata";
+import { concertIcsPath, concertPath } from "@/utils/site";
+import { concertEvents } from "@/utils/structuredData";
+import { truncateAtWord } from "@/utils/truncate";
 
 interface ConcertPageProps {
   params: Promise<{ slug: string }>;
@@ -46,6 +49,18 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
 
   return (
     <>
+      {/* One schema.org MusicEvent per performance (CPMB-18): a search
+          engine lists the concert as an event, with its date and its place,
+          rather than as one more page. Read by crawlers only — nothing of it
+          reaches the screen or a screen reader. */}
+      {concertEvents(concert).map((event) => (
+        <script
+          key={event.startDate}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(event) }}
+        />
+      ))}
+
       <PageBanner
         backLink={{ href: `/nos-concerts#${seasonId(season)}`, label: "Retour aux concerts" }}
         overline={`${upcoming ? "Concert à venir" : "Concert passé"} — saison ${season}`}
@@ -143,8 +158,15 @@ export async function generateMetadata({ params }: ConcertPageProps): Promise<Me
     return { title: "Concert non trouvé" };
   }
 
-  return {
-    title: `${concert.title} | Chœur des Pays du Mont-Blanc`,
-    description: concert.description,
-  };
+  return pageMetadata({
+    title: concert.title,
+    /* A description is a summary: the full text of a concert runs long. */
+    description: concert.description ? truncateAtWord(concert.description, META_DESCRIPTION_LENGTH) : concert.title,
+    path: concertPath(concert.slug),
+    /* The poster is the concert's own image; without one, the agenda's. */
+    image: concert.media
+      ? { src: concert.media, alt: posterAlt(concert.title), width: 1080, height: 1500 }
+      : CONCERTS_BANNER,
+    type: "article",
+  });
 }

@@ -5,6 +5,8 @@ import Artists from "@/assets/contents/artists.json";
 import ArtistArticle from "@/components/ArtistArticle";
 import PageBanner from "@/components/PageBanner";
 import ScrollToTop from "@/components/ScrollToTop";
+import { META_DESCRIPTION_LENGTH, pageMetadata } from "@/utils/metadata";
+import { truncateAtWord } from "@/utils/truncate";
 
 export async function generateStaticParams() {
   return Object.keys(Artists).map((artist) => ({
@@ -22,9 +24,13 @@ export async function generateMetadata({ params }: { params: Promise<{ artist: s
     };
   }
 
-  return {
+  return pageMetadata({
     title: data.name,
-  };
+    description: truncateAtWord(data.text[0] ?? data.name, META_DESCRIPTION_LENGTH),
+    path: `/presentation/${artist}`,
+    image: { src: data.media, alt: data.alt, width: data.width, height: data.height },
+    type: "article",
+  });
 }
 
 export default async function Artist({ params }: { params: Promise<{ artist: string }> }) {

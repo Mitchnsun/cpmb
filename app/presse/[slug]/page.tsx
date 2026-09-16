@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
 import PageBanner from "@/components/PageBanner";
+import { pageMetadata } from "@/utils/metadata";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -54,8 +55,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     };
   }
 
-  return {
-    title: `${article.title} | Chœur des Pays du Mont-Blanc`,
+  const [clipping] = article.media;
+
+  return pageMetadata({
+    title: article.title,
     description: article.subtitle || article.title,
-  };
+    path: `/presse/${article.slug}`,
+    /* The scan of the clipping itself, when the article carries one. */
+    ...(clipping
+      ? { image: { src: clipping.url, alt: clipping.alt, width: clipping.width, height: clipping.height } }
+      : {}),
+    type: "article",
+  });
 }

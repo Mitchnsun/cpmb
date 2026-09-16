@@ -3,8 +3,10 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
 
+import { SOCIAL_IMAGE } from "@/assets/contents/medias";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { SITE_NAME, SITE_URL } from "@/utils/site";
 
 /**
  * `next/font` self-hosts the woff2 files and applies `font-display: swap`
@@ -31,10 +33,36 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+/**
+ * Site-wide metadata (CPMB-18).
+ *
+ * `metadataBase` is what turns every relative `canonical` and every Open
+ * Graph image path below into the absolute address a crawler or a messaging
+ * app needs. The title template lets each page carry its own short name —
+ * "Nos concerts" — and still be listed under the choir's.
+ */
 export const metadata: Metadata = {
-  title: "Chœur des Pays du Mont-Blanc",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} — chœur symphonique en Haute-Savoie`,
+    template: `%s | ${SITE_NAME}`,
+  },
   description:
     "Chœur des Pays du Mont-Blanc : interprétations de qualité pour tous — « Apprendre à écouter, c'est découvrir l'émotion ».",
+  applicationName: SITE_NAME,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: SITE_NAME,
+    url: "/",
+    title: `${SITE_NAME} — chœur symphonique en Haute-Savoie`,
+    description:
+      "Chœur symphonique de 30 choristes amateurs dirigé par Benoît Dubu, en concert en Haute-Savoie et dans le Genevois.",
+    images: [{ url: SOCIAL_IMAGE.src, width: SOCIAL_IMAGE.width, height: SOCIAL_IMAGE.height, alt: SOCIAL_IMAGE.alt }],
+  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
   keywords: [
     "chœur",
     "mont-blanc",

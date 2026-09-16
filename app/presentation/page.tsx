@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
-
 import Artists from "@/assets/contents/artists.json";
 import { PRESENTATION_BANNER } from "@/assets/contents/medias";
 import ArtistArticle from "@/components/ArtistArticle";
 import Carrousel from "@/components/Carrousel";
 import PageBanner from "@/components/PageBanner";
 import TextLink from "@/components/TextLink";
+import { pageMetadata } from "@/utils/metadata";
 
-export const metadata: Metadata = {
-  title: "Présentation - Chœur des Pays du Mont-Blanc",
+export const metadata = pageMetadata({
+  title: "Présentation",
   description:
     "Découvrez le Chœur des Pays du Mont-Blanc, ensemble vocal amateur de 30 choristes dirigé par Benoît Dubu. Créé en 2005, notre chœur propose des concerts de musique classique en Haute-Savoie.",
+  path: "/presentation",
+  image: PRESENTATION_BANNER,
   keywords: [
     "chœur",
     "mont-blanc",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     "concerts",
     "gaillard",
   ],
-};
+});
 
 export default function Presentation() {
   const benoitDubu = Artists["benoit-dubu"];

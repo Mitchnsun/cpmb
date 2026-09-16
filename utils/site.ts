@@ -14,6 +14,16 @@ export const SITE_URL = "https://choeurdespaysdumontblanc.fr";
  */
 export const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
 
+/** Name of the choir, as metadata and structured data spell it. */
+export const SITE_NAME = "Chœur des Pays du Mont-Blanc";
+
+/**
+ * A path of the site, as an absolute address. What leaves the site needs
+ * one: the sitemap, `robots.txt`, an Open Graph tag, a structured-data
+ * block, an `.ics` file.
+ */
+export const absoluteUrl = (path: string): string => `${SITE_URL}${path}`;
+
 /** Page of a concert, as a path — what every link inside the site uses. */
 export const concertPath = (slug: string): string => `/nos-concerts/${slug}`;
 

@@ -1,18 +1,19 @@
-import type { Metadata } from "next";
-
 import concerts from "@/assets/contents/concerts.json";
 import { CONCERTS_BANNER } from "@/assets/contents/medias";
 import PageBanner from "@/components/PageBanner";
 import PastSeasons from "@/components/PastSeasons";
 import UpcomingConcerts from "@/components/UpcomingConcerts";
 import { groupConcertsBySeason, splitConcertsByDate } from "@/utils/concerts";
+import { pageMetadata } from "@/utils/metadata";
 
-export const metadata: Metadata = {
-  title: "Nos concerts - Chœur des Pays du Mont-Blanc",
+export const metadata = pageMetadata({
+  title: "Nos concerts",
   description:
-    "Les prochains concerts du Chœur des Pays du Mont-Blanc et les saisons passées : dates, lieux et programmes en Haute-Savoie.",
+    "Les prochains concerts du Chœur des Pays du Mont-Blanc et les saisons passées : dates, lieux et programmes en Haute-Savoie et dans le Genevois.",
+  path: "/nos-concerts",
+  image: CONCERTS_BANNER,
   keywords: ["chœur", "mont-blanc", "concerts", "agenda", "haute-savoie", "musique classique", "saison"],
-};
+});
 
 /**
  * The page is prerendered, then rebuilt at most once an hour: the split

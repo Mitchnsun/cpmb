@@ -57,8 +57,18 @@ describe("ArticlePage", () => {
 
     const metadata = await generateMetadata({ params: mockParams });
 
-    expect(metadata.title).toBe(`${articles[0].title} | Chœur des Pays du Mont-Blanc`);
+    /* The choir's name is appended by the layout's title template. */
+    expect(metadata.title).toBe(articles[0].title);
     expect(metadata.description).toBe(articles[0].subtitle);
+    expect(metadata.alternates?.canonical).toBe(`/presse/${articles[0].slug}`);
+  });
+
+  it("should share the clipping itself as the social card", async () => {
+    const metadata = await generateMetadata({ params: Promise.resolve({ slug: articles[0].slug }) });
+
+    expect(metadata.openGraph?.images).toEqual([
+      expect.objectContaining({ url: articles[0].media[0].url, alt: articles[0].media[0].alt }),
+    ]);
   });
 
   it("should generate default metadata for non-existent article", async () => {

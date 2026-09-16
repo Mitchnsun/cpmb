@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-
 import PageBanner from "@/components/PageBanner";
 import TextLink from "@/components/TextLink";
+import { pageMetadata } from "@/utils/metadata";
 import { CONTACT_EMAIL } from "@/utils/site";
 
-export const metadata: Metadata = {
-  title: "Mentions légales – Chœur des Pays du Mont-Blanc",
+export const metadata = pageMetadata({
+  title: "Mentions légales",
   description: "Informations légales, données personnelles (RGPD) et contacts du Chœur des Pays du Mont-Blanc.",
-};
+  path: "/mentions-legales",
+});
 
 export default function Mentions() {
   return (

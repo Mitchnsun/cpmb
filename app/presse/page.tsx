@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-
 import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
 import PageBanner from "@/components/PageBanner";
 import TextLink from "@/components/TextLink";
+import { pageMetadata } from "@/utils/metadata";
 
-export const metadata: Metadata = {
-  title: "Presse - Chœur des Pays du Mont-Blanc",
+export const metadata = pageMetadata({
+  title: "Presse",
   description:
-    "Retrouvez tous les articles de presse sur le Chœur des Pays du Mont-Blanc. Découvrez nos dernières actualités et nos concerts dans les médias locaux.",
+    "La revue de presse du Chœur des Pays du Mont-Blanc : les articles parus dans le Dauphiné Libéré et la presse locale à propos de nos concerts.",
+  path: "/presse",
   keywords: ["chœur", "mont-blanc", "presse", "articles", "concerts", "actualités", "médias"],
-};
+});
 
 export default function Presse() {
   const [latest, ...rest] = articles;
