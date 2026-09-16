@@ -1,15 +1,12 @@
 import Image from "next/image";
 
-import { cn } from "@/utils/classnames";
-
 interface ArtistArticleProps {
-  name: string;
+  /** Omitted when the page banner already carries the name. */
+  name?: string;
   media: string;
   alt: string;
   text: string[];
   hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
-  /** Kept in the outline but taken off screen, when a banner already shows it. */
-  titleHidden?: boolean;
 }
 
 /**
@@ -19,13 +16,17 @@ interface ArtistArticleProps {
  * its own width and the text takes what is left, until the text no longer
  * fits beside it and drops below, the photo then centring itself. The page
  * owns the container and the gutter, not this component.
+ *
+ * Without a `name` no heading is rendered at all: on the artist page the
+ * banner is already the `h1`, and merely hiding a second one would still
+ * hand screen readers the same title twice.
  */
-const ArtistArticle = ({ name, media, alt, text, hLevel = 2, titleHidden }: ArtistArticleProps) => {
+const ArtistArticle = ({ name, media, alt, text, hLevel = 2 }: ArtistArticleProps) => {
   const Title = `h${hLevel}` as const;
 
   return (
     <article>
-      <Title className={cn("font-display mb-5.5 text-3xl font-semibold", titleHidden && "sr-only")}>{name}</Title>
+      {name ? <Title className="font-display mb-5.5 text-3xl font-semibold">{name}</Title> : null}
 
       <div className="flex flex-wrap items-start gap-10">
         <Image

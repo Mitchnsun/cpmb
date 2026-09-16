@@ -99,11 +99,15 @@ describe("ArtistArticle", () => {
     expect(screen.getAllByText(/paragraphe/)[0].parentElement).toHaveClass("min-w-2xs", "flex-1");
   });
 
-  it("should keep the name in the outline but off screen when the banner shows it", () => {
-    render(<ArtistArticle {...mockProps} hLevel={1} titleHidden />);
+  it("should render no heading at all when the page banner already carries the name", () => {
+    const { name, ...withoutName } = mockProps;
+    render(<ArtistArticle {...withoutName} />);
 
-    const heading = screen.getByRole("heading", { name: mockProps.name, level: 1 });
-    expect(heading).toHaveClass("sr-only");
+    // Hiding a second heading is not enough: `sr-only` keeps it in the
+    // accessibility tree, and the name would be announced twice.
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByText(name)).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: mockProps.alt })).toBeInTheDocument();
   });
 
   it("should handle special characters in text", () => {

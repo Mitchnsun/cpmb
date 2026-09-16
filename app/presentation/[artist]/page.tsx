@@ -47,9 +47,9 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
       />
 
       <section className="max-w-site mx-auto px-6 pt-14 pb-20">
-        {/* The banner carries the name: the portrait keeps its own heading
-            for the outline, visually hidden. */}
-        <ArtistArticle name={data.name} media={data.media} alt={data.alt} text={data.text} hLevel={1} titleHidden />
+        {/* The banner is the page's h1: the portrait renders no heading of
+            its own, so the name is announced once and not twice. */}
+        <ArtistArticle media={data.media} alt={data.alt} text={data.text} />
       </section>
     </>
   );
