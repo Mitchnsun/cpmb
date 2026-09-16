@@ -5,8 +5,7 @@ import artists from "@/assets/contents/artists.json";
 import { LOGO, PARTNER_LOGOS } from "@/assets/contents/medias";
 import { SITEMAP_LINKS } from "@/assets/contents/navigation";
 import Overline from "@/components/Overline";
-
-const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
+import { CONTACT_EMAIL } from "@/utils/site";
 
 /** Fixed once at build time: the site is fully static, so this never updates at runtime. */
 const BUILD_YEAR = new Date().getFullYear();

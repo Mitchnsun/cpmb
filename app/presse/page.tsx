@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import articles from "@/assets/contents/articles.json";
 import Article from "@/components/Article";
-import Heading from "@/components/Heading";
 import PageBanner from "@/components/PageBanner";
+import TextLink from "@/components/TextLink";
 
 export const metadata: Metadata = {
   title: "Presse - Chœur des Pays du Mont-Blanc",
@@ -14,23 +13,20 @@ export const metadata: Metadata = {
 };
 
 export default function Presse() {
-  const lastArticles = articles[0];
-  const rest = articles.slice(1);
+  const [latest, ...rest] = articles;
 
   return (
     <>
       <PageBanner overline="Revue de presse" title="Presse" />
-      <section className="container mx-auto mt-2 p-4">
-        <Article hLevel={2} {...lastArticles} />
-        <Heading hLevel={3} variant={2} className="mt-12 mb-4 border-b-2 border-sky-700 pb-1 lg:w-1/2">
-          Autres articles
-        </Heading>
-        <ul className="space-y-2">
+
+      <section className="max-w-site mx-auto px-6 pt-16 pb-20">
+        <Article hLevel={2} {...latest} />
+
+        <h2 className="font-display border-teal mt-12 mb-6 border-b-2 pb-3 text-3xl font-semibold">Autres articles</h2>
+        <ul className="grid gap-3">
           {rest.map((article) => (
-            <li key={article.slug}>
-              <Link href={`/presse/${article.slug}`} className="text-sky-700 hover:underline">
-                {article.title}
-              </Link>
+            <li key={article.slug} className="text-lg">
+              <TextLink href={`/presse/${article.slug}`}>{article.title}</TextLink>
             </li>
           ))}
         </ul>

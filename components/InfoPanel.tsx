@@ -1,10 +1,12 @@
-import { type HTMLAttributes, type PropsWithChildren } from "react";
+import { type HTMLAttributes, type PropsWithChildren, type Ref } from "react";
 
 import { cn } from "@/utils/classnames";
 
 interface InfoPanelProps extends PropsWithChildren, HTMLAttributes<HTMLDivElement> {
   /** Teal for neutral information, copper for the past and the archive. */
   accent?: "teal" | "copper";
+  /** React 19 passes `ref` as a plain prop; the contact confirmation focuses it. */
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**

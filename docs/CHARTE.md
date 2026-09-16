@@ -111,10 +111,10 @@ shadcn/ui, il n'y a qu'une seule échelle sur le site.
 
 ## Table de correspondance des anciens tokens
 
-Les tickets de l'épic #17 encore ouverts et les pages de `app/` toujours en
-palette legacy ont pu être rédigés avec les anciens noms, supprimés lors de
-la réduction du nombre de tokens du `@theme`. Cette table est transitoire :
-elle pourra disparaître une fois la refonte terminée.
+Les tickets de l'épic #17 encore ouverts ont pu être rédigés avec les anciens
+noms, supprimés lors de la réduction du nombre de tokens du `@theme`. Toutes
+les pages de `app/` sont désormais en charte (M4) : cette table ne sert plus
+qu'à relire les tickets, et pourra disparaître une fois la refonte terminée.
 
 | Ancien token / classe | À écrire désormais                                                |
 | --------------------- | ----------------------------------------------------------------- |
@@ -150,6 +150,17 @@ natifs — pas de surcharge, pas de token, on écrit directement la classe.
 Rythme vertical : `py-14` (56 px) pour les bandeaux, `py-16` à `py-20`
 (64–80 px) pour les sections de contenu.
 
+**Mesure de lecture.** Le conteneur fait 1536 px : un paragraphe étalé sur
+toute cette largeur dépasserait 200 caractères par ligne. Deux mesures
+coexistent donc, selon ce que porte le bloc.
+
+| Classe              | Largeur  | Pour quoi                                                                     |
+| ------------------- | -------- | ----------------------------------------------------------------------------- |
+| `max-w-6xl mx-auto` | 1152 px  | Blocs éditoriaux de la page Présentation — trois quarts du conteneur, centrés |
+| `max-w-prose`       | ~65 car. | Texte courant isolé (mentions légales, encarts, chapô d'un article)           |
+
+`max-w-6xl` est une classe Tailwind native : aucun token maison n'est ajouté.
+
 Grilles fluides, sans media query :
 `grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10` — le passage en une
 colonne se fait tout seul.
@@ -183,12 +194,16 @@ les réutilise plutôt que de recomposer les classes à la main : c'est là que
 vivent les états de survol qui neutralisent les couleurs de lien globales de
 `globals.css`.
 
-| Composant    | Rôle                                                          | Variantes                                  |
-| ------------ | ------------------------------------------------------------- | ------------------------------------------ |
-| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px)     | `onLight`, `onDark`, `onTeal`, `outline`   |
-| `Overline`   | Sur-titre mono 12 px majuscules                               | Couleur et approche passées en `className` |
-| `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels         |
-| `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive) |
+| Composant    | Rôle                                                          | Variantes                                   |
+| ------------ | ------------------------------------------------------------- | ------------------------------------------- |
+| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px)     | `onLight`, `onDark`, `onTeal`, `outline`    |
+| `TextLink`   | Lien texte souligné au `border-bottom`                        | `onLight` (défaut), `onDark`                |
+| `Overline`   | Sur-titre mono 12 px majuscules                               | Couleur et approche passées en `className`  |
+| `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels          |
+| `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive)  |
+| `FormField`  | Champ de formulaire étiqueté (étiquette, contrôle, erreur)    | `input`, `select` ou `textarea` selon props |
+| `Carrousel`  | Galerie de photos, une diapositive à la fois                  | `autoplay` (défilement au chargement)       |
+| `Lightbox`   | Photo affichée plein écran par-dessus la page                 | —                                           |
 
 `PageBanner` porte l'en-tête de toutes les pages intérieures (concerts, fiche
 concert, presse, présentation, mentions légales) : avec une photo il applique
@@ -198,11 +213,49 @@ charte : fond blanc, filet 1 px, bord gauche de 3 px à la couleur de l'accent.
 
 Les tons de `ButtonLink` disent sur quoi le bouton est posé, pas sa couleur :
 `onLight` sur le fond de page, `onDark` sur le noir de scène, `onTeal` sur le
-bandeau « Nous rejoindre », `outline` pour une action secondaire.
+bandeau « Nous rejoindre », `outline` pour une action secondaire. `TextLink`
+suit la même logique et porte le soulignement de la charte
+(`border-b border-current no-underline`, jamais `text-decoration`) : il rend
+un `next/link` pour une route du site, une ancre simple pour un `mailto:`,
+une URL externe ou un `#ancre` de la page.
+
+`FormField` porte le motif de champ de la charte : étiquette au-dessus —
+jamais un `placeholder` à sa place — mention « (obligatoire) » en 400
+`text-muted`, contrôle en `min-h-12 rounded-md border px-3.5 text-lg` sur
+`bg-surface`, focus `border-teal` + `outline-2 outline-teal`, et message
+d'erreur sous le champ relié par `aria-describedby`. L'état invalide se lit
+dans `aria-invalid` et dans le message ; le filet cuivre ne fait que le
+répéter — aucune couleur ne dit seule qu'un champ est en erreur.
 
 `Overline` porte `tracking-[0.16em]` par défaut ; le pied de page et le
 bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le
 remplacement, pas l'empilement.
+
+`Carrousel` est la galerie de la page Présentation. Son cadre est
+transparent et **sans filet** : ce que la photo contenue laisse libre montre
+le fond de page, et aucune bordure ne vient dessiner une boîte autour de ce
+vide — sur une bande 4,2:1 dans un cadre 21/9, le filet cernait surtout du
+blanc. Les flèches portent donc une pastille
+**opaque** — elles tombent tantôt sur la photo, tantôt sur ce fond clair, et
+une pastille translucide s'y délavait en gris. Ses diapositives sont en
+`object-contain` dans un cadre `aspect-[21/9]` fixe, **jamais en `cover`** :
+la plupart des fichiers de `public/carrousel/` sont déjà des bandes 4,2:1, et
+les recadrer une seconde fois irait contre le but même de la galerie. Chaque
+diapositive est un bouton qui ouvre la photo dans `Lightbox` ; le défilement
+s'arrête dès que le visiteur prend la main, et ne démarre pas du tout sous
+`prefers-reduced-motion`.
+
+Le titre de `Lightbox` reste **générique** (« Photo agrandie ») : la photo
+est décrite une seule fois, par l'`alt` de son image. Reprendre cet `alt`
+comme nom du dialogue le faisait annoncer trois fois de suite — dialogue,
+titre, image — après la diapositive qui le portait déjà.
+
+Seules les flèches sont posées sur la photo, et uniquement sur ses côtés :
+un cadre 21/9 ne fait que 117 px de haut sur un écran de 320 px, donc une
+flèche centrée et un bouton en coin ne peuvent pas y tenir leurs 44 px sans
+se recouvrir — et le contrôle dessiné en dernier vole les appuis de l'autre.
+Les puces et la pause vivent donc **sous** le cadre, sur le fond de page, et
+leur rangée se replie plutôt que de réduire une cible sous la règle.
 
 ## Bibliothèque de médias
 

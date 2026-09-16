@@ -6,6 +6,10 @@ describe("ArtistArticle", () => {
   const mockProps = {
     name: "John Doe",
     media: "/test-image.jpg",
+    // Square, like two of the three real portraits — not the 2:3 a single
+    // declared ratio would assume.
+    width: 641,
+    height: 641,
     alt: "Portrait de John Doe",
     text: [
       "Premier paragraphe de présentation de l'artiste.",
@@ -19,7 +23,8 @@ describe("ArtistArticle", () => {
 
     const article = screen.getByRole("article");
     expect(article).toBeInTheDocument();
-    expect(article).toHaveClass("container", "mx-auto", "text-justify");
+    // The page owns the container and the gutter, not this component.
+    expect(article.className).toBe("");
 
     const heading = screen.getByRole("heading", { name: mockProps.name });
     expect(heading).toBeInTheDocument();
@@ -28,8 +33,8 @@ describe("ArtistArticle", () => {
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("src", mockProps.media);
     expect(image).toHaveAttribute("alt", mockProps.alt);
-    expect(image).toHaveAttribute("width", "200");
-    expect(image).toHaveAttribute("height", "300");
+    expect(image).toHaveAttribute("width", "641");
+    expect(image).toHaveAttribute("height", "641");
 
     mockProps.text.forEach((paragraph) => {
       expect(screen.getByText(paragraph)).toBeInTheDocument();
@@ -44,16 +49,16 @@ describe("ArtistArticle", () => {
     expect(heading.tagName).toBe("H3");
   });
 
-  it("should apply correct spacing between paragraphs", () => {
+  it("should space the paragraphs with the grid gap, not a margin on each", () => {
     render(<ArtistArticle {...mockProps} />);
 
     const paragraphs = screen.getAllByText(/paragraphe/);
-
-    // All paragraphs except the last carry the mb-2 class
-    paragraphs.slice(0, -1).forEach((paragraph) => {
-      expect(paragraph).toHaveClass("mb-2");
+    paragraphs.forEach((paragraph) => {
+      // The page sets the measure now, so the copy fills the space it is given.
+      expect(paragraph).toHaveClass("text-lg");
+      expect(paragraph).not.toHaveClass("max-w-prose");
     });
-    expect(paragraphs.at(-1)).not.toHaveClass("mb-2");
+    expect(paragraphs[0].parentElement).toHaveClass("grid", "gap-4");
   });
 
   it("should render with single paragraph", () => {
@@ -66,7 +71,7 @@ describe("ArtistArticle", () => {
 
     const paragraph = screen.getByText("Un seul paragraphe de texte.");
     expect(paragraph).toBeInTheDocument();
-    expect(paragraph).not.toHaveClass("mb-2");
+    expect(paragraph).toHaveClass("text-lg");
   });
 
   it("should render with empty text array", () => {
@@ -82,36 +87,43 @@ describe("ArtistArticle", () => {
     expect(screen.getByRole("heading", { name: mockProps.name })).toBeInTheDocument();
   });
 
-  it("should apply responsive image classes", () => {
+  it("should give the portrait the charter's image frame", () => {
     render(<ArtistArticle {...mockProps} />);
 
-    const image = screen.getByRole("img");
-    expect(image).toHaveClass(
-      "mx-auto",
-      "h-80",
-      "w-full",
-      "max-w-3xs",
-      "grow-0",
-      "rounded-md",
-      "object-cover",
-      "lg:m-0",
-      "lg:h-auto"
-    );
+    expect(screen.getByRole("img")).toHaveClass("border-border", "rounded-sm", "border", "object-cover", "h-auto");
   });
 
-  it("should apply correct flex layout classes", () => {
+  it("should set the portrait beside the text, and let it wrap below when there is no room", () => {
     render(<ArtistArticle {...mockProps} />);
 
-    const contentDiv = screen.getByRole("img").parentElement;
-    expect(contentDiv).toHaveClass(
-      "flex",
-      "flex-col",
-      "items-start",
-      "gap-4",
-      "text-justify",
-      "sm:flex-row",
-      "lg:gap-8"
-    );
+    const layout = screen.getByRole("img").parentElement;
+    expect(layout).toHaveClass("flex", "flex-wrap", "items-start", "gap-10");
+
+    // The portrait keeps its own width; the text takes what is left and
+    // carries the minimum below which it drops to the next line.
+    expect(screen.getByRole("img")).toHaveClass("max-w-3xs");
+    expect(screen.getAllByText(/paragraphe/)[0].parentElement).toHaveClass("flex-1");
+  });
+
+  it("should cap the copy's minimum at the space available, so it never spills out", () => {
+    render(<ArtistArticle {...mockProps} />);
+
+    // A bare `min-w-2xs` (18rem) stays wider than a 320px screen once the
+    // page gutter is taken off, and the copy overflows its container.
+    const copy = screen.getAllByText(/paragraphe/)[0].parentElement;
+    expect(copy).toHaveClass("min-w-[min(18rem,100%)]");
+    expect(copy).not.toHaveClass("min-w-2xs");
+  });
+
+  it("should render no heading at all when the page banner already carries the name", () => {
+    const { name, ...withoutName } = mockProps;
+    render(<ArtistArticle {...withoutName} />);
+
+    // Hiding a second heading is not enough: `sr-only` keeps it in the
+    // accessibility tree, and the name would be announced twice.
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByText(name)).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: mockProps.alt })).toBeInTheDocument();
   });
 
   it("should handle special characters in text", () => {

@@ -1,0 +1,97 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
+import { vi } from "vitest";
+
+import { type SiteImage } from "@/assets/contents/medias";
+import Lightbox from "@/components/Lightbox";
+
+const photo: SiteImage = {
+  src: "/carrousel/CPMB2.jpg",
+  alt: "Le chœur en concert, écharpes turquoise",
+  width: 2512,
+  height: 1669,
+};
+
+describe("Lightbox", () => {
+  const user = userEvent.setup();
+
+  it("should render nothing while no photo is chosen", () => {
+    render(<Lightbox image={null} onClose={vi.fn()} />);
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("should name the layer generically, leaving the photo described once", () => {
+    // Titling the dialog with the alt made a screen reader announce the same
+    // description three times over: dialog, heading, then the image itself.
+    render(<Lightbox image={photo} onClose={vi.fn()} />);
+
+    expect(screen.getByRole("dialog", { name: "Photo agrandie" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: photo.alt })).not.toBeInTheDocument();
+    expect(screen.getByAltText(photo.alt)).toBeInTheDocument();
+  });
+
+  it("should show the photo whole, at its native dimensions", () => {
+    render(<Lightbox image={photo} onClose={vi.fn()} />);
+
+    const image = screen.getByAltText(photo.alt);
+    expect(image).toHaveAttribute("width", String(photo.width));
+    expect(image).toHaveAttribute("height", String(photo.height));
+    expect(image).toHaveClass("object-contain", "max-h-full", "max-w-full");
+  });
+
+  it("should close on the close button", async () => {
+    const onClose = vi.fn();
+    render(<Lightbox image={photo} onClose={onClose} />);
+
+    await user.click(screen.getByRole("button", { name: "Fermer l'image" }));
+
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("should close on Escape", async () => {
+    const onClose = vi.fn();
+    render(<Lightbox image={photo} onClose={onClose} />);
+
+    await user.keyboard("{Escape}");
+
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("should hand focus back to whatever opened it", async () => {
+    // Driven by a prop rather than a Radix trigger, it has nothing to
+    // restore focus to on its own: a keyboard visitor would land on <body>.
+    const opener = createRef<HTMLButtonElement>();
+    const { rerender } = render(
+      <>
+        <button type="button" ref={opener}>
+          Agrandir
+        </button>
+        <Lightbox image={photo} onClose={vi.fn()} returnFocusTo={opener} />
+      </>
+    );
+
+    rerender(
+      <>
+        <button type="button" ref={opener}>
+          Agrandir
+        </button>
+        <Lightbox image={null} onClose={vi.fn()} returnFocusTo={opener} />
+      </>
+    );
+
+    await waitFor(() => expect(opener.current).toHaveFocus());
+  });
+
+  it("should close on the dark margin, but not on the photo itself", async () => {
+    const onClose = vi.fn();
+    render(<Lightbox image={photo} onClose={onClose} />);
+
+    await user.click(screen.getByAltText(photo.alt));
+    expect(onClose).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("dialog"));
+    expect(onClose).toHaveBeenCalled();
+  });
+});

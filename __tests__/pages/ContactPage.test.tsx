@@ -3,61 +3,57 @@ import { vi } from "vitest";
 
 import ContactPage from "@/app/contact/page";
 
-// Mock the ContactForm component
 vi.mock("@/components/ContactForm", () => ({
   default: () => <div data-testid="contact-form">Mocked Contact Form</div>,
 }));
 
 describe("ContactPage", () => {
-  it("should render the contact page with proper structure", () => {
+  it("should open on the charter banner", () => {
     render(<ContactPage />);
 
-    // Check main heading
-    expect(screen.getByRole("heading", { level: 1, name: "Contactez-nous" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Contact" })).toBeInTheDocument();
+    expect(screen.getByText("Écrire au chœur")).toBeInTheDocument();
+    expect(screen.getByRole("img")).toHaveAttribute(
+      "alt",
+      "Les choristes du Chœur des Pays du Mont-Blanc, écharpes turquoise"
+    );
+  });
 
-    // Check contact information section
+  it("should put the practical information and the form side by side", () => {
+    render(<ContactPage />);
+
     expect(screen.getByRole("heading", { level: 2, name: "Informations pratiques" })).toBeInTheDocument();
-
-    // Check form section
     expect(screen.getByRole("heading", { level: 2, name: "Envoyez-nous un message" })).toBeInTheDocument();
-
-    // Check mocked contact form is rendered
     expect(screen.getByTestId("contact-form")).toBeInTheDocument();
   });
 
-  it("should display email contact information", () => {
+  it("should give the choir's e-mail address as a link", () => {
     render(<ContactPage />);
 
-    // Check email link
     const emailLink = screen.getByRole("link", { name: "bureau@choeurdespaysdumontblanc.fr" });
-    expect(emailLink).toBeInTheDocument();
     expect(emailLink).toHaveAttribute("href", "mailto:bureau@choeurdespaysdumontblanc.fr");
   });
 
-  it("should display recruitment information", () => {
+  it("should say who the choir is recruiting", () => {
     render(<ContactPage />);
 
-    expect(screen.getByText("Rejoignez-nous")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "Rejoignez-nous" })).toBeInTheDocument();
     expect(screen.getByText(/Nous recrutons des choristes ayant une expérience chorale/)).toBeInTheDocument();
   });
 
-  it("should have proper grid layout structure", () => {
-    const { container } = render(<ContactPage />);
-
-    const gridContainer = container.querySelector(".grid");
-    expect(gridContainer).toBeInTheDocument();
-    expect(gridContainer).toHaveClass("grid", "gap-8", "md:grid-cols-2");
-  });
-
-  it("should have accessible heading hierarchy", () => {
+  it("should give the place and the hours of the rehearsals", () => {
     render(<ContactPage />);
 
-    const h1 = screen.getByRole("heading", { level: 1 });
-    const h2Elements = screen.getAllByRole("heading", { level: 2 });
-    const h3Elements = screen.getAllByRole("heading", { level: 3 });
+    expect(screen.getByRole("heading", { level: 3, name: "Répétitions" })).toBeInTheDocument();
+    expect(screen.getByText(/Espace Louis-Simon, salle Roger Duvanel/)).toBeInTheDocument();
+    expect(screen.getByText(/Un vendredi par mois, 19h30 – 22h/)).toBeInTheDocument();
+  });
 
-    expect(h1).toBeInTheDocument();
-    expect(h2Elements).toHaveLength(2);
-    expect(h3Elements).toHaveLength(2);
+  it("should keep a single h1 and an unbroken heading hierarchy", () => {
+    render(<ContactPage />);
+
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(2);
+    expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(3);
   });
 });
