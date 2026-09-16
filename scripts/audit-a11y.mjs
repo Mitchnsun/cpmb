@@ -468,6 +468,98 @@ const auditDrawer = async (page) => {
   }
 };
 
+/**
+ * The photo viewer, which only exists once a slide is opened.
+ *
+ * Until then the dialog is not in the page at all, so every pass above walks
+ * around it: its accessible name, its close target, the way it holds and
+ * gives back the focus are all invisible to an audit of the page at rest.
+ * It gets the same treatment as the mobile menu, plus an axe pass on the
+ * open layer.
+ */
+const auditLightbox = async (page) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, "/presentation");
+
+  const slide = page.getByRole("button", { name: /^Agrandir la photo/ }).first();
+  await slide.focus();
+  await page.keyboard.press("Enter");
+
+  const dialog = page.getByRole("dialog");
+  await dialog.waitFor({ state: "visible" });
+
+  const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
+
+  results.violations.forEach((violation) => {
+    record({
+      route: "/presentation",
+      viewport: "1440 px, photo agrandie",
+      rule: violation.id,
+      impact: violation.impact,
+      blocking: BLOCKING_IMPACTS.has(violation.impact),
+      detail: `${violation.help} (${violation.nodes.length}) — ${violation.nodes[0]?.target?.join(" ") ?? ""}`,
+    });
+  });
+
+  (await smallTargets(page)).forEach((entry) => {
+    record({
+      route: "/presentation",
+      viewport: "1440 px, photo agrandie",
+      rule: "cible-tactile-trop-petite",
+      impact: "serious",
+      blocking: true,
+      detail: `${entry.name} n'atteint pas ${entry.wanted}px de haut`,
+    });
+  });
+
+  const overflow = await horizontalOverflow(page);
+  if (overflow) {
+    record({
+      route: "/presentation",
+      viewport: "1440 px, photo agrandie",
+      rule: "defilement-horizontal",
+      impact: "serious",
+      blocking: true,
+      detail: `${overflow.scrollWidth}px de contenu pour ${overflow.innerWidth}px de fenêtre`,
+    });
+  }
+
+  for (let step = 0; step < 12; step += 1) {
+    await page.keyboard.press("Tab");
+    const state = await focusState(page);
+
+    if (!state.outside && !state.inDialog) {
+      record({
+        route: "/presentation",
+        viewport: "1440 px, photo agrandie",
+        rule: "visionneuse-fuite",
+        impact: "serious",
+        blocking: true,
+        detail: `la tabulation sort de la photo agrandie vers ${state.name}`,
+      });
+      break;
+    }
+  }
+
+  await page.keyboard.press("Escape");
+  await dialog.waitFor({ state: "hidden" });
+
+  const returned = await page.evaluate(() =>
+    (document.activeElement?.getAttribute("aria-label") ?? "").startsWith("Agrandir la photo")
+  );
+
+  if (!returned) {
+    record({
+      route: "/presentation",
+      viewport: "1440 px, photo agrandie",
+      rule: "visionneuse-focus-perdu",
+      impact: "serious",
+      blocking: true,
+      detail: "après Échap, le focus ne revient pas sur la photo qui a ouvert la visionneuse",
+    });
+  }
+};
+
 const auditReducedMotion = async (context, route) => {
   const page = await context.newPage();
   await serveOriginalImages(page);
@@ -550,6 +642,13 @@ const run = async () => {
   console.log("\nMenu mobile — piège de focus");
   await auditDrawer(drawerPage);
   await drawerContext.close();
+
+  const lightboxContext = await browser.newContext({ locale: "fr-FR" });
+  const lightboxPage = await lightboxContext.newPage();
+  await serveOriginalImages(lightboxPage);
+  console.log("\nVisionneuse photo — couche ouverte");
+  await auditLightbox(lightboxPage);
+  await lightboxContext.close();
 
   console.log("\nTitres de page");
   const duplicates = titles.filter(

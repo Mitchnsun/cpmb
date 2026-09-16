@@ -33,8 +33,9 @@ navigateur et rejoue la recette à la demande :
   (44 px, mesurée par pointage), défilement horizontal, unicité du `h1`,
   niveaux de titre sautés, animations encore actives sous
   `prefers-reduced-motion`, balayage clavier jusqu'à la sortie de la page et
-  détection des boucles de focus, piège de focus du menu mobile, unicité des
-  titres de page.
+  détection des boucles de focus, pièges de focus des deux boîtes modales —
+  menu mobile et visionneuse photo, cette dernière ouverte puis auditée
+  couche déployée —, unicité des titres de page.
 
 ```bash
 yarn audit:a11y:setup      # télécharge Chromium, une fois par machine
@@ -153,6 +154,14 @@ de ce qu'il prétend mesurer. ✅
 - Menu mobile (Radix Dialog via vaul) : ouverture au clavier, 12 tabulations
   qui restent dans le panneau — un piège voulu, celui d'une boîte modale —
   puis `Échap` qui referme et **rend le focus au bouton d'ouverture**. ✅
+- Visionneuse photo (Radix Dialog) : la couche n'existe pas tant qu'une photo
+  n'est pas ouverte, donc toutes les passes sur la page au repos la
+  contournaient. Elle est maintenant ouverte au clavier puis auditée comme
+  une page — axe, cibles tactiles, débordement — avant les 12 tabulations
+  qui doivent rester dedans, `Échap`, et le retour du focus sur la photo qui
+  l'a ouverte. Vérifié dans les deux sens : rien à signaler en l'état, et la
+  passe relève aussitôt un `button-name` si l'on prive le bouton de
+  fermeture de son nom. ✅
 - Accordéon des saisons passées (`<details>`/`<summary>` natif) et formulaire
   de contact : parcourus par le balayage, sans blocage. ✅
 - Le site ne déclare pas de style de focus : l'anneau par défaut de Chromium,
