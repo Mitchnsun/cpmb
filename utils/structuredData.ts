@@ -68,7 +68,6 @@ export interface MusicEvent {
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode";
   location: Place;
   performer: { "@type": "MusicGroup"; name: string; url: string };
-  organizer: { "@type": "MusicGroup"; name: string; url: string };
   url: string;
   description?: string;
   image?: string;
@@ -146,7 +145,15 @@ const concertVenues = (concert: ConcertLike, performances: number): Place[] => {
   return venues.map((venue) => parsePlace(venue));
 };
 
-/** The choir, as both the group on stage and the organiser of the evening. */
+/**
+ * The choir, as the group on stage — and only that.
+ *
+ * It is not always the host: eight of these concerts were given at someone
+ * else's invitation, the Municipality of Vétraz-Monthoux or the association
+ * Chœur et Orgues among them, and one inside another festival's programme.
+ * Who organised an evening is nowhere in the data, so no `organizer` is
+ * published rather than one that credits the guest for the invitation.
+ */
 const CHOIR = { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL } as const;
 
 /**
@@ -169,7 +176,6 @@ export const concertEvents = (concert: ConcertLike): MusicEvent[] => {
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode" as const,
     location: venues[index] ?? whole,
     performer: CHOIR,
-    organizer: CHOIR,
     url,
     ...(concert.description ? { description: concert.description } : {}),
     ...(concert.media ? { image: absoluteUrl(concert.media) } : {}),

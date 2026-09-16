@@ -77,10 +77,18 @@ describe("concertEvents", () => {
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       performer: { "@type": "MusicGroup", name: "Chœur des Pays du Mont-Blanc" },
-      organizer: { "@type": "MusicGroup", name: "Chœur des Pays du Mont-Blanc" },
       url: `https://choeurdespaysdumontblanc.fr/nos-concerts/${twoNights.slug}`,
       image: `https://choeurdespaysdumontblanc.fr${twoNights.media}`,
     });
+  });
+
+  it("should credit the choir for singing, never for organising", () => {
+    /* Eight of these concerts were given at someone else's invitation, and
+       who hosted an evening is nowhere in the data. */
+    const events = concerts.flatMap((concert) => concertEvents(concert));
+
+    expect(events.every((event) => event.performer.name === "Chœur des Pays du Mont-Blanc")).toBe(true);
+    expect(events.filter((event) => "organizer" in event)).toEqual([]);
   });
 
   it("should leave out the image when the concert has no poster", () => {
