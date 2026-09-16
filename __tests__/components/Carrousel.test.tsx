@@ -5,9 +5,30 @@ import { vi } from "vitest";
 import { CARROUSEL_IMAGES } from "@/assets/contents/carrousel";
 import Carrousel from "@/components/Carrousel";
 
+/**
+ * `clearAllMocks` wipes calls, not implementations, so a test that asks for
+ * reduced motion would leak into the next one: every test sets the answer.
+ */
+const answerReducedMotion = (reduce: boolean) => {
+  vi.mocked(window.matchMedia).mockImplementation(
+    (query: string) =>
+      ({
+        matches: reduce && query.includes("prefers-reduced-motion"),
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }) as unknown as MediaQueryList
+  );
+};
+
 describe("Carrousel", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    answerReducedMotion(false);
   });
 
   const user = userEvent.setup();
@@ -116,6 +137,16 @@ describe("Carrousel", () => {
     // The arrows stay on the photo, at its sides, where nothing competes.
     expect(frame.querySelector('[aria-label="Photo précédente"]')).toBeInTheDocument();
     expect(frame.querySelector('[aria-label="Photo suivante"]')).toBeInTheDocument();
+  });
+
+  it("should not claim to be scrolling under prefers-reduced-motion", () => {
+    answerReducedMotion(true);
+    render(<Carrousel />);
+
+    // Nothing ever advances under that preference, so the live region must
+    // be polite and no toggle should offer to pause a standstill.
+    expect(screen.getByRole("region")).toHaveAttribute("aria-live", "polite");
+    expect(screen.queryByRole("button", { name: /défilement/ })).not.toBeInTheDocument();
   });
 
   it("should announce politely only once the slideshow is stopped", () => {

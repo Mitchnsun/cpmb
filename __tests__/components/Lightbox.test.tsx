@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createRef } from "react";
 import { vi } from "vitest";
 
 import { type SiteImage } from "@/assets/contents/medias";
@@ -52,6 +53,31 @@ describe("Lightbox", () => {
     await user.keyboard("{Escape}");
 
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it("should hand focus back to whatever opened it", async () => {
+    // Driven by a prop rather than a Radix trigger, it has nothing to
+    // restore focus to on its own: a keyboard visitor would land on <body>.
+    const opener = createRef<HTMLButtonElement>();
+    const { rerender } = render(
+      <>
+        <button type="button" ref={opener}>
+          Agrandir
+        </button>
+        <Lightbox image={photo} onClose={vi.fn()} returnFocusTo={opener} />
+      </>
+    );
+
+    rerender(
+      <>
+        <button type="button" ref={opener}>
+          Agrandir
+        </button>
+        <Lightbox image={null} onClose={vi.fn()} returnFocusTo={opener} />
+      </>
+    );
+
+    await waitFor(() => expect(opener.current).toHaveFocus());
   });
 
   it("should close on the dark margin, but not on the photo itself", async () => {

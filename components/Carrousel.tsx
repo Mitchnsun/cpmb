@@ -22,15 +22,20 @@ const controlClassName =
  *
  * Every slide is a button: clicking one opens it full size in a `Lightbox`.
  * Autoplay stops as soon as the visitor takes control — an arrow, a dot or a
- * photo — so it never fights them, and it never starts at all under
- * `prefers-reduced-motion`.
+ * photo — so it never fights them. Under `prefers-reduced-motion` it never
+ * runs at all, and the gallery says so: the live region turns polite and the
+ * pause control disappears rather than offering to stop a standstill.
  *
  * No slide is `priority`: the home hero is the site's only one.
  */
 const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoplay);
+  /* Set after mount: reading the query at render would desync hydration. */
+  const [reduceMotion, setReduceMotion] = useState(false);
   const [enlarged, setEnlarged] = useState<SiteImage | null>(null);
+  /* The slide the lightbox was opened from, to focus again on close. */
+  const openerRef = useRef<HTMLButtonElement>(null);
   const intervalRef = useRef<number | null>(null);
   const startTimeoutRef = useRef<number | null>(null);
 
@@ -59,10 +64,22 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   }, []);
 
   useEffect(() => {
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduceMotion(query.matches);
 
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  /* What the gallery is actually doing, which is what it must say it is
+     doing: under `prefers-reduced-motion` nothing ever scrolls, so claiming
+     to be playing would make the live region and the toggle lie. */
+  const isScrolling = isPlaying && !reduceMotion;
+
+  useEffect(() => {
     stopAutoplay();
-    if (!isPlaying || reduce) return;
+    if (!isScrolling) return;
 
     /* Deferred, to keep the timer off the critical path. */
     startTimeoutRef.current = window.setTimeout(() => {
@@ -71,7 +88,7 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     }, 1500);
 
     return stopAutoplay;
-  }, [isPlaying, startAutoplay, stopAutoplay]);
+  }, [isScrolling, startAutoplay, stopAutoplay]);
 
   // Mirror prop changes for autoplay toggling. Adjusting state during render
   // rather than in an effect avoids a cascading re-render, per
@@ -94,7 +111,7 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
         role="region"
         aria-label="Photos du chœur"
         aria-roledescription="carrousel"
-        aria-live={isPlaying ? "off" : "polite"}
+        aria-live={isScrolling ? "off" : "polite"}
       >
         <div className="border-border bg-stage-black relative aspect-[21/9] w-full overflow-hidden rounded-sm border">
           <div
@@ -108,7 +125,11 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
                 // Only the slide on screen is reachable, by pointer or by tab.
                 aria-hidden={index !== currentIndex}
                 tabIndex={index === currentIndex ? undefined : -1}
-                onClick={takeOver(() => setEnlarged(image))}
+                onClick={(event) => {
+                  openerRef.current = event.currentTarget;
+                  setIsPlaying(false);
+                  setEnlarged(image);
+                }}
                 /* The button carries the description, so the image inside it
                    stays decorative: naming both would announce the photo
                    twice, once for the image and once for the control. */
@@ -177,28 +198,33 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsPlaying((playing) => !playing)}
-            className="text-muted hover:text-teal focus-visible:outline-teal ml-2 flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-2"
-            aria-label={isPlaying ? "Mettre le défilement en pause" : "Reprendre le défilement"}
-            aria-pressed={isPlaying}
-          >
-            {isPlaying ? (
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                <rect x="7" y="6" width="3.5" height="12" rx="1" />
-                <rect x="13.5" y="6" width="3.5" height="12" rx="1" />
-              </svg>
-            ) : (
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
+          {/* No control where there is nothing to control: under reduced
+              motion the gallery never scrolls, so a toggle could only
+              promise something it would not do. */}
+          {reduceMotion ? null : (
+            <button
+              type="button"
+              onClick={() => setIsPlaying((playing) => !playing)}
+              className="text-muted hover:text-teal focus-visible:outline-teal ml-2 flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-2"
+              aria-label={isScrolling ? "Mettre le défilement en pause" : "Reprendre le défilement"}
+              aria-pressed={isScrolling}
+            >
+              {isScrolling ? (
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                  <rect x="7" y="6" width="3.5" height="12" rx="1" />
+                  <rect x="13.5" y="6" width="3.5" height="12" rx="1" />
+                </svg>
+              ) : (
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
-      <Lightbox image={enlarged} onClose={() => setEnlarged(null)} />
+      <Lightbox image={enlarged} onClose={() => setEnlarged(null)} returnFocusTo={openerRef} />
     </>
   );
 };

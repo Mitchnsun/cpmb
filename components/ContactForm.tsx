@@ -149,13 +149,25 @@ const ContactForm = () => {
           Votre logiciel de messagerie s&apos;est ouvert sur un brouillon : il ne reste qu&apos;à l&apos;envoyer. Le
           bureau du chœur vous répondra à l&apos;adresse indiquée. Merci de votre intérêt.
         </p>
+        {/* Assigning a `mailto:` never reports back, so we cannot know a
+            draft really opened — on a machine with no mail client, nothing
+            happens at all. Both ways out therefore carry the message the
+            visitor wrote, rather than leaving it stranded behind this panel. */}
         <p className="text-muted mt-3 text-lg">
-          Si rien ne s&apos;est ouvert, écrivez-nous directement à{" "}
+          Si rien ne s&apos;est ouvert, <TextLink href={mailtoHref(values)}>rouvrez le brouillon</TextLink> ou
+          écrivez-nous directement à{" "}
           <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
             {CONTACT_EMAIL}
           </TextLink>
           .
         </p>
+        <button
+          type="button"
+          onClick={() => setIsSubmitted(false)}
+          className="text-teal hover:text-copper focus-visible:outline-teal mt-5.5 cursor-pointer border-b border-current text-lg focus-visible:outline-2"
+        >
+          Revenir à mon message
+        </button>
       </InfoPanel>
     );
   }

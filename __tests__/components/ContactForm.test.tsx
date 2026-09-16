@@ -164,6 +164,23 @@ describe("ContactForm", () => {
     expect(screen.queryByRole("button", { name: "Envoyer le message" })).not.toBeInTheDocument();
   });
 
+  it("should keep the written message reachable when no draft opens", async () => {
+    render(<ContactForm />);
+
+    await fillTheForm(user);
+    await submit(user);
+
+    // Assigning a `mailto:` never reports back, so the panel cannot assume
+    // a draft opened: the message must not be stranded behind it.
+    const reopen = screen.getByRole("link", { name: "rouvrez le brouillon" });
+    expect(reopen).toHaveAttribute("href", expect.stringContaining(encodeURIComponent("Marie Dupont")));
+
+    await user.click(screen.getByRole("button", { name: "Revenir à mon message" }));
+
+    expect(screen.getByLabelText(/^Nom/)).toHaveValue("Marie Dupont");
+    expect(screen.getByLabelText(/^Message/)).toHaveValue("Bonjour, je souhaite des informations sur vos concerts.");
+  });
+
   it("should move the focus to the confirmation panel", async () => {
     render(<ContactForm />);
 

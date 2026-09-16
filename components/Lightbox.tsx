@@ -2,6 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import Image from "next/image";
+import { type RefObject } from "react";
 
 import { type SiteImage } from "@/assets/contents/medias";
 import CloseIcon from "@/assets/icons/close.svg";
@@ -10,6 +11,12 @@ interface LightboxProps {
   /** The photo to show full size, or `null` when the lightbox is closed. */
   image: SiteImage | null;
   onClose: () => void;
+  /**
+   * What opened it. Being driven by a prop rather than a `Dialog.Trigger`,
+   * Radix has nothing to hand focus back to on its own, and a keyboard
+   * visitor would land on `<body>` — back at the top of the document.
+   */
+  returnFocusTo?: RefObject<HTMLElement | null>;
 }
 
 /**
@@ -21,9 +28,10 @@ interface LightboxProps {
  * rather than stretched: several of the gallery files are 4.2:1 strips, and
  * blowing one up past its own pixels would only soften it.
  *
- * The dark margin around the photo closes it, as a viewer is expected to.
+ * The dark margin around the photo closes it, as a viewer is expected to,
+ * and closing returns focus to `returnFocusTo`.
  */
-const Lightbox = ({ image, onClose }: LightboxProps) => (
+const Lightbox = ({ image, onClose, returnFocusTo }: LightboxProps) => (
   <Dialog.Root open={image !== null} onOpenChange={(open) => !open && onClose()}>
     <Dialog.Portal>
       <Dialog.Overlay className="bg-stage-black/95 fixed inset-0 z-50" />
@@ -33,6 +41,11 @@ const Lightbox = ({ image, onClose }: LightboxProps) => (
            margin would not close it: only a hit on the backdrop itself, not
            on the photo or the close button, counts. */
         onClick={(event) => event.target === event.currentTarget && onClose()}
+        onCloseAutoFocus={(event) => {
+          if (!returnFocusTo?.current) return;
+          event.preventDefault();
+          returnFocusTo.current.focus();
+        }}
         className="fixed inset-0 z-50 flex items-center justify-center p-6 focus:outline-none"
       >
         {/* The alt already describes the photo: the title names the layer. */}
