@@ -123,9 +123,10 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
            it still holds focus. Bubbles, so any control inside counts. */
         onFocus={() => setIsPlaying(false)}
       >
-        {/* Transparent: the page background fills whatever the contained
-            photo leaves, rather than a dark mat sitting on a light page. */}
-        <div className="border-border relative aspect-[21/9] w-full overflow-hidden rounded-sm border">
+        {/* No frame at all: transparent and unruled, the photo sits straight
+            on the page. A border drew a box around what a contained strip
+            leaves empty, outlining the void rather than the picture. */}
+        <div className="relative aspect-[21/9] w-full overflow-hidden rounded-sm">
           <div
             className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}

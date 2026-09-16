@@ -232,8 +232,10 @@ bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le
 remplacement, pas l'empilement.
 
 `Carrousel` est la galerie de la page Présentation. Son cadre est
-transparent : ce que la photo contenue laisse libre montre le fond de page,
-pas un cache sombre posé dessus. Les flèches portent donc une pastille
+transparent et **sans filet** : ce que la photo contenue laisse libre montre
+le fond de page, et aucune bordure ne vient dessiner une boîte autour de ce
+vide — sur une bande 4,2:1 dans un cadre 21/9, le filet cernait surtout du
+blanc. Les flèches portent donc une pastille
 **opaque** — elles tombent tantôt sur la photo, tantôt sur ce fond clair, et
 une pastille translucide s'y délavait en gris. Ses diapositives sont en
 `object-contain` dans un cadre `aspect-[21/9]` fixe, **jamais en `cover`** :
