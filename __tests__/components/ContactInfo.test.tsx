@@ -1,10 +1,20 @@
 import { render, screen } from "@testing-library/react";
 
-import ContactInfo, { CONTACT_EMAIL } from "@/components/ContactInfo";
+import ContactInfo from "@/components/ContactInfo";
+import { CONTACT_EMAIL } from "@/utils/site";
 
 describe("ContactInfo", () => {
-  it("should expose the choir's address as the single source used site-wide", () => {
+  it("should read the choir's address from the single site-wide source", () => {
     expect(CONTACT_EMAIL).toBe("bureau@choeurdespaysdumontblanc.fr");
+    expect(screen.queryByText(CONTACT_EMAIL)).not.toBeInTheDocument();
+    render(<ContactInfo />);
+    expect(screen.getByText(CONTACT_EMAIL)).toBeInTheDocument();
+  });
+
+  it("should let the long address wrap, so it cannot overflow a narrow screen", () => {
+    render(<ContactInfo />);
+
+    expect(screen.getByRole("link", { name: CONTACT_EMAIL })).toHaveClass("wrap-anywhere");
   });
 
   it("should title the column and its three subheadings", () => {

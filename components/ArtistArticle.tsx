@@ -37,7 +37,9 @@ const ArtistArticle = ({ name, media, alt, text, hLevel = 2 }: ArtistArticleProp
           sizes="256px"
           className="border-border mx-auto h-auto w-full max-w-3xs rounded-sm border object-cover"
         />
-        <div className="grid min-w-2xs flex-1 gap-4">
+        {/* `min(…,100%)`, never a bare minimum: below ~336px the copy would
+            otherwise stay wider than the gutter allows and spill out. */}
+        <div className="grid min-w-[min(18rem,100%)] flex-1 gap-4">
           {text.map((paragraph) => (
             <p key={paragraph.slice(0, 50)} className="max-w-prose text-lg">
               {paragraph}

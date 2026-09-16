@@ -1,8 +1,6 @@
 import InfoPanel from "@/components/InfoPanel";
 import TextLink from "@/components/TextLink";
-
-/** The choir's public address, also used by the form and the footer. */
-export const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
+import { CONTACT_EMAIL } from "@/utils/site";
 
 /**
  * "Informations pratiques" column of the contact page (CPMB-15): how to
@@ -17,7 +15,9 @@ const ContactInfo = () => (
 
     <h3 className="mb-1.5 text-lg font-semibold">Adresse e-mail</h3>
     <p className="mb-7 text-lg">
-      <TextLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</TextLink>
+      <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
+        {CONTACT_EMAIL}
+      </TextLink>
     </p>
 
     <h3 className="mb-1.5 text-lg font-semibold">Rejoignez-nous</h3>

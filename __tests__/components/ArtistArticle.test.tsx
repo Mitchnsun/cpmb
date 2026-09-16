@@ -96,7 +96,17 @@ describe("ArtistArticle", () => {
     // The portrait keeps its own width; the text takes what is left and
     // carries the minimum below which it drops to the next line.
     expect(screen.getByRole("img")).toHaveClass("max-w-3xs");
-    expect(screen.getAllByText(/paragraphe/)[0].parentElement).toHaveClass("min-w-2xs", "flex-1");
+    expect(screen.getAllByText(/paragraphe/)[0].parentElement).toHaveClass("flex-1");
+  });
+
+  it("should cap the copy's minimum at the space available, so it never spills out", () => {
+    render(<ArtistArticle {...mockProps} />);
+
+    // A bare `min-w-2xs` (18rem) stays wider than a 320px screen once the
+    // page gutter is taken off, and the copy overflows its container.
+    const copy = screen.getAllByText(/paragraphe/)[0].parentElement;
+    expect(copy).toHaveClass("min-w-[min(18rem,100%)]");
+    expect(copy).not.toHaveClass("min-w-2xs");
   });
 
   it("should render no heading at all when the page banner already carries the name", () => {

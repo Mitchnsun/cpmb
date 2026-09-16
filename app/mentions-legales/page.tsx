@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-import { CONTACT_EMAIL } from "@/components/ContactInfo";
 import PageBanner from "@/components/PageBanner";
 import TextLink from "@/components/TextLink";
+import { CONTACT_EMAIL } from "@/utils/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales – Chœur des Pays du Mont-Blanc",
@@ -40,7 +40,10 @@ export default function Mentions() {
           <p className="text-lg">
             Vous disposez d&apos;un droit d&apos;accès, de rectification, d&apos;effacement, de portabilité, de
             limitation du traitement et d&apos;opposition concernant vos données personnelles. Pour exercer ces droits,
-            contactez-nous à l&apos;adresse : <TextLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</TextLink>
+            contactez-nous à l&apos;adresse :{" "}
+            <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
+              {CONTACT_EMAIL}
+            </TextLink>
           </p>
 
           <h3 className="font-display mt-6 mb-2 text-xl font-semibold">
@@ -48,7 +51,9 @@ export default function Mentions() {
           </h3>
           <p className="text-lg">
             Pour toute question relative à la protection de vos données personnelles, vous pouvez nous contacter à :{" "}
-            <TextLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</TextLink>
+            <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
+              {CONTACT_EMAIL}
+            </TextLink>
           </p>
 
           <h3 className="font-display mt-6 mb-2 text-xl font-semibold">4. Publicité électronique</h3>

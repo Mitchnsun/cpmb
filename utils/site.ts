@@ -7,6 +7,13 @@
  */
 export const SITE_URL = "https://choeurdespaysdumontblanc.fr";
 
+/**
+ * The choir's public address. It is one long unbreakable token, so wherever
+ * it is displayed the element needs `wrap-anywhere`, or it overflows a
+ * narrow screen.
+ */
+export const CONTACT_EMAIL = "bureau@choeurdespaysdumontblanc.fr";
+
 /** Page of a concert, as a path — what every link inside the site uses. */
 export const concertPath = (slug: string): string => `/nos-concerts/${slug}`;
 

@@ -4,11 +4,11 @@ import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 import { buttonLinkVariants } from "@/components/ButtonLink";
-import { CONTACT_EMAIL } from "@/components/ContactInfo";
 import FormField, { type FieldOption } from "@/components/FormField";
 import InfoPanel from "@/components/InfoPanel";
 import TextLink from "@/components/TextLink";
 import { cn } from "@/utils/classnames";
+import { CONTACT_EMAIL } from "@/utils/site";
 
 /**
  * Subjects of the form. The values double as the `?objet=` parameter, so a
@@ -158,7 +158,10 @@ const ContactForm = () => {
         </p>
         <p className="text-muted mt-3 text-lg">
           Si rien ne s&apos;est ouvert, écrivez-nous directement à{" "}
-          <TextLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</TextLink>.
+          <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
+            {CONTACT_EMAIL}
+          </TextLink>
+          .
         </p>
       </InfoPanel>
     );
