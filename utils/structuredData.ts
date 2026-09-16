@@ -46,19 +46,21 @@ export interface MusicEvent {
  * Saint-Pierre, Gaillard, France" is a venue, a town and a country.
  *
  * The data was written for humans, so the reading stays defensive: a
- * location naming only its town ("Vongy et Boëge, France") keeps that town
- * as the place's name, and one naming no country at all ("Genève (CH) et
- * Samoëns (F)") simply carries none.
+ * location naming only its town keeps that town as the place's name, and
+ * one naming no country at all ("Genève (CH)") simply carries none —
+ * `fallbackCountry` then lets a venue inherit the country written once at
+ * the end of a two-venue line.
  */
-export const parsePlace = (location: string): Place => {
+export const parsePlace = (location: string, fallbackCountry?: string): Place => {
   const parts = location
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
 
   const last = parts.at(-1) ?? "";
-  const country = COUNTRY_CODES[last];
-  const rest = country ? parts.slice(0, -1) : parts;
+  const own = COUNTRY_CODES[last];
+  const country = own ?? fallbackCountry;
+  const rest = own ? parts.slice(0, -1) : parts;
 
   const locality = rest.at(-1) ?? location;
   const name = rest.length > 1 ? rest.slice(0, -1).join(", ") : locality;
@@ -74,6 +76,31 @@ export const parsePlace = (location: string): Place => {
   };
 };
 
+/**
+ * The venues of a concert, one per performance, or `[]` when the line
+ * cannot be read as such.
+ *
+ * A concert given in two towns carries them on one line, in the order of
+ * its dates: "Boëge et Saint-Gervais-les-Bains, France". Emitting that whole
+ * line as the place of both events invents a venue that exists nowhere, so
+ * it is split — but only when it yields exactly one venue per date, which is
+ * what keeps a single venue whose own name contains "et" in one piece.
+ */
+const concertVenues = (location: string, performances: number): Place[] => {
+  const parts = location
+    .split(" et ")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length !== performances || performances < 2) return [];
+
+  /* The country is written once, at the end of the line: "Vongy et Boëge,
+     France" is in France on both evenings. */
+  const country = parsePlace(location).address.addressCountry;
+
+  return parts.map((part) => parsePlace(part, country));
+};
+
 /** The choir, as both the group on stage and the organiser of the evening. */
 const CHOIR = { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL } as const;
 
@@ -83,22 +110,23 @@ const CHOIR = { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL } as const
  */
 export const concertEvents = (concert: Concert): MusicEvent[] => {
   const url = concertUrl(concert.slug);
-  const location = parsePlace(concert.location);
+  const dates = concert.date.filter((date) => Number.isFinite(new Date(date).getTime()));
 
-  return concert.date
-    .filter((date) => Number.isFinite(new Date(date).getTime()))
-    .map((date) => ({
-      "@context": "https://schema.org" as const,
-      "@type": "MusicEvent" as const,
-      name: concert.title,
-      startDate: date,
-      eventStatus: "https://schema.org/EventScheduled" as const,
-      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode" as const,
-      location,
-      performer: CHOIR,
-      organizer: CHOIR,
-      url,
-      ...(concert.description ? { description: concert.description } : {}),
-      ...(concert.media ? { image: absoluteUrl(concert.media) } : {}),
-    }));
+  const venues = concertVenues(concert.location, dates.length);
+  const whole = parsePlace(concert.location);
+
+  return dates.map((date, index) => ({
+    "@context": "https://schema.org" as const,
+    "@type": "MusicEvent" as const,
+    name: concert.title,
+    startDate: date,
+    eventStatus: "https://schema.org/EventScheduled" as const,
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode" as const,
+    location: venues[index] ?? whole,
+    performer: CHOIR,
+    organizer: CHOIR,
+    url,
+    ...(concert.description ? { description: concert.description } : {}),
+    ...(concert.media ? { image: absoluteUrl(concert.media) } : {}),
+  }));
 };

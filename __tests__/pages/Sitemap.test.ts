@@ -26,10 +26,14 @@ describe("sitemap", () => {
     });
   });
 
-  it("should carry one entry per concert, dated by its last performance", () => {
-    const noel = ENTRIES.find((entry) => entry.url.endsWith("/nos-concerts/concert-de-noel-22-decembre-2024-gaillard"));
+  it("should carry one entry per concert", () => {
+    concerts.forEach((concert) => {
+      expect(URLS).toContain(`${SITE_URL}/nos-concerts/${concert.slug}`);
+    });
+  });
 
-    expect(noel?.lastModified).toEqual(new Date("2024-12-22T17:30:00+01:00"));
+  it("should date nothing: a concert's date is not the day its page was written", () => {
+    expect(ENTRIES.filter((entry) => entry.lastModified)).toEqual([]);
   });
 
   it("should rank the agenda above the legal notice", () => {

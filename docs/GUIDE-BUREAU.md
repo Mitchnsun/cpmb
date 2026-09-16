@@ -106,6 +106,13 @@ Le site s'occupe du reste : les deux dates sont listées sur la fiche, le
 fichier agenda contient deux événements, et le concert reste annoncé comme
 « à venir » **tant que la dernière des deux dates n'est pas passée**.
 
+⚠️ **Quand les deux soirs n'ont pas lieu au même endroit, écrire les lieux
+dans l'ordre des dates**, séparés par « et » : `"Vongy et Boëge, France"` pour
+un concert donné d'abord à Vongy, ensuite à Boëge. Chaque représentation est
+publiée aux moteurs de recherche comme un événement distinct, avec **son**
+lieu : c'est cet ordre qui les associe. Le pays s'écrit une seule fois, à la
+fin de la ligne.
+
 ### Étape 4 — enregistrer
 
 En bas de la page GitHub : **Commit changes**, un court message

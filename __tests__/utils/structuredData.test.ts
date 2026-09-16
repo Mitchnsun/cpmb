@@ -71,6 +71,58 @@ describe("concertEvents", () => {
     expect(concertEvents(broken).map((event) => event.startDate)).toEqual(["2025-06-15T18:00:00+02:00"]);
   });
 
+  it("should give each performance of a two-town concert its own venue", () => {
+    const [boege, saintGervais] = concertEvents(twoNights);
+
+    expect(boege.location).toEqual({
+      "@type": "Place",
+      name: "Boëge",
+      address: { "@type": "PostalAddress", addressLocality: "Boëge", addressCountry: "FR" },
+    });
+    expect(saintGervais.location).toEqual({
+      "@type": "Place",
+      name: "Saint-Gervais-les-Bains",
+      address: { "@type": "PostalAddress", addressLocality: "Saint-Gervais-les-Bains", addressCountry: "FR" },
+    });
+  });
+
+  it("should split the venues of a two-town concert that names them both", () => {
+    const acrossTheBorder = concertOf("messe-en-ut-de-mozart");
+
+    expect(concertEvents(acrossTheBorder).map((event) => event.location.name)).toEqual([
+      "Temple de la Madeleine",
+      "Église de Gaillard (F)",
+    ]);
+  });
+
+  it("should never invent a venue out of two towns joined on one line", () => {
+    const invented = concerts
+      .flatMap((concert) => concertEvents(concert))
+      .filter((event) => / et /.test(event.location.name));
+
+    expect(invented.map((event) => event.location.name)).toEqual([]);
+  });
+
+  it("should keep a single-date concert's location whole", () => {
+    const oneNight = concertOf("concert-de-noel-22-decembre-2024-gaillard");
+
+    expect(concertEvents(oneNight)[0].location).toEqual({
+      "@type": "Place",
+      name: "Église Saint-Pierre",
+      address: { "@type": "PostalAddress", addressLocality: "Gaillard", addressCountry: "FR" },
+    });
+  });
+
+  it("should leave a venue whose own name carries « et » in one piece", () => {
+    const parish = {
+      ...twoNights,
+      location: "Église Saint-Pierre et Saint-Paul, Gaillard, France",
+      date: ["2027-01-01"],
+    };
+
+    expect(concertEvents(parish)[0].location.name).toBe("Église Saint-Pierre et Saint-Paul");
+  });
+
   it("should describe every concert of the data without failing", () => {
     expect(concerts.flatMap((concert) => concertEvents(concert)).length).toBeGreaterThanOrEqual(concerts.length);
   });

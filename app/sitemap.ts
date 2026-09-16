@@ -34,25 +34,21 @@ const PAGE_RANK: Readonly<Record<string, { changeFrequency: "weekly" | "monthly"
 
 const DEFAULT_RANK = { changeFrequency: "yearly", priority: 0.5 } as const;
 
-/**
- * Last date of a concert, as the day it stopped changing. A concert page is
- * written once and only edited around its performances.
- */
-const lastPerformance = (concert: Concert): Date | undefined => {
-  const times = concert.date.map((date) => new Date(date).getTime()).filter((time) => Number.isFinite(time));
-
-  return times.length > 0 ? new Date(Math.max(...times)) : undefined;
-};
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = SITEMAP_LINKS.map(({ href }) => ({
     url: absoluteUrl(href),
     ...(PAGE_RANK[href] ?? DEFAULT_RANK),
   }));
 
+  /*
+   * No `lastModified` anywhere: the only date the data holds is the date of
+   * the concert, which is not the day its page was last written — the three
+   * concerts imported in September 2026 happened in 2025 and would be
+   * announced as a year stale. A build stamp would be worse still: it moves
+   * on every deploy, whether or not a single page changed.
+   */
   const concertPages = concerts.map((concert: Concert) => ({
     url: absoluteUrl(`/nos-concerts/${concert.slug}`),
-    lastModified: lastPerformance(concert),
     changeFrequency: "yearly" as const,
     priority: 0.6,
   }));
