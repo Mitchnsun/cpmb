@@ -112,8 +112,18 @@ charte 44. Une première version de cette recette s'appuyait sur elle et
 concluait à tort ; le contrôle est désormais explicite, et il mesure la
 **zone atteinte par le doigt**, pas la boîte CSS — un lien peut être agrandi
 par du remplissage, par une boîte plus haute ou par un calque, et seule une
-mesure par pointage les couvre toutes : depuis le centre du contrôle, le
-point 22 px au-dessus et celui 22 px en dessous doivent encore l'atteindre.
+mesure par pointage les couvre toutes : depuis le centre du contrôle, les
+points situés à 22 px doivent encore l'atteindre.
+
+**Dans les deux sens**, parce qu'un doigt est rond : un contrôle de 44 px de
+haut et de 20 px de large est aussi difficile à viser que l'inverse, et
+`TOUCH_TARGET` ne fait grandir que la hauteur — n'interroger que celle-ci
+aurait certifié une dimension pour deux. Aucune cible du site n'est en défaut
+sur la largeur : la plus étroite mesure exactement 44 px (les pastilles de la
+galerie et le bouton du menu, `h-11 w-11`). Vérifié en étranglant ces
+pastilles à 20 px de large sans toucher à leur hauteur : la règle à deux
+dimensions en relève six, celle par la hauteur seule n'en voyait aucune. Un
+échec nomme désormais la dimension fautive.
 
 Ce contrôle a trouvé une cinquantaine de liens autonomes entre 23 et 30 px —
 plan du site et partenaires du pied de page, liste de la revue de presse,

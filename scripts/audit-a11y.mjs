@@ -201,13 +201,18 @@ const runningAnimations = (page) =>
   );
 
 /**
- * Interactive elements whose tappable area is shorter than the charter asks.
+ * Interactive elements whose tappable area is smaller than the charter asks.
  *
  * The CSS box is not the answer: a target may be enlarged by padding, by a
  * taller flex box, or — where an underline has to stay against its text — by
  * an overlay that the box does not report. So the area is hit-tested: from
- * the middle of the control, does the point 22px above and the point 22px
- * below still reach it? That is what a finger asks.
+ * the middle of the control, do the points 22px away still reach it? That is
+ * what a finger asks.
+ *
+ * Both directions are asked, because a finger is round: a control 44px tall
+ * and 20px wide is as hard to hit as the reverse, and `TOUCH_TARGET` only
+ * ever grows the height — so height alone would certify a size the charter
+ * never promised.
  *
  * A link inside a sentence is exempt, as WCAG 2.2 exempts it: its size is
  * set by the text around it, and enlarging it would cover that text.
@@ -241,9 +246,9 @@ const smallTargets = (page) =>
           const wanted = /\bmin-h-12\b/.test(String(node.className ?? "")) ? button : target;
           const name = `${node.tagName.toLowerCase()} « ${(node.getAttribute("aria-label") ?? node.textContent ?? "").trim().slice(0, 40)} »`;
 
-          /* Tall enough on its own — including a link wrapped over two lines,
+          /* Big enough on its own — including a link wrapped over two lines,
              whose fragments no single point can stand for. */
-          if (box.height >= wanted) return { name, wanted, reached: true };
+          if (box.height >= wanted && box.width >= wanted) return { name, wanted, reached: true };
 
           const x = Math.round(box.left + box.width / 2);
           const y = Math.round(box.top + box.height / 2);
@@ -254,7 +259,13 @@ const smallTargets = (page) =>
              page, clipped by their accordion, and keep a full-size box. */
           if (!reaches(node, x, y)) return { name, wanted, reached: true };
 
-          return { name, wanted, reached: reaches(node, x, y - reach) && reaches(node, x, y + reach) };
+          const tall = box.height >= wanted || (reaches(node, x, y - reach) && reaches(node, x, y + reach));
+          const wide = box.width >= wanted || (reaches(node, x - reach, y) && reaches(node, x + reach, y));
+
+          /* Which way it falls short, so the fix is obvious from the report. */
+          const lacking = [tall ? null : "de haut", wide ? null : "de large"].filter(Boolean).join(" ni ");
+
+          return { name, wanted, lacking, reached: tall && wide };
         })
         .filter((entry) => !entry.reached);
     },
@@ -285,7 +296,7 @@ const auditViewport = async (page, route, viewport) => {
       rule: "cible-tactile-trop-petite",
       impact: "serious",
       blocking: true,
-      detail: `${entry.name} n'atteint pas ${entry.wanted}px de haut`,
+      detail: `${entry.name} n'atteint pas ${entry.wanted}px ${entry.lacking}`,
     });
   });
 
@@ -564,7 +575,7 @@ const auditLightbox = async (page) => {
       rule: "cible-tactile-trop-petite",
       impact: "serious",
       blocking: true,
-      detail: `${entry.name} n'atteint pas ${entry.wanted}px de haut`,
+      detail: `${entry.name} n'atteint pas ${entry.wanted}px ${entry.lacking}`,
     });
   });
 
