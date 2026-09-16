@@ -166,10 +166,15 @@ retards propres à chaque barre de l'égaliseur sont passés en style en ligne :
 ce sont des données, pas de la mise en forme.
 
 Une règle globale `@media (prefers-reduced-motion: reduce) { * { animation:
-none !important } }` arrête toutes les animations du site.
+none !important; transition-duration: 0.01ms !important } }` arrête toutes
+les animations et transitions du site.
 
 Aucune animation n'est déclenchée au défilement : seuls l'égaliseur de
 l'en-tête (en boucle) et le tracé + `fadeUp` du héros s'animent, au chargement.
+
+Les micro-interactions d'interface (ouverture d'accordéon, rotation d'un
+chevron) sont de simples transitions Tailwind (`transition-*` + `duration-300
+ease-out`), sur l'échelle native — aucun token `@theme` à déclarer pour elles.
 
 ## Composants partagés
 

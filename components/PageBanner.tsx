@@ -66,7 +66,7 @@ const PageBanner = ({ overline, title, image, backLink }: PageBannerProps) => (
         </Link>
       ) : null}
       <Overline className="text-copper-light mb-3.5">{overline}</Overline>
-      <h1 className="font-display text-h1 max-w-[22ch] font-semibold text-white">{title}</h1>
+      <h1 className="font-display text-h1 font-semibold text-white">{title}</h1>
     </div>
   </section>
 );

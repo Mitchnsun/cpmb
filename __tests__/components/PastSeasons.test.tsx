@@ -50,8 +50,25 @@ describe("PastSeasons", () => {
   it("should keep a closed panel out of reach", () => {
     render(<PastSeasons seasons={SEASONS} />);
 
-    expect(document.getElementById("saison-2023-2024-panel")).toHaveAttribute("hidden");
-    expect(document.getElementById("saison-2024-2025-panel")).not.toHaveAttribute("hidden");
+    expect(document.getElementById("saison-2023-2024-panel")).toHaveAttribute("inert");
+    expect(document.getElementById("saison-2024-2025-panel")).not.toHaveAttribute("inert");
+  });
+
+  it("should collapse a closed panel and expand the open one", () => {
+    render(<PastSeasons seasons={SEASONS} />);
+
+    expect(document.getElementById("saison-2023-2024-panel")).toHaveClass("grid-rows-[0fr]");
+    expect(document.getElementById("saison-2024-2025-panel")).toHaveClass("grid-rows-[1fr]");
+  });
+
+  it("should point the chevron down for a closed season and up for the open one", () => {
+    render(<PastSeasons seasons={SEASONS} />);
+
+    const openHeader = screen.getByRole("button", { name: /Saison 2024 – 2025/ });
+    const closedHeader = screen.getByRole("button", { name: /Saison 2023 – 2024/ });
+
+    expect(openHeader.querySelector("svg")).toHaveClass("rotate-180");
+    expect(closedHeader.querySelector("svg")).not.toHaveClass("rotate-180");
   });
 
   it("should point every header at the panel it controls", () => {

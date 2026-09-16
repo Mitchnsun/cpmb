@@ -33,6 +33,9 @@ vi.mock("@/assets/icons/calendar.svg", () => ({
 vi.mock("@/assets/icons/location.svg", () => ({
   default: (props: any) => React.createElement("svg", { ...props }),
 }));
+vi.mock("@/assets/icons/chevron-down.svg", () => ({
+  default: (props: any) => React.createElement("svg", { ...props }),
+}));
 
 // jsdom implements neither pointer capture nor the `transform` property.
 // vaul (the mobile menu panel) relies on both to handle dragging, so we

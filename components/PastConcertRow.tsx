@@ -15,7 +15,7 @@ interface PastConcertRowProps {
  * One line of the past-concerts timeline (CPMB-13): poster, date, venue and
  * programme, marked on the left by the copper rule of the section.
  *
- * A concert with no poster drops the column instead of leaving a 90px hole,
+ * A concert with no poster drops the column instead of leaving a 5.5rem hole,
  * and below the 700px breakpoint the whole row stacks, poster first.
  */
 const PastConcertRow = ({ concert }: PastConcertRowProps) => (
@@ -23,7 +23,7 @@ const PastConcertRow = ({ concert }: PastConcertRowProps) => (
     className={cn(
       "border-l-copper-light menu:gap-5 grid items-start gap-2 border-l-2 py-4.5 pl-5.5",
       concert.media
-        ? "menu:grid-cols-[minmax(0,90px)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
+        ? "menu:grid-cols-[minmax(0,5.5rem)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
         : "menu:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
     )}
   >
@@ -33,10 +33,10 @@ const PastConcertRow = ({ concert }: PastConcertRowProps) => (
         alt={posterAlt(concert.title)}
         width={90}
         height={120}
-        sizes="90px"
+        sizes="88px"
         loading="lazy"
         /* Capped so the stacked mobile layout keeps a thumbnail, not a poster. */
-        className="border-border aspect-3/4 w-full max-w-[90px] rounded-sm border object-cover"
+        className="border-border aspect-3/4 w-full max-w-22 rounded-sm border object-cover"
       />
     ) : null}
 

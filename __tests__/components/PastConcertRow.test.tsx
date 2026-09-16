@@ -24,7 +24,7 @@ describe("PastConcertRow", () => {
     render(<PastConcertRow concert={concert()} />);
 
     const poster = screen.getByAltText("Affiche du concert : Concert de Noël, 13 décembre 2024, Vétraz-Monthoux");
-    expect(poster).toHaveClass("aspect-3/4", "max-w-[90px]");
+    expect(poster).toHaveClass("aspect-3/4", "max-w-22");
   });
 
   it("should drop the poster column rather than leave a hole", () => {
@@ -40,7 +40,7 @@ describe("PastConcertRow", () => {
     const { container } = render(<PastConcertRow concert={concert()} />);
 
     expect(container.querySelector("article")?.className).toContain(
-      "menu:grid-cols-[minmax(0,90px)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
+      "menu:grid-cols-[minmax(0,5.5rem)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]"
     );
   });
 

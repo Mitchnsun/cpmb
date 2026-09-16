@@ -78,7 +78,7 @@ export default async function ConcertPage({ params }: ConcertPageProps) {
 
           {concert.description
             ? paragraphs(concert.description).map((block) => (
-                <p key={block} className="mb-4.5 max-w-[62ch] text-lg">
+                <p key={block} className="mb-4.5 max-w-prose text-lg">
                   {block.split("\n").map((line, index) => (
                     <span key={line} className={cn(index > 0 && "block")}>
                       {line}

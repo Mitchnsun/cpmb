@@ -31,7 +31,7 @@ const UpcomingConcerts = ({ items }: UpcomingConcertsProps) => (
     ) : (
       <InfoPanel className="p-8" aria-live="polite">
         <p className="font-display text-3xl">La saison n&apos;est pas encore programmée</p>
-        <p className="text-muted mt-3 max-w-[62ch] text-lg">
+        <p className="text-muted mt-3 max-w-prose text-lg">
           Aucune date n&apos;est arrêtée à ce jour. Les concerts de la saison seront annoncés sur cette page.
         </p>
         <ButtonLink href="/contact" className="mt-5.5">

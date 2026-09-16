@@ -2,7 +2,9 @@
 
 import { useState, useSyncExternalStore } from "react";
 
+import ChevronDownIcon from "@/assets/icons/chevron-down.svg";
 import PastConcertRow from "@/components/PastConcertRow";
+import { cn } from "@/utils/classnames";
 import { type Season } from "@/utils/concerts";
 
 interface PastSeasonsProps {
@@ -30,8 +32,10 @@ const noHash = (): string => "";
  *
  * The most recent season is open on arrival; coming back from a concert page
  * the anchor of its season (`#saison-2024-2025`) reopens the one the visitor
- * left, and the browser scrolls to it on its own. A closed panel is hidden,
- * so neither the keyboard nor a screen reader walks through it.
+ * left, and the browser scrolls to it on its own. A closed panel is `inert`,
+ * so neither the keyboard nor a screen reader walks through it — the panel
+ * itself stays rendered (grid-rows 0fr, height clipped by `overflow-hidden`)
+ * so the height change can animate.
  */
 const PastSeasons = ({ seasons }: PastSeasonsProps) => {
   const anchor = useSyncExternalStore(subscribeToHash, currentHash, noHash);
@@ -71,19 +75,35 @@ const PastSeasons = ({ seasons }: PastSeasonsProps) => {
               className="flex min-h-14 w-full cursor-pointer items-center justify-between gap-4 py-3.5 text-left"
             >
               <span className="font-display text-copper text-2xl">Saison {season.label}</span>
-              <span className="text-muted font-mono text-sm">{concertCount(season.concerts.length)}</span>
+              <span className="flex items-center gap-4">
+                <span className="text-muted font-mono text-sm">{concertCount(season.concerts.length)}</span>
+                <ChevronDownIcon
+                  aria-hidden="true"
+                  className={cn(
+                    "text-copper size-5 shrink-0 transition-transform duration-300 ease-out",
+                    open && "rotate-180"
+                  )}
+                />
+              </span>
             </button>
 
             <div
               id={`${season.id}-panel`}
               role="region"
               aria-labelledby={`${season.id}-header`}
-              hidden={!open}
-              className="pb-7"
+              inert={!open}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
+                open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              )}
             >
-              {season.concerts.map((concert) => (
-                <PastConcertRow key={concert.slug} concert={concert} />
-              ))}
+              <div className="overflow-hidden">
+                <div className="pb-7">
+                  {season.concerts.map((concert) => (
+                    <PastConcertRow key={concert.slug} concert={concert} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         );
