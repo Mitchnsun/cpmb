@@ -6,7 +6,7 @@ This project includes a comprehensive data validation system for concerts data t
 
 The validation system checks:
 
-- **Structure Validation**: Required fields (title, slug, date, location, media) and optional fields (description, programme)
+- **Structure Validation**: Required fields (title, slug, date, location, media) and optional fields (description, programme, performers)
 - **Unique Constraints**: Ensures all concert slugs are unique
 - **Data Format**: Validates slug format (URL-friendly), date format (ISO), and field types
 - **Asset Existence**: Verifies that all referenced media files exist in the public directory
@@ -81,6 +81,7 @@ yarn validate
 | ------------- | ------ | -------------------------------------- |
 | `description` | string | String if provided                     |
 | `programme`   | array  | Array of non-empty strings if provided |
+| `performers`  | array  | Array of non-empty strings if provided |
 
 ### Examples
 
@@ -94,7 +95,8 @@ yarn validate
   "description": "Le Choeur des Pays du Mont Blanc...",
   "location": "Boëge et Saint-Gervais-les-Bains, France",
   "media": "/concerts/affiche-concert-vivaldi-jenkins.jpg",
-  "programme": ["Gloria de Vivaldi", "Extraits du Gloria de Jenkins"]
+  "programme": ["Gloria de Vivaldi", "Extraits du Gloria de Jenkins"],
+  "performers": ["Helena Duckert, soprano", "Benoît Dubu, direction"]
 }
 ```
 

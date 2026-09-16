@@ -5,7 +5,18 @@
     "date": ["2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"],
     "description": "Le Choeur des Pays du Mont Blanc, dirigé par Benoît Dubu, aura le plaisir de vous proposer un concert avec au programme, le Gloria de Vivaldi, des extraits du Gloria de Jenkins. et deux magnifiques pièces de Brahms.\n\nPour l'occasion, le choeur sera accompagné par des solistes et un pianiste professionnels.",
     "location": "Boëge et Saint-Gervais-les-Bains, France",
-    "media": "/concerts/affiche-concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais.jpg"
+    "media": "/concerts/affiche-concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais.jpg",
+    "programme": [
+      "Gloria — Antonio Vivaldi",
+      "Gloria (extraits) — Karl Jenkins",
+      "Schicksalslied et Geistlicheslied — Johannes Brahms"
+    ],
+    "performers": [
+      "Helena Duckert, soprano",
+      "Chloé Roussel, mezzo-soprano",
+      "Florestan Bourreau, piano",
+      "Benoît Dubu, direction"
+    ]
   },
   {
     "title": "Concert de Noël, 22 décembre 2024, Gaillard",

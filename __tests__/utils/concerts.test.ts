@@ -1,4 +1,4 @@
-import { nextConcertDate, splitConcertsByDate } from "@/utils/concerts";
+import { concertSeason, groupConcertsBySeason, nextConcertDate, seasonId, splitConcertsByDate } from "@/utils/concerts";
 
 type Concert = Parameters<typeof splitConcertsByDate>[0][number];
 
@@ -70,6 +70,76 @@ describe("splitConcertsByDate", () => {
 
   it("should handle an empty list", () => {
     expect(splitConcertsByDate([], NOW)).toEqual({ upcoming: [], past: [] });
+  });
+
+  it("should keep a concert of the day upcoming until Paris midnight", () => {
+    /* 15 June at 8am in Paris: the concert is over, the day is not. */
+    const today = concert("today", ["2025-06-15T08:00:00+02:00"]);
+
+    const { upcoming, past } = splitConcertsByDate([today], NOW);
+
+    expect(upcoming).toEqual([today]);
+    expect(past).toEqual([]);
+  });
+
+  it("should file yesterday's concert as past", () => {
+    const yesterday = concert("yesterday", ["2025-06-14T23:30:00+02:00"]);
+
+    expect(splitConcertsByDate([yesterday], NOW).past).toEqual([yesterday]);
+  });
+});
+
+describe("concertSeason", () => {
+  it("should open a season on 1 September", () => {
+    expect(concertSeason(concert("noel", ["2025-12-12T18:00:00+01:00"]))).toBe("2025 – 2026");
+    expect(concertSeason(concert("rentree", ["2025-09-01T18:00:00+02:00"]))).toBe("2025 – 2026");
+  });
+
+  it("should keep the spring of a season with the autumn that opened it", () => {
+    expect(concertSeason(concert("gloria", ["2025-06-14T20:30:00+02:00"]))).toBe("2024 – 2025");
+    expect(concertSeason(concert("aout", ["2025-08-31T20:30:00+02:00"]))).toBe("2024 – 2025");
+  });
+
+  it("should read the season from the first date of a concert given twice", () => {
+    expect(concertSeason(concert("juin", ["2024-06-16T18:00:00+02:00", "2024-06-15T20:30:00+02:00"]))).toBe(
+      "2023 – 2024"
+    );
+  });
+
+  it("should return nothing readable when no date can be parsed", () => {
+    expect(concertSeason(concert("broken", ["pas-une-date"]))).toBe("");
+  });
+});
+
+describe("seasonId", () => {
+  it("should turn a season label into an anchor", () => {
+    expect(seasonId("2024 – 2025")).toBe("saison-2024-2025");
+  });
+});
+
+describe("groupConcertsBySeason", () => {
+  const gloria = concert("gloria", ["2025-06-14T20:30:00+02:00"]);
+  const noel2024 = concert("noel-2024", ["2024-12-22T17:30:00+01:00"]);
+  const noel2023 = concert("noel-2023", ["2023-12-08T18:00:00+01:00"]);
+
+  it("should group concerts under the season they belong to, in the order received", () => {
+    const seasons = groupConcertsBySeason([gloria, noel2024, noel2023]);
+
+    expect(seasons.map(({ label }) => label)).toEqual(["2024 – 2025", "2023 – 2024"]);
+    expect(seasons[0].concerts).toEqual([gloria, noel2024]);
+    expect(seasons[1].concerts).toEqual([noel2023]);
+  });
+
+  it("should carry the anchor of every season", () => {
+    expect(groupConcertsBySeason([gloria])[0].id).toBe("saison-2024-2025");
+  });
+
+  it("should leave out a concert whose date cannot be read", () => {
+    expect(groupConcertsBySeason([concert("broken", ["pas-une-date"])])).toEqual([]);
+  });
+
+  it("should handle an empty list", () => {
+    expect(groupConcertsBySeason([])).toEqual([]);
   });
 });
 

@@ -3,81 +3,141 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import concerts from "@/assets/contents/concerts.json";
-import CalendarIcon from "@/assets/icons/calendar.svg";
-import LocationIcon from "@/assets/icons/location.svg";
-import Heading from "@/components/Heading";
+import { posterAlt } from "@/assets/contents/medias";
+import ButtonLink, { buttonLinkVariants } from "@/components/ButtonLink";
+import InfoPanel from "@/components/InfoPanel";
+import PageBanner from "@/components/PageBanner";
+import { cn } from "@/utils/classnames";
+import { type Concert, concertSeason, nextConcertDate, seasonId } from "@/utils/concerts";
 import { formatFrenchDateTime } from "@/utils/formatDate";
+import { concertIcsPath } from "@/utils/site";
 
 interface ConcertPageProps {
   params: Promise<{ slug: string }>;
 }
 
-type ConcertData = (typeof concerts)[number];
+/** Same hourly rebuild as the agenda: the page says whether the concert is ahead. */
+export const revalidate = 3600;
 
+/** Blank lines separate paragraphs; a single newline is a line break. */
+const paragraphs = (description: string): string[] => description.split(/\n\s*\n/).filter((block) => block.trim());
+
+/**
+ * Concert page (CPMB-14) — the template every concert uses, whatever it
+ * carries: one performance or several, a poster or none, a programme and
+ * performers or neither.
+ *
+ * The back link carries the anchor of the concert's season, so the agenda
+ * reopens on the season the visitor left.
+ */
 export default async function ConcertPage({ params }: ConcertPageProps) {
   const { slug } = await params;
 
-  const concert = concerts.find((c: ConcertData) => c.slug === slug);
+  const concert = concerts.find((c: Concert) => c.slug === slug);
 
   if (!concert) {
     notFound();
   }
 
+  /* Rebuilt hourly (see `revalidate`), so the reference date stays fresh. */
+  // eslint-disable-next-line react-hooks/purity
+  const upcoming = Boolean(nextConcertDate(concert, Date.now()));
+  const season = concertSeason(concert);
+
   return (
-    <div className="container mx-auto flex flex-col items-start px-4 py-8 lg:flex-row lg:gap-8">
-      <div className="order-last mx-auto w-full shrink-0 lg:order-first lg:basis-2/5">
-        <Image
-          src={concert.media}
-          alt={`Affiche: ${concert.title}`}
-          width={1080}
-          height={1500}
-          sizes="(min-width: 1024px) 40vw, 100vw"
-        />
-      </div>
-      <section>
-        <Heading hLevel={1}>{concert.title}</Heading>
-        <div className="my-2">
-          <p className="flex items-center gap-1 text-sm text-gray-500">
-            <CalendarIcon />
-            {concert.date.map((d) => formatFrenchDateTime(d)).join(", ")}
-          </p>
-          <p className="flex items-center gap-1 text-sm text-gray-500">
-            <LocationIcon /> {concert.location}
-          </p>
-        </div>
-        {concert.description && (
-          <p className="mb-4">
-            {concert.description?.split("\n").map((line, index, array) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <span key={`line-${index}-${line}`}>
-                {line}
-                {index < array.length - 1 && <br />}
-              </span>
-            ))}
-          </p>
-        )}
-        {concert.programme && concert.programme.length > 0 && (
-          <>
-            <h4>Au programme: </h4>
-            <ul className="mt-2 list-disc pl-5">
-              {concert.programme?.map((piece) => (
-                <li key={piece}>{piece}</li>
+    <>
+      <PageBanner
+        backLink={{ href: `/nos-concerts#${seasonId(season)}`, label: "Retour aux concerts" }}
+        overline={`${upcoming ? "Concert à venir" : "Concert passé"} — saison ${season}`}
+        title={concert.title}
+      />
+
+      <section className="max-w-site mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-start gap-14 px-6 pt-14 pb-20">
+        {concert.media ? (
+          <Image
+            src={concert.media}
+            alt={posterAlt(concert.title)}
+            width={1080}
+            height={1500}
+            sizes="(min-width: 700px) 50vw, 100vw"
+            className="border-border h-auto w-full rounded-sm border"
+          />
+        ) : null}
+
+        <div>
+          <InfoPanel accent={upcoming ? "teal" : "copper"} className="mb-8">
+            <p className={cn("font-display text-3xl", upcoming ? "text-teal" : "text-copper")}>
+              {concert.date.map((date) => (
+                <span key={date} className="block">
+                  {formatFrenchDateTime(date)}
+                </span>
               ))}
-            </ul>
-          </>
-        )}
+            </p>
+            <p className="mt-3.5 text-lg">{concert.location}</p>
+          </InfoPanel>
+
+          {concert.description
+            ? paragraphs(concert.description).map((block) => (
+                <p key={block} className="mb-4.5 max-w-prose text-lg">
+                  {block.split("\n").map((line, index) => (
+                    <span key={line} className={cn(index > 0 && "block")}>
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              ))
+            : null}
+
+          {concert.programme && concert.programme.length > 0 ? (
+            <>
+              <h2 className="font-display mt-9 mb-4 text-3xl font-semibold">Au programme</h2>
+              <ul className="bg-border grid gap-px">
+                {concert.programme.map((piece) => (
+                  <li key={piece} className="bg-bg py-3.5 text-lg">
+                    {piece}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+
+          {concert.performers && concert.performers.length > 0 ? (
+            <>
+              <h2 className="font-display mt-9 mb-4 text-3xl font-semibold">Avec</h2>
+              <ul className="text-muted text-lg">
+                {concert.performers.map((performer) => (
+                  <li key={performer}>{performer}</li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+
+          <div className="mt-8 flex flex-wrap gap-4">
+            <ButtonLink href="/contact">Nous contacter</ButtonLink>
+            {upcoming ? (
+              <a
+                href={concertIcsPath(concert.slug)}
+                download
+                aria-label={`Ajouter à mon agenda : ${concert.title}`}
+                className={buttonLinkVariants({ tone: "outline" })}
+              >
+                Ajouter à mon agenda
+              </a>
+            ) : null}
+          </div>
+        </div>
       </section>
-    </div>
+    </>
   );
 }
 
 export function generateStaticParams() {
-  return concerts.map((c: ConcertData) => ({ slug: c.slug }));
+  return concerts.map((c: Concert) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: ConcertPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const concert = concerts.find((c: ConcertData) => c.slug === slug);
+  const concert = concerts.find((c: Concert) => c.slug === slug);
 
   if (!concert) {
     return { title: "Concert non trouvé" };

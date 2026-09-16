@@ -6,6 +6,13 @@ import JoinBanner from "@/components/JoinBanner";
 import PartnersBanner from "@/components/PartnersBanner";
 import { splitConcertsByDate } from "@/utils/concerts";
 
+/**
+ * The page is prerendered, then rebuilt at most once an hour: the hero card
+ * and the dates list are split at Paris midnight, and without this a concert
+ * would only leave the "next concert" card on the next deploy (CPMB-11).
+ */
+export const revalidate = 3600;
+
 /** Number of dates listed on the home page, whichever state it is in. */
 const HOME_DATES_COUNT = 3;
 
@@ -20,10 +27,7 @@ const HOME_DATES_COUNT = 3;
  * computed from the data, never entered by hand.
  */
 export default function Home() {
-  // The page is statically prerendered, so the reference date is the build
-  // date, not the visit date — a concert only moves to "past" on the next
-  // deploy. Same knowing trade-off as `/nos-concerts`; CPMB-11 will settle
-  // it for both pages.
+  /* Rebuilt hourly (see `revalidate`), so the reference date stays fresh. */
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
   const { upcoming, past } = splitConcertsByDate(concerts, now);

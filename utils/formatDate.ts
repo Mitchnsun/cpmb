@@ -7,7 +7,8 @@
  * the local time of the concert regardless of where the page is built.
  */
 
-const PARIS = "Europe/Paris";
+/** Every date on the site is read in the choir's timezone. */
+export const PARIS = "Europe/Paris";
 
 interface FormatOptions {
   timeZone?: string;

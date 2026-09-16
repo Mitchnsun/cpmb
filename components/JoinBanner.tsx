@@ -15,7 +15,7 @@ const JoinBanner = () => (
         <h2 id="nous-rejoindre" className="font-display mb-3.5 text-3xl font-semibold text-white">
           Nous rejoindre
         </h2>
-        <p className="max-w-[46ch] text-lg text-white">
+        <p className="max-w-md text-lg text-white">
           Le chœur recrute des choristes ayant une expérience chorale et/ou une capacité en déchiffrage. Le recrutement
           se fait après audition.
         </p>

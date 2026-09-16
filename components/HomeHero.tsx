@@ -81,7 +81,7 @@ const HomeHero = ({ nextConcert, now }: HomeHeroProps) => {
             <br />
             du Mont-Blanc
           </h1>
-          <p className="text-text-on-dark mt-5.5 max-w-[30ch] text-lg">
+          <p className="text-text-on-dark mt-5.5 max-w-2xs text-lg">
             Partager la passion de la musique chorale au cœur des Alpes
           </p>
         </div>

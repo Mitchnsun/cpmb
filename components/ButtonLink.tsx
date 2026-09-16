@@ -9,8 +9,11 @@ import { cn } from "@/utils/classnames";
  * semibold 18px), four tones depending on what it sits on: the global
  * `a`/`a:hover` colours of `globals.css` are overridden on every tone, hover
  * included, so the label never falls back to teal or copper.
+ *
+ * The variants are exported on their own for the rare action that cannot be
+ * a `next/link`: a file download, which has to stay a plain `<a download>`.
  */
-const buttonLinkVariants = cva(
+export const buttonLinkVariants = cva(
   "inline-flex min-h-12 items-center rounded-lg px-5.5 text-lg font-semibold no-underline transition-colors",
   {
     variants: {
