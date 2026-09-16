@@ -372,20 +372,34 @@ const focusState = (page) =>
 const FOCUS_RESTORE_MS = 2000;
 
 /**
- * Whether the focus comes back to the control whose label starts with
- * `label`. Awaited rather than sampled: a visitor waits for the focus to
- * land, and what has not come back within the budget has not come back.
+ * Whether the focus comes back to `opener` itself — the very control that
+ * opened the dialog, compared by identity rather than by name. Every slide of
+ * the gallery is labelled `Agrandir la photo : …`, so a restore landing on a
+ * neighbouring slide would satisfy a check written on the label while
+ * stranding the visitor somewhere they never were; off-screen slides are
+ * `aria-hidden` and out of the tab order, which makes that the worse landing
+ * of the two.
+ *
+ * Awaited rather than sampled: a visitor waits for the focus to land, and
+ * what has not come back within the budget has not come back.
  */
-const focusReturnsTo = async (page, label) => {
+const focusReturnsTo = async (page, opener) => {
   try {
-    await page.waitForFunction(
-      (name) => (document.activeElement?.getAttribute("aria-label") ?? "").startsWith(name),
-      label,
-      { timeout: FOCUS_RESTORE_MS }
-    );
-    return true;
+    await page.waitForFunction((node) => document.activeElement === node, opener, { timeout: FOCUS_RESTORE_MS });
+    return { returned: true };
   } catch {
-    return false;
+    /* Where it went instead — a lost focus is only actionable if located. */
+    const landed = await page.evaluate(() => {
+      const node = document.activeElement;
+      if (!node || node === document.body) return "le document";
+
+      const label = (node.getAttribute("aria-label") ?? node.textContent ?? "").trim().slice(0, 40);
+      const hidden = node.closest('[aria-hidden="true"]') ? ", masqué aux lecteurs d'écran" : "";
+
+      return `${node.tagName.toLowerCase()} « ${label} »${hidden}`;
+    });
+
+    return { returned: false, landed };
   }
 };
 
@@ -466,6 +480,8 @@ const auditDrawer = async (page) => {
   await open(page, "/");
 
   const trigger = page.getByRole("button", { name: "Ouvrir le menu" });
+  /* The node itself, so the restore is checked against this very button. */
+  const opener = await trigger.elementHandle();
   await trigger.focus();
   await page.keyboard.press("Enter");
   await page.getByRole("dialog").waitFor({ state: "visible" });
@@ -492,16 +508,16 @@ const auditDrawer = async (page) => {
   await page.keyboard.press("Escape");
   await page.getByRole("dialog").waitFor({ state: "hidden" });
 
-  const returned = await focusReturnsTo(page, "Ouvrir le menu");
+  const restore = await focusReturnsTo(page, opener);
 
-  if (!returned) {
+  if (!restore.returned) {
     record({
       route: "/",
       viewport: "390 px",
       rule: "menu-mobile-focus-perdu",
       impact: "serious",
       blocking: true,
-      detail: "après Échap, le focus ne revient pas sur le bouton du menu",
+      detail: `après Échap, le focus ne revient pas sur le bouton du menu mais sur ${restore.landed}`,
     });
   }
 };
@@ -520,6 +536,8 @@ const auditLightbox = async (page) => {
   await open(page, "/presentation");
 
   const slide = page.getByRole("button", { name: /^Agrandir la photo/ }).first();
+  /* Kept to compare the restore against this slide, not against any slide. */
+  const opener = await slide.elementHandle();
   await slide.focus();
   await page.keyboard.press("Enter");
 
@@ -583,16 +601,16 @@ const auditLightbox = async (page) => {
   await page.keyboard.press("Escape");
   await dialog.waitFor({ state: "hidden" });
 
-  const returned = await focusReturnsTo(page, "Agrandir la photo");
+  const restore = await focusReturnsTo(page, opener);
 
-  if (!returned) {
+  if (!restore.returned) {
     record({
       route: "/presentation",
       viewport: "1440 px, photo agrandie",
       rule: "visionneuse-focus-perdu",
       impact: "serious",
       blocking: true,
-      detail: "après Échap, le focus ne revient pas sur la photo qui a ouvert la visionneuse",
+      detail: `après Échap, le focus ne revient pas sur la photo qui a ouvert la visionneuse mais sur ${restore.landed}`,
     });
   }
 };

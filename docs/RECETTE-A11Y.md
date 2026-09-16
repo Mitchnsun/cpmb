@@ -170,6 +170,14 @@ de ce qu'il prétend mesurer. ✅
   signale un défaut qu'une fois sur cinq est pire qu'une passe absente : elle
   apprend à relancer jusqu'au vert. Le retour est désormais attendu jusqu'à
   2 s, ce qui ne coûte ce délai que lorsqu'il n'arrive jamais. ✅
+- Et il est comparé **au déclencheur lui-même**, par identité, non à son
+  libellé : les six diapositives de la galerie s'appellent toutes
+  « Agrandir la photo : … », donc une restitution atterrissant sur une
+  voisine — `aria-hidden` et hors du parcours de tabulation, puisque seule
+  celle à l'écran y figure — satisfaisait une règle écrite sur le nom tout en
+  laissant le visiteur là où il n'est jamais allé. Démontré en détournant la
+  restitution vers une autre diapositive : la règle par identité la refuse,
+  celle par libellé l'acceptait. ✅
 - Accordéon des saisons passées (`<details>`/`<summary>` natif) et formulaire
   de contact : parcourus par le balayage, sans blocage. ✅
 - Le site ne déclare pas de style de focus : l'anneau par défaut de Chromium,
