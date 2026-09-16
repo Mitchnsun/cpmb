@@ -2,24 +2,39 @@
   {
     "title": "Concert autour de la Misa Criolla, 7 et 28 juin 2026, Vongy et Boëge",
     "slug": "concert-autour-de-la-misa-criolla-7-et-28-juin-2026-vongy-et-boege",
-    "date": ["2026-06-07", "2026-06-28"],
-    "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu et accompagné par des instrumentistes et des solistes professionnels, a proposé un concert autour de la « Misa Criolla » les 7 et 28 juin 2026 à Vongy et à Boëge.",
+    "date": ["2026-06-07T18:30:00+02:00", "2026-06-28T18:30:00+02:00"],
+    "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu et accompagné par des instrumentistes et des solistes professionnels, propose un concert autour de la « Misa Criolla » les 7 et 28 juin 2026, à l'église Notre-Dame du Léman de Vongy et à l'église Saint-Maurice de Boëge.",
     "location": "Vongy et Boëge, France",
-    "venues": ["Vongy, France", "Boëge, France"]
+    "venues": ["Vongy, France", "Boëge, France"],
+    "media": "/concerts/affiche-concert-autour-de-la-misa-criolla-7-et-28-juin-2026-vongy-et-boege.jpg",
+    "programme": [
+      "Misa Criolla — Ariel Ramírez",
+      "Destino Patagonia — Sergio Arriagada",
+      "The Armed Man - A Mass for Peace (extraits) — Karl Jenkins"
+    ],
+    "performers": [
+      "Fernando Cuellar et Jorge Luis Carrillo, guitare et solistes",
+      "Florestan Bourreau, piano",
+      "Benoît Dubu, direction"
+    ]
   },
   {
     "title": "Concert de Noël, 12 décembre 2025, Vétraz-Monthoux",
     "slug": "concert-de-noel-12-decembre-2025-vetraz-monthoux",
-    "date": ["2025-12-12"],
-    "description": "Le Chœur des Pays du Mont-Blanc a eu le plaisir de proposer le 12 décembre 2025 un concert de Noël à l'église de Vétraz-Monthoux, à l'occasion de l'ouverture du marché de Noël.",
-    "location": "Église de Vétraz-Monthoux, France"
+    "date": ["2025-12-12T20:00:00+01:00"],
+    "description": "Le Chœur des Pays du Mont-Blanc a eu le plaisir de proposer le 12 décembre 2025 un concert de Noël à l'église de Vétraz-Monthoux, à l'occasion de l'ouverture du marché de Noël. Entrée libre.",
+    "location": "Église de Vétraz-Monthoux, France",
+    "media": "/concerts/affiche-concert-de-noel-12-decembre-2025-vetraz-monthoux.jpg",
+    "programme": ["Oratorio de Noël (extraits) — Camille Saint-Saëns", "Gloria — Karl Jenkins", "Chants de Noël"],
+    "performers": ["Un quatuor à cordes", "Un clavier", "Quatre solistes : soprano, alto, ténor et basse"]
   },
   {
     "title": "Concert Gloria, 16 novembre 2025, Gaillard",
     "slug": "concert-gloria-16-novembre-2025-gaillard",
-    "date": ["2025-11-16"],
+    "date": ["2025-11-16T17:00:00+01:00"],
     "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu et accompagné par huit instrumentistes et deux solistes professionnels, a eu le plaisir de proposer le 16 novembre 2025 à l'Espace Louis Simon de Gaillard un concert avec au programme le « Gloria » de Vivaldi et le « Gloria » de Jenkins.",
     "location": "Espace Louis Simon, Gaillard, France",
+    "media": "/concerts/affiche-concert-gloria-16-novembre-2025-gaillard.jpg",
     "programme": ["Gloria — Antonio Vivaldi", "Gloria — Karl Jenkins"]
   },
   {
