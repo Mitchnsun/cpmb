@@ -95,7 +95,7 @@ describe("concertEvents", () => {
     expect(concertEvents(broken).map((event) => event.startDate)).toEqual(["2025-06-15T18:00:00+02:00"]);
   });
 
-  it("should give each performance of a two-town concert its own venue", () => {
+  it("should take each performance's venue from the data", () => {
     const [boege, saintGervais] = concertEvents(twoNights);
 
     expect(boege.location).toEqual({
@@ -119,7 +119,7 @@ describe("concertEvents", () => {
     expect(venueOnly.location.name).toBe("Église de Vétraz-Monthoux");
   });
 
-  it("should split a cross-border concert and keep each side's country", () => {
+  it("should keep each side's country on a cross-border concert", () => {
     const acrossTheBorder = concertOf("messe-en-ut-de-mozart");
 
     expect(concertEvents(acrossTheBorder).map((event) => event.location)).toEqual([
@@ -164,14 +164,41 @@ describe("concertEvents", () => {
     });
   });
 
-  it("should leave a venue whose own name carries « et » in one piece", () => {
+  it("should never cut a venue whose own name carries « et » in two", () => {
+    /* Two dates, one church: nothing in "Saint-Pierre et Saint-Paul" says
+       whether it is one venue or two, which is why the data states the
+       venues rather than letting them be guessed from the sentence. */
     const parish = {
       ...twoNights,
+      venues: undefined,
       location: "Église Saint-Pierre et Saint-Paul, Gaillard, France",
-      date: ["2027-01-01"],
+      date: ["2027-01-01", "2027-01-02"],
     };
 
-    expect(concertEvents(parish)[0].location.name).toBe("Église Saint-Pierre et Saint-Paul");
+    expect(concertEvents(parish).map((event) => event.location.name)).toEqual([
+      "Église Saint-Pierre et Saint-Paul",
+      "Église Saint-Pierre et Saint-Paul",
+    ]);
+  });
+
+  it("should fall back to the whole line when the venues do not match the dates", () => {
+    const mismatched = { ...twoNights, venues: ["Boëge, France"] };
+
+    expect(concertEvents(mismatched).map((event) => event.location.name)).toEqual([
+      "Boëge et Saint-Gervais-les-Bains",
+      "Boëge et Saint-Gervais-les-Bains",
+    ]);
+  });
+
+  it("should give every performance of a multi-venue concert a venue of its own", () => {
+    /* Within one concert: the same place twice would mean the venues were
+       never really read — across concerts, Vongy comes back, and should. */
+    const repeated = concerts
+      .filter((concert) => concert.date.length > 1 && concert.venues)
+      .map((concert) => concertEvents(concert).map((event) => event.location.name))
+      .filter((names) => new Set(names).size !== names.length);
+
+    expect(repeated).toEqual([]);
   });
 
   it("should describe every concert of the data without failing", () => {

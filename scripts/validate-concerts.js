@@ -109,6 +109,20 @@ function validateOptionalFields(concert, index, errors) {
 
   validateOptionalStringArray(concert, "programme", index, errors);
   validateOptionalStringArray(concert, "performers", index, errors);
+  validateOptionalStringArray(concert, "venues", index, errors);
+
+  /*
+   * `venues` names the place of each performance, in the order of the dates.
+   * A count that does not match them pairs a date with the wrong town, so it
+   * is refused rather than published.
+   */
+  if (Array.isArray(concert.venues) && Array.isArray(concert.date) && concert.venues.length !== concert.date.length) {
+    errors.push({
+      field: `concert[${index}].venues`,
+      message: `Venues must carry exactly one place per date (${concert.date.length} expected, ${concert.venues.length} given)`,
+      value: concert.venues,
+    });
+  }
 }
 
 // Inline validation functions to avoid import issues

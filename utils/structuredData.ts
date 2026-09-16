@@ -1,4 +1,3 @@
-import { type Concert } from "@/utils/concerts";
 import { absoluteUrl, concertUrl, SITE_NAME, SITE_URL } from "@/utils/site";
 
 /**
@@ -10,6 +9,23 @@ import { absoluteUrl, concertUrl, SITE_NAME, SITE_URL } from "@/utils/site";
  * `MusicEvent` entries, which is what a calendar expects: one event, one
  * date.
  */
+
+/**
+ * What describing a concert as an event takes — a subset of `Concert`, which
+ * every concert of the data satisfies. Stated structurally rather than as
+ * the JSON-derived union, so this stays readable and a test can hand it a
+ * concert that does not exist yet.
+ */
+export interface ConcertLike {
+  title: string;
+  slug: string;
+  date: readonly string[];
+  location: string;
+  description?: string;
+  media?: string;
+  /** One place per date, in their order, when they differ. */
+  venues?: readonly string[];
+}
 
 /** Countries the choir sings in, and their code. */
 const COUNTRY_CODES: Readonly<Record<string, string>> = { France: "FR", Suisse: "CH" };
@@ -109,28 +125,25 @@ export const parsePlace = (location: string, fallbackCountry?: string): Place =>
 };
 
 /**
- * The venues of a concert, one per performance, or `[]` when the line
- * cannot be read as such.
+ * The venues of a concert, one per performance, or `[]` when the data names
+ * none — the concert was then given in a single place.
  *
- * A concert given in two towns carries them on one line, in the order of
- * its dates: "Boëge et Saint-Gervais-les-Bains, France". Emitting that whole
- * line as the place of both events invents a venue that exists nowhere, so
- * it is split — but only when it yields exactly one venue per date, which is
- * what keeps a single venue whose own name contains "et" in one piece.
+ * A concert given in two towns reads, for a human, as one line: "Boëge et
+ * Saint-Gervais-les-Bains, France". Publishing that whole line as the place
+ * of both events invents a venue that exists nowhere, and cutting it back
+ * apart cannot be done safely — "Église Saint-Pierre et Saint-Paul" splits
+ * just as willingly as "Boëge et Saint-Gervais-les-Bains", and nothing in
+ * the sentence says which of the two was meant. So the data states it
+ * instead: `venues`, one entry per date, in their order.
  */
-const concertVenues = (location: string, performances: number): Place[] => {
-  const parts = location
-    .split(" et ")
-    .map((part) => part.trim())
-    .filter(Boolean);
+const concertVenues = (concert: ConcertLike, performances: number): Place[] => {
+  const venues = concert.venues ?? [];
 
-  if (parts.length !== performances || performances < 2) return [];
+  /* A count that does not match the dates is not a mapping: rather than pair
+     them wrongly, the whole line stands for every performance. */
+  if (venues.length !== performances) return [];
 
-  /* The country is written once, at the end of the line: "Vongy et Boëge,
-     France" is in France on both evenings. */
-  const country = parsePlace(location).address.addressCountry;
-
-  return parts.map((part) => parsePlace(part, country));
+  return venues.map((venue) => parsePlace(venue));
 };
 
 /** The choir, as both the group on stage and the organiser of the evening. */
@@ -140,11 +153,11 @@ const CHOIR = { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL } as const
  * One `MusicEvent` per performance of a concert. Dates that cannot be read
  * are skipped rather than published broken.
  */
-export const concertEvents = (concert: Concert): MusicEvent[] => {
+export const concertEvents = (concert: ConcertLike): MusicEvent[] => {
   const url = concertUrl(concert.slug);
   const dates = concert.date.filter((date) => Number.isFinite(new Date(date).getTime()));
 
-  const venues = concertVenues(concert.location, dates.length);
+  const venues = concertVenues(concert, dates.length);
   const whole = parsePlace(concert.location);
 
   return dates.map((date, index) => ({

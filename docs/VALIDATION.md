@@ -6,7 +6,7 @@ This project includes a comprehensive data validation system for concerts data t
 
 The validation system checks:
 
-- **Structure Validation**: Required fields (title, slug, date, location) and optional fields (description, media, programme, performers)
+- **Structure Validation**: Required fields (title, slug, date, location) and optional fields (description, media, programme, performers, venues)
 - **Unique Constraints**: Ensures all concert slugs are unique
 - **Data Format**: Validates slug format (URL-friendly), date format (ISO), and field types
 - **Asset Existence**: Verifies that all referenced media files exist in the public directory

@@ -106,12 +106,21 @@ Le site s'occupe du reste : les deux dates sont listées sur la fiche, le
 fichier agenda contient deux événements, et le concert reste annoncé comme
 « à venir » **tant que la dernière des deux dates n'est pas passée**.
 
-⚠️ **Quand les deux soirs n'ont pas lieu au même endroit, écrire les lieux
-dans l'ordre des dates**, séparés par « et » : `"Vongy et Boëge, France"` pour
-un concert donné d'abord à Vongy, ensuite à Boëge. Chaque représentation est
-publiée aux moteurs de recherche comme un événement distinct, avec **son**
-lieu : c'est cet ordre qui les associe. Le pays s'écrit une seule fois, à la
-fin de la ligne.
+⚠️ **Quand les deux soirs n'ont pas lieu au même endroit**, ajouter un champ
+`venues` : un lieu par date, dans le même ordre que `date`. La ligne
+`location` reste la phrase affichée sur la fiche ; `venues` est ce que lisent
+les moteurs de recherche, qui publient chaque représentation comme un
+événement distinct, avec **son** lieu.
+
+```json
+    "date": ["2027-06-07T20:30:00+02:00", "2027-06-28T18:00:00+02:00"],
+    "location": "Vongy et Boëge, France",
+    "venues": ["Vongy, France", "Boëge, France"],
+```
+
+Le contrôle automatique refuse un `venues` qui ne compte pas exactement
+autant de lieux que de dates : mieux vaut aucune association qu'une fausse.
+Un concert donné deux fois **au même endroit** n'a pas besoin de ce champ.
 
 ### Étape 4 — enregistrer
 
