@@ -66,6 +66,7 @@ const LEGACY_CONCERTS: Readonly<Record<string, string>> = {
     "requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-novembre-2023",
   "94-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023":
     "requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023",
+  "92-musique-francaise-10-decembre-2022-vetraz-monthoux": "musique-francaise-10-decembre-2022-vetraz-monthoux",
   "85-musique-francaise-27-novembre-2022-eglise-de-gaillard": "musique-francaise-27-novembre-2022-eglise-de-gaillard",
   "83-musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard":
     "musique-francaise-5-novembre-2022-espace-louis-simon-a-gaillard",

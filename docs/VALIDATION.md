@@ -36,7 +36,7 @@ yarn validate
 ✅ All concerts data is valid!
 
 📊 Validation Summary:
-   • Total concerts: 27
+   • Total concerts: 28
    • All required fields present: ✅
    • All slugs unique: ✅
    • All media files exist: ✅

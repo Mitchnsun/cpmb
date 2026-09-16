@@ -97,6 +97,13 @@
     "media": "/concerts/affiche-requiem-michael-haydn-et-vepres-solennelles-pour-un-confesseur-de-mozart-juin-2023.jpg"
   },
   {
+    "title": "Musique Française, 10 décembre 2022, Vétraz-Monthoux",
+    "slug": "musique-francaise-10-decembre-2022-vetraz-monthoux",
+    "date": ["2022-12-10"],
+    "description": "Le Chœur des Pays du Mont-Blanc, invité par la Municipalité de Vétraz-Monthoux, a eu le plaisir de clôturer le Marché de Noël en proposant un programme de musique française et de chants de Noël.",
+    "location": "Église de Vétraz-Monthoux, France"
+  },
+  {
     "title": "Musique Française, 27 novembre 2022, Eglise de Gaillard",
     "slug": "musique-francaise-27-novembre-2022-eglise-de-gaillard",
     "date": ["2022-11-27T17:30:00+01:00"],
