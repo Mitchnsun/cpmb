@@ -57,6 +57,35 @@ describe("buildConcertIcs", () => {
     expect(ics).toContain(URL);
   });
 
+  it("should send each evening of a two-town concert to its own address", () => {
+    const ics = build(["2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"], {
+      venues: ["Boëge, France", "Saint-Gervais-les-Bains, France"],
+    } as Partial<Concert>);
+
+    expect(ics).toContain("LOCATION:Boëge\\, France");
+    expect(ics).toContain("LOCATION:Saint-Gervais-les-Bains\\, France");
+    expect(ics).not.toContain("LOCATION:Boëge et Saint-Gervais-les-Bains\\, France");
+  });
+
+  it("should keep the whole location when the venues do not match the dates", () => {
+    const ics = build(["2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"], {
+      venues: ["Boëge, France"],
+    } as Partial<Concert>);
+
+    expect(ics.match(/LOCATION:Boëge et Saint-Gervais-les-Bains\\, France/g)).toHaveLength(2);
+  });
+
+  it("should pair the venues with the dates it could actually read", () => {
+    /* A skipped date must not shift every later evening onto the wrong town:
+       rather than pair them wrongly, the whole line stands for both. */
+    const ics = build(["pas une date", "2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"], {
+      venues: ["Boëge, France", "Saint-Gervais-les-Bains, France", "Genève (CH)"],
+    } as Partial<Concert>);
+
+    expect(ics).not.toContain("LOCATION:Genève (CH)");
+    expect(ics.match(/LOCATION:Boëge et Saint-Gervais-les-Bains\\, France/g)).toHaveLength(2);
+  });
+
   it("should stamp the export with the reference instant", () => {
     expect(build(["2025-06-14T20:30:00+02:00"])).toContain("DTSTAMP:20250501T100000Z");
   });

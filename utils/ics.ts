@@ -132,18 +132,25 @@ export interface IcsOptions {
 
 /**
  * The whole calendar file of a concert, ready to be served.
- * A date that cannot be read is skipped rather than exported broken.
+ *
+ * A date that cannot be read is skipped rather than exported broken — and a
+ * concert given in two towns sends each evening to its own, because that is
+ * the address the visitor will drive to. `venues` names them, one per date;
+ * without it, or if it does not carry exactly one per readable date, every
+ * event keeps the concert's whole location line.
  */
 export const buildConcertIcs = (concert: Concert, { url, now }: IcsOptions): string => {
-  const events = concert.date
-    .filter((date) => Number.isFinite(new Date(date).getTime()))
+  const dates = concert.date.filter((date) => Number.isFinite(new Date(date).getTime()));
+  const venues = concert.venues?.length === dates.length ? concert.venues : undefined;
+
+  const events = dates
     .map((date, index) => [
       "BEGIN:VEVENT",
       `UID:${concert.slug}-${index + 1}@choeurdespaysdumontblanc.fr`,
       `DTSTAMP:${utcStamp(now)}`,
       ...eventDates(date),
       `SUMMARY:${escapeText(concert.title)}`,
-      `LOCATION:${escapeText(concert.location)}`,
+      `LOCATION:${escapeText(venues?.[index] ?? concert.location)}`,
       `DESCRIPTION:${escapeText(`Chœur des Pays du Mont-Blanc — ${url}`)}`,
       `URL:${url}`,
       "END:VEVENT",
