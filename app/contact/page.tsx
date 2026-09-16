@@ -1,15 +1,19 @@
-import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { CONTACT_BANNER } from "@/assets/contents/medias";
 import ContactForm from "@/components/ContactForm";
 import ContactInfo from "@/components/ContactInfo";
 import PageBanner from "@/components/PageBanner";
+import { pageMetadata } from "@/utils/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact – Chœur des Pays du Mont-Blanc",
-  description: "Contactez-nous pour rejoindre le Chœur des Pays du Mont-Blanc ou pour toute information.",
-};
+export const metadata = pageMetadata({
+  title: "Contact",
+  description:
+    "Écrire au Chœur des Pays du Mont-Blanc : rejoindre le chœur après audition, inviter le chœur, ou demander le planning des répétitions à Gaillard.",
+  path: "/contact",
+  image: CONTACT_BANNER,
+  keywords: ["chœur", "mont-blanc", "contact", "audition", "rejoindre", "choriste", "gaillard"],
+});
 
 /**
  * "Contact" page (CPMB-15): the banner, then the practical information and

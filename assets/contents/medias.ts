@@ -99,6 +99,19 @@ export const CONTACT_BANNER: SiteImage = {
   sizes: "100vw",
 };
 
+/**
+ * Image a link to the site shows when it is shared — Open Graph card,
+ * messaging preview, search result (CPMB-18). The same photo as the
+ * presentation banner, but uncropped: a social card is nearly 2/1, and the
+ * banner strips of `public/carrousel/` are 4.2/1, too flat to survive it.
+ */
+export const SOCIAL_IMAGE: SiteImage = {
+  src: "/carrousel/CPMB2.jpg",
+  alt: "Le Chœur des Pays du Mont-Blanc en concert, dirigé par Benoît Dubu",
+  width: 2512,
+  height: 1669,
+};
+
 /** "Page non trouvée" banner. */
 export const NOT_FOUND_BANNER: SiteImage = {
   src: "/media/illustration_404.jpeg",

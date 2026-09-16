@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { posterAlt } from "@/assets/contents/medias";
+import { TOUCH_TARGET } from "@/components/TextLink";
 import { cn } from "@/utils/classnames";
 import { type Concert } from "@/utils/concerts";
 import { formatFrenchDateList } from "@/utils/formatDate";
@@ -50,7 +51,10 @@ const PastConcertRow = ({ concert }: PastConcertRowProps) => (
       <Link
         href={concertPath(concert.slug)}
         aria-label={`Voir le concert : ${concert.title}`}
-        className="text-copper hover:text-teal mt-2 inline-block border-b border-current text-lg no-underline"
+        className={cn(
+          "text-copper hover:text-teal mt-2 inline-block border-b border-current text-lg no-underline",
+          TOUCH_TARGET
+        )}
       >
         Voir le concert
       </Link>

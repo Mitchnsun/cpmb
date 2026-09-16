@@ -1,7 +1,8 @@
 import { generateStaticParams, GET } from "@/app/nos-concerts/[slug]/concert.ics/route";
 import concerts from "@/assets/contents/concerts.json";
 
-const GLORIA = concerts[0];
+/** The concert given twice in June 2025: two performances in one file. */
+const GLORIA = concerts.find((c) => c.slug === "concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais")!;
 
 const get = (slug: string) =>
   GET(new Request("https://choeurdespaysdumontblanc.fr"), { params: Promise.resolve({ slug }) });

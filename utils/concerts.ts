@@ -45,6 +45,19 @@ const concertTimes = (concert: Concert): number[] =>
 const isAhead = (time: number, now: number): boolean => parisDay(time) >= parisDay(now);
 
 /**
+ * Same rule, for a single date written as the data writes it. Anything that
+ * publishes one performance rather than a whole concert — the agenda's
+ * structured data — needs the cutoff a concert page already applies, or a
+ * concert caught between its two evenings advertises the one that has
+ * passed.
+ */
+export const isDateAhead = (date: string, now: number): boolean => {
+  const time = new Date(date).getTime();
+
+  return Number.isFinite(time) && isAhead(time, now);
+};
+
+/**
  * Splits concerts into "upcoming" and "past" relative to `now`, and orders
  * them: soonest first for upcoming, most recent first for past. A concert
  * with several dates stays "upcoming" as long as one of its dates hasn't

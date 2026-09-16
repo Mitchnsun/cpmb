@@ -32,40 +32,40 @@ exports[`Footer > should render the footer element 1`] = `
           Plan du site
         </p>
         <div
-          class="grid gap-2.5 text-lg"
+          class="grid gap-4 text-lg"
         >
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/"
           >
             Accueil
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/presentation"
           >
             Présentation
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/nos-concerts"
           >
             Nos concerts
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/presse"
           >
             Presse
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/contact"
           >
             Contact
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/mentions-legales"
           >
             Mentions légales
@@ -79,10 +79,10 @@ exports[`Footer > should render the footer element 1`] = `
           Partenaires
         </p>
         <div
-          class="grid gap-2.5 text-lg"
+          class="grid gap-4 text-lg"
         >
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="https://www.gaillard.fr/"
             rel="noopener noreferrer"
             target="_blank"
@@ -90,7 +90,7 @@ exports[`Footer > should render the footer element 1`] = `
             Ville de Gaillard
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="https://www.hautesavoie.fr/"
             rel="noopener noreferrer"
             target="_blank"
@@ -98,7 +98,7 @@ exports[`Footer > should render the footer element 1`] = `
             Département de la Haute-Savoie
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="https://www.veran-piano.com/"
             rel="noopener noreferrer"
             target="_blank"
@@ -117,22 +117,22 @@ exports[`Footer > should render the footer element 1`] = `
           Artistes
         </p>
         <div
-          class="grid gap-2.5 text-lg"
+          class="grid gap-4 text-lg"
         >
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/presentation/benoit-dubu"
           >
             Benoît Dubu
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/presentation/agnes-lorincz"
           >
             Ágnes Lőrincz
           </a>
           <a
-            class="text-text-on-dark hover:text-teal-light no-underline"
+            class="text-text-on-dark hover:text-teal-light no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
             href="/presentation/marjorie-saunier"
           >
             Marjorie Saunier
@@ -152,7 +152,7 @@ exports[`Footer > should render the footer element 1`] = `
         class="text-lg"
       >
         <a
-          class="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
+          class="text-teal-light hover:text-teal-light wrap-anywhere no-underline relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']"
           href="mailto:bureau@choeurdespaysdumontblanc.fr"
         >
           bureau@choeurdespaysdumontblanc.fr

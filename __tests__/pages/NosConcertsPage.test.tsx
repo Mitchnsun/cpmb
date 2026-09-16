@@ -61,7 +61,28 @@ describe("NosConcertsPage", () => {
     expect(revalidate).toBe(3600);
   });
 
-  it("should carry its own metadata", () => {
-    expect(metadata.title).toBe("Nos concerts - Chœur des Pays du Mont-Blanc");
+  it("should carry its own metadata, canonical address included", () => {
+    expect(metadata.title).toBe("Nos concerts");
+    expect(metadata.alternates?.canonical).toBe("/nos-concerts");
+    expect(metadata.openGraph?.url).toBe("/nos-concerts");
+  });
+
+  it("should list the concerts still ahead as a schema.org ItemList", () => {
+    vi.setSystemTime(BEFORE_GLORIA);
+    const { container } = render(<NosConcerts />);
+
+    const { upcoming } = splitConcertsByDate(concerts, BEFORE_GLORIA.getTime());
+    const block = container.querySelector('script[type="application/ld+json"]');
+    const list = JSON.parse(block?.textContent ?? "{}");
+
+    expect(list["@type"]).toBe("ItemList");
+    expect(list.itemListElement.length).toBeGreaterThanOrEqual(upcoming.length);
+  });
+
+  it("should publish no ItemList once every concert has passed", () => {
+    vi.setSystemTime(AFTER_EVERYTHING);
+    const { container } = render(<NosConcerts />);
+
+    expect(container.querySelector('script[type="application/ld+json"]')).not.toBeInTheDocument();
   });
 });

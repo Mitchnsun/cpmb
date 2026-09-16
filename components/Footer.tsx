@@ -5,6 +5,7 @@ import artists from "@/assets/contents/artists.json";
 import { LOGO, PARTNER_LOGOS } from "@/assets/contents/medias";
 import { SITEMAP_LINKS } from "@/assets/contents/navigation";
 import Overline from "@/components/Overline";
+import { TOUCH_TARGET } from "@/components/TextLink";
 import { CONTACT_EMAIL } from "@/utils/site";
 
 /** Fixed once at build time: the site is fully static, so this never updates at runtime. */
@@ -13,8 +14,12 @@ const BUILD_YEAR = new Date().getFullYear();
 /** Column title: the charter overline, light copper, tracking tightened to 0.14em. */
 const columnTitleClassName = "text-copper-light mb-3.5 tracking-[0.14em]";
 
-/** Column link: text on dark background, light teal on hover. */
-const columnLinkClassName = "text-text-on-dark hover:text-teal-light no-underline";
+/**
+ * Column link: text on dark background, light teal on hover, and the 44px
+ * touch target the charter asks for — hence the 16px gap between them, which
+ * is what keeps two of those targets from overlapping.
+ */
+const columnLinkClassName = `text-text-on-dark hover:text-teal-light no-underline ${TOUCH_TARGET}`;
 
 /**
  * Footer on stage black.
@@ -36,7 +41,7 @@ const Footer = () => {
           <Overline id="footer-sitemap" className={columnTitleClassName}>
             Plan du site
           </Overline>
-          <div className="grid gap-2.5 text-lg">
+          <div className="grid gap-4 text-lg">
             {SITEMAP_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} className={columnLinkClassName}>
                 {label}
@@ -47,7 +52,7 @@ const Footer = () => {
 
         <div>
           <Overline className={columnTitleClassName}>Partenaires</Overline>
-          <div className="grid gap-2.5 text-lg">
+          <div className="grid gap-4 text-lg">
             {PARTNER_LOGOS.map(({ name, href }) => (
               <a key={name} href={href} target="_blank" rel="noopener noreferrer" className={columnLinkClassName}>
                 {name}
@@ -60,7 +65,7 @@ const Footer = () => {
           <Overline id="footer-artists" className={columnTitleClassName}>
             Artistes
           </Overline>
-          <div className="grid gap-2.5 text-lg">
+          <div className="grid gap-4 text-lg">
             {artistKeys.map((artistKey) => (
               <Link key={artistKey} href={`/presentation/${artistKey}`} className={columnLinkClassName}>
                 {artists[artistKey].name}
@@ -74,7 +79,7 @@ const Footer = () => {
         <p className="text-lg">
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="text-teal-light hover:text-teal-light wrap-anywhere no-underline"
+            className={`text-teal-light hover:text-teal-light wrap-anywhere no-underline ${TOUCH_TARGET}`}
           >
             {CONTACT_EMAIL}
           </a>

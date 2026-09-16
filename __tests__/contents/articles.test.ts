@@ -34,4 +34,16 @@ describe("articles", () => {
 
     expect(new Set(slugs).size).toBe(slugs.length);
   });
+
+  it("should give every article a publication date, in full or to the month", () => {
+    const DATE_FORMAT = /^\d{4}-\d{2}(-\d{2})?$/;
+
+    expect(articles.every(({ date }) => DATE_FORMAT.test(date))).toBe(true);
+  });
+
+  it("should list articles most recent first", () => {
+    const dates = articles.map(({ date }) => date);
+
+    expect(dates).toEqual([...dates].sort().reverse());
+  });
 });

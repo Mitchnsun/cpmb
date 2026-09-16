@@ -12,16 +12,17 @@ Write code, comments, commit messages and docs in **English**. User-facing site 
 
 Node 24 (`.nvmrc`), Yarn 4.18 via `corepack enable`.
 
-| Command                                        | Note                                                              |
-| ---------------------------------------------- | ----------------------------------------------------------------- |
-| `yarn dev` / `yarn build` / `yarn start`       | Turbopack by default                                              |
-| `yarn lint` / `yarn lint:fix`                  | `next build` no longer lints since Next 16 — lint is its own gate |
-| `yarn format` / `yarn format:check`            | Prettier + Tailwind class sort (no CI job runs `format:check`)    |
-| `yarn type-check`                              | `tsc --noEmit`                                                    |
-| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter                                  |
-| `yarn test:coverage`                           | coverage report (v8)                                              |
-| `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                   |
-| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                               |
+| Command                                        | Note                                                                  |
+| ---------------------------------------------- | --------------------------------------------------------------------- |
+| `yarn dev` / `yarn build` / `yarn start`       | Turbopack by default                                                  |
+| `yarn lint` / `yarn lint:fix`                  | `next build` no longer lints since Next 16 — lint is its own gate     |
+| `yarn format` / `yarn format:check`            | Prettier + Tailwind class sort (no CI job runs `format:check`)        |
+| `yarn type-check`                              | `tsc --noEmit`                                                        |
+| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter                                      |
+| `yarn test:coverage`                           | coverage report (v8)                                                  |
+| `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                       |
+| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                                   |
+| `yarn audit:a11y:setup` / `yarn audit:a11y`    | Chromium download, then axe + Playwright against a **running** server |
 
 Single test: `yarn vitest run __tests__/components/Header.test.tsx`
 By name: `yarn vitest run -t "should render the header"`
@@ -32,12 +33,24 @@ Full pre-push gate mirroring CI (`.github/workflows/ci.yml`: lint / test:ci / ty
 yarn lint && yarn type-check && yarn test:ci && yarn validate
 ```
 
+`yarn audit:a11y` (`scripts/audit-a11y.mjs`) is the CPMB-16 recette, replayable: 11 pages × 4 widths (both halves of the concert template: one fiche with a poster, a programme and a cast, one with none) (390/768/1440, plus 720 for 1440 at 200 % zoom), axe-core plus its own checks — horizontal overflow, single `h1`, keyboard sweep, the drawer's focus trap, `prefers-reduced-motion`, unique page titles. It audits a running build, not the dev server:
+
+```bash
+yarn audit:a11y:setup                             # downloads Chromium, once per machine
+yarn build && yarn start &
+AUDIT_URL=http://127.0.0.1:3000 yarn audit:a11y   # exits non-zero on a blocking finding
+```
+
+It deliberately serves photos from `public/` instead of `/_next/image` (hundreds of variants in a row starve the optimiser) and waits for the entry animations before measuring contrast (text read mid-fade is half transparent). Findings and the manual half of the recette: `docs/RECETTE-A11Y.md`.
+
 ## Architecture
 
 - Routes live in `app/`: `/`, `/presentation` + `/presentation/[artist]`, `/nos-concerts` + `/nos-concerts/[slug]`, `/presse` + `/presse/[slug]`, `/contact`, `/mentions-legales`, `not-found.tsx`. No middleware, no server actions, no `loading.tsx`/`error.tsx`.
 - **Content is local files, not a CMS.** `assets/contents/` is the single source: `concerts.json` (array), `articles.json` (array), `artists.json` (**object keyed by slug** — the key _is_ the URL segment), plus typed modules `navigation.ts`, `medias.ts`, `carrousel.ts`. Pages import them directly and prerender.
 - **Types are derived from the JSON, never hand-written**: e.g. `import type concerts from "@/assets/contents/concerts.json"` then `type Concert = (typeof concerts)[number]` (relies on `resolveJsonModule`). Widening the JSON widens the type — don't duplicate an interface.
 - Every dynamic route pairs `generateStaticParams` + `generateMetadata`; `params` is a **Promise** in Next 16 and must be awaited.
+- **SEO lives in three places (M5).** `utils/metadata.ts` builds every page's metadata — title, description, canonical, Open Graph card — because Next _replaces_ the layout's `openGraph` rather than merging it, so a page writing the block by hand silently loses `siteName` or its image; `app/sitemap.ts` + `app/robots.ts` derive `sitemap.xml` and `robots.txt` from `navigation.ts` and the JSON; `utils/structuredData.ts` emits one `schema.org/MusicEvent` per performance on a concert page. Page titles are short ("Nos concerts") — `app/layout.tsx` appends the choir's name through a title template.
+- `utils/legacyRedirects.ts` keeps the addresses of the Joomla site this one replaced answering (301, wired in `next.config.ts`). Named pages first, `:path*` wildcards last — the first match wins. A concert or an article added to the table must exist in the JSON; a test checks it.
 - `components/` is flat PascalCase, one default export per file, no barrel; `components/ui/` holds shadcn (only `drawer.tsx` installed). `utils/` = `cn`, `splitConcertsByDate`/`nextConcertDate`, `formatFrenchDate`/`formatFrenchTime`/`formatFrenchDateTime`/`formatFrenchDateList`, `truncateAtWord`. Icons are local SVGs imported as components via `@svgr/webpack` (turbopack rule in `next.config.ts` + `types/svg.d.ts`) — **not** lucide, despite the dependency.
 - `@/*` → repo root, declared in **both** `tsconfig.json` and `vitest.config.ts` — keep them in sync.
 - `assets/contents/navigation.ts` is the single nav source feeding the header, the mobile drawer and the footer sitemap; `isNavLinkActive` marks `/presse/<slug>` as active for "Presse". `__tests__/contents/navigation.test.ts` asserts the exact list and order, so a nav change requires a test change.
@@ -49,6 +62,7 @@ All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 
 - **Before adding a token to `@theme`, check Tailwind's own scale first** (`node_modules/tailwindcss/theme.css`). If the value already exists, use the native class. If only a detail differs (line-height, most often), override that Tailwind token in `@theme` instead of inventing a new name — it changes no component code and needs no `tailwind-merge` extension. Only declare a new custom token (and document it in `docs/CHARTE.md`) when nothing in Tailwind's scale is close. See "Surcharges de l'échelle Tailwind" and "Règle d'ajout d'un token" in `docs/CHARTE.md`.
 - **Always compose classes through `cn()`** (`utils/classnames.ts`). `tailwind-merge` misreads a custom `text-*` size as a text _colour_ and drops it; the `extendTailwindMerge` fix lives only inside `cn`, and today covers only `text-h1` — every other charter size overrides a native Tailwind size instead.
 - **The legacy palette is gone (M4).** Every page in `app/` is on charte tokens and `max-w-site mx-auto px-6`; no `sky-*`/`zinc-*`/`gray-*` class and no `container mx-auto` remains outside `Carrousel`. The old `Heading` component was retired with it — write section titles directly (`font-display text-3xl font-semibold`), the heading level says outline, the class says size.
+- **A link on a line of its own is a touch target.** `TOUCH_TARGET` (exported by `TextLink`, and the `touch` variant that applies it) lays a 44px overlay over a standalone link, because growing the box would drag the charter's `border-bottom` underline away from the text. A list of such links needs a gap of at least 16px or neighbouring targets overlap — that is why the footer columns are on `gap-4` and the press list on `gap-5`. A link inside a sentence is exempt (WCAG 2.2 2.5.8) and must not get one: the overlay would cover the line above. `yarn audit:a11y` measures the hit area, not the CSS box, so it catches both.
 - **Reuse the shared primitives before styling by hand.** `ButtonLink` is the charter CTA (one shape, four tones: `onLight`, `onDark`, `onTeal`, `outline`); `TextLink` is the charter text link (`border-b border-current`, `onLight`/`onDark`, `next/link` for a route and a plain anchor for `mailto:`/external/`#hash`); `Overline` is the mono 12px uppercase label; `PageBanner` is the inner-page header; `InfoPanel` the side-ruled card; `FormField` the labelled form field. All documented in `docs/CHARTE.md`.
 - `Carrousel` (+ `assets/contents/carrousel.ts`) is the photo gallery, mounted under the text of `/presentation`. Every slide opens full size in `Lightbox` (Radix Dialog, so focus trap, Escape and focus restore come for free); its `Dialog.Title` stays generic — the photo is described once, by the image's own `alt`, and reusing that alt as the dialog name announced it three times over. Only the arrows sit on the photo — a 21/9 frame is 117px tall at 320px, too shallow for a centred arrow and a corner control to both keep a 44px target — so the dots and the pause live under the frame in a row that wraps. The frame is transparent and borderless, so whatever the contained photo leaves shows the page background rather than a dark mat or a ruled box around the empty part, and the arrows carry an opaque pill — they land on the photo or on that light background depending on the photo's shape, and a translucent one washed out over the light. Slides are `object-contain` in a fixed `aspect-[21/9]` frame, never `cover`: most files in `public/carrousel/` were already cropped to a 4.2:1 strip before entering the repo, and covering would crop them again. Adding a photo = drop the file, append `{src, alt, width, height}` — `__tests__/contents/carrousel.test.ts` checks the declared size against the file's own header.
 - No media queries by design: `clamp()` carries the mobile→desktop title scale, grids use `grid-cols-[repeat(auto-fit,minmax(300px,1fr))]`.
@@ -58,7 +72,9 @@ All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 
 
 ## Content & validation
 
-Adding a concert: append to `assets/contents/concerts.json`, drop the poster in `public/concerts/`, run `yarn validate`. Required fields: `title` / `slug` / `date` (non-empty array of ISO strings) / `location` / `media`; optional: `description` / `programme`. Slug must match `^[a-z0-9]+(?:-[a-z0-9]+)*$` and be unique; `media` must resolve to a real file under `public/`. Full rules and error catalogue: `docs/VALIDATION.md`.
+The bureau edits content from GitHub, without a checkout: `docs/GUIDE-BUREAU.md` is their procedure (adding a concert, posters and alt text, the automatic upcoming→past switch, partners, where the contact form's messages land). Keep it in step with the data shape — it is the only documentation they have.
+
+Adding a concert: append to `assets/contents/concerts.json`, drop the poster in `public/concerts/`, run `yarn validate`. Required fields: `title` / `slug` / `date` (non-empty array of ISO strings) / `location`; optional: `description` / `media` / `programme` / `performers` / `venues` (one place per date, in their order, for a concert given in several towns — the structured data reads it rather than cutting `location` apart, which cannot be done safely: "Église Saint-Pierre et Saint-Paul" splits as willingly as "Boëge et Saint-Gervais-les-Bains"). Slug must match `^[a-z0-9]+(?:-[a-z0-9]+)*$` and be unique; a declared `media` must resolve to a real file under `public/`. Full rules and error catalogue: `docs/VALIDATION.md`.
 
 `scripts/validate-concerts.js` is dependency-free CommonJS (so CI runs it with no build step) and validates **concerts only** — `articles.json`/`artists.json` only get a JSON-syntax check in the workflow.
 

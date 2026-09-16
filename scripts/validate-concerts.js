@@ -94,8 +94,35 @@ function validateOptionalFields(concert, index, errors) {
     });
   }
 
+  /*
+   * A concert may have no poster: some of them were never given one, and the
+   * pages already render without it. When one is declared it still has to
+   * resolve to a real file (see validateMediaAssets).
+   */
+  if (concert.media !== undefined && (typeof concert.media !== "string" || concert.media.trim() === "")) {
+    errors.push({
+      field: `concert[${index}].media`,
+      message: "Media must be a non-empty string if provided",
+      value: concert.media,
+    });
+  }
+
   validateOptionalStringArray(concert, "programme", index, errors);
   validateOptionalStringArray(concert, "performers", index, errors);
+  validateOptionalStringArray(concert, "venues", index, errors);
+
+  /*
+   * `venues` names the place of each performance, in the order of the dates.
+   * A count that does not match them pairs a date with the wrong town, so it
+   * is refused rather than published.
+   */
+  if (Array.isArray(concert.venues) && Array.isArray(concert.date) && concert.venues.length !== concert.date.length) {
+    errors.push({
+      field: `concert[${index}].venues`,
+      message: `Venues must carry exactly one place per date (${concert.date.length} expected, ${concert.venues.length} given)`,
+      value: concert.venues,
+    });
+  }
 }
 
 // Inline validation functions to avoid import issues
@@ -114,7 +141,6 @@ function validateConcert(concert, index) {
   validateSlugField(concert, index, errors);
   validateDateField(concert, index, errors);
   validateRequiredStringField(concert, "location", index, errors);
-  validateRequiredStringField(concert, "media", index, errors);
 
   // Validate optional fields
   validateOptionalFields(concert, index, errors);
