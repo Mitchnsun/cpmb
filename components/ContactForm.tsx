@@ -113,8 +113,22 @@ const ContactForm = () => {
   const [trap, setTrap] = useState("");
 
   const confirmation = useRef<HTMLDivElement>(null);
+  /* Set by the way back, so the first render never steals the focus. */
+  const isReturning = useRef(false);
+
   useEffect(() => {
-    if (isSubmitted) confirmation.current?.focus();
+    if (isSubmitted) {
+      confirmation.current?.focus();
+      return;
+    }
+
+    if (!isReturning.current) return;
+    isReturning.current = false;
+    /* The panel takes its button with it, and the browser drops the focus on
+       `<body>` — the top of the page, a whole header away from the form the
+       visitor just asked to come back to. It lands in their message instead.
+       By id, because the control itself lives inside `FormField`. */
+    document.getElementById(FIELD_IDS.message)?.focus();
   }, [isSubmitted]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -163,7 +177,10 @@ const ContactForm = () => {
         </p>
         <button
           type="button"
-          onClick={() => setIsSubmitted(false)}
+          onClick={() => {
+            isReturning.current = true;
+            setIsSubmitted(false);
+          }}
           className="text-teal hover:text-copper focus-visible:outline-teal mt-5.5 cursor-pointer border-b border-current text-lg focus-visible:outline-2"
         >
           Revenir à mon message

@@ -181,6 +181,19 @@ describe("ContactForm", () => {
     expect(screen.getByLabelText(/^Message/)).toHaveValue("Bonjour, je souhaite des informations sur vos concerts.");
   });
 
+  it("should put the visitor back in their message on the way out of the panel", async () => {
+    render(<ContactForm />);
+
+    await fillTheForm(user);
+    await submit(user);
+
+    // The panel takes its button with it: without a new home, the focus
+    // falls on <body>, a whole header away from the form just restored.
+    await user.click(screen.getByRole("button", { name: "Revenir à mon message" }));
+
+    await waitFor(() => expect(screen.getByLabelText(/^Message/)).toHaveFocus());
+  });
+
   it("should move the focus to the confirmation panel", async () => {
     render(<ContactForm />);
 
