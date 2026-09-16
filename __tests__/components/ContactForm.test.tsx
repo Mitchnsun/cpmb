@@ -18,27 +18,6 @@ Object.defineProperty(window, "location", {
   writable: true,
 });
 
-/* Fake timers deadlock `userEvent`, so the clock is moved by hand: the
-   component only ever reads `Date.now()`. */
-let now = 1_700_000_000_000;
-const waitOutTheAntiSpamDelay = () => {
-  now += 2500;
-};
-
-const useControlledClock = () => {
-  let clock: ReturnType<typeof vi.spyOn>;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    now = 1_700_000_000_000;
-    clock = vi.spyOn(Date, "now").mockImplementation(() => now);
-  });
-
-  afterEach(() => {
-    clock.mockRestore();
-  });
-};
-
 const fillTheForm = async (user: ReturnType<typeof userEvent.setup>) => {
   await user.type(screen.getByLabelText(/^Nom/), "Marie Dupont");
   await user.type(screen.getByLabelText(/^Adresse e-mail/), "marie@example.com");
@@ -54,7 +33,10 @@ const submit = async (user: ReturnType<typeof userEvent.setup>) =>
 const fieldError = (field: string) => document.getElementById(`contact-${field}-error`);
 
 describe("ContactForm", () => {
-  useControlledClock();
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   const user = userEvent.setup();
 
   it("should render every field with a visible label and no placeholder standing in for one", () => {
@@ -171,7 +153,6 @@ describe("ContactForm", () => {
     render(<ContactForm />);
 
     await fillTheForm(user);
-    await waitOutTheAntiSpamDelay();
     await submit(user);
 
     const mailto = mockLocationHref.mock.calls[0][0];
@@ -187,7 +168,6 @@ describe("ContactForm", () => {
     render(<ContactForm />);
 
     await fillTheForm(user);
-    await waitOutTheAntiSpamDelay();
     await submit(user);
 
     const confirmation = screen.getByText("Votre message est prêt à être envoyé.").closest("div");
@@ -202,7 +182,6 @@ describe("ContactForm", () => {
     await user.type(screen.getByLabelText(/^Adresse e-mail/), "test@example.com");
     await user.selectOptions(screen.getByLabelText(/^Objet/), "autre");
     await user.type(screen.getByLabelText(/^Message/), "Message avec caractères spéciaux : é, è, à, ç");
-    await waitOutTheAntiSpamDelay();
     await submit(user);
 
     const mailto = mockLocationHref.mock.calls[0][0];
@@ -212,30 +191,37 @@ describe("ContactForm", () => {
 });
 
 describe("ContactForm anti-spam", () => {
-  useControlledClock();
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   const user = userEvent.setup();
 
-  it("should refuse a submission sent faster than a human could fill the form", async () => {
+  it("should send a submission filled at full speed, with no delay standing in the way", async () => {
+    render(<ContactForm />);
+
+    // A visitor landing on `?objet=`, letting the browser autofill and
+    // pasting a prepared message submits in well under a second: that is a
+    // legitimate send, not a bot.
+    await fillTheForm(user);
+    await submit(user);
+
+    expect(mockLocationHref).toHaveBeenCalledTimes(1);
+    expect(screen.getByText("Votre message est prêt à être envoyé.")).toBeInTheDocument();
+  });
+
+  it("should keep the typed values when validation refuses the submission", async () => {
     render(<ContactForm />);
 
     await fillTheForm(user);
+    await user.clear(screen.getByLabelText(/^Adresse e-mail/));
+    await user.type(screen.getByLabelText(/^Adresse e-mail/), "pas-une-adresse");
     await submit(user);
 
     expect(mockLocationHref).not.toHaveBeenCalled();
-    expect(
-      screen.getByText("Votre message est parti trop vite pour être pris en compte. Merci de renvoyer le formulaire.")
-    ).toBeInTheDocument();
-  });
-
-  it("should keep the typed values when a submission is refused", async () => {
-    render(<ContactForm />);
-
-    await fillTheForm(user);
-    await submit(user);
-
     expect(screen.getByLabelText(/^Nom/)).toHaveValue("Marie Dupont");
-    expect(screen.getByLabelText(/^Adresse e-mail/)).toHaveValue("marie@example.com");
     expect(screen.getByLabelText(/^Objet/)).toHaveValue("concerts");
+    expect(screen.getByLabelText(/^Message/)).toHaveValue("Bonjour, je souhaite des informations sur vos concerts.");
   });
 
   it("should drop a submission that filled the hidden trap, without saying so", async () => {
@@ -244,8 +230,8 @@ describe("ContactForm anti-spam", () => {
     await fillTheForm(user);
     const trap = container.querySelector("#contact-site") as HTMLInputElement;
     expect(trap).toHaveAttribute("tabindex", "-1");
+    expect(trap.closest("[aria-hidden]")).toHaveAttribute("aria-hidden", "true");
     await user.type(trap, "https://spam.example");
-    await waitOutTheAntiSpamDelay();
     await submit(user);
 
     expect(mockLocationHref).not.toHaveBeenCalled();

@@ -24,9 +24,6 @@ const SUBJECTS: readonly FieldOption[] = [
 
 const MIN_MESSAGE_LENGTH = 10;
 
-/** Nobody fills four fields in under two seconds; a script does. */
-const MIN_FILL_TIME_MS = 2000;
-
 const FIELD_IDS = {
   name: "contact-name",
   email: "contact-email",
@@ -80,6 +77,15 @@ const mailtoHref = ({ name, email, subject, message }: FormValues): string => {
  * browser only; the server-side pass the ticket asks for is tracked
  * separately, and so is the delivery that would go with it.
  *
+ * Anti-spam is the hidden trap field alone. CPMB-15 also asked for a render
+ * timestamp rejecting a submission under two seconds; it was dropped because
+ * it can only cost here, never protect: nothing is posted to a server, so
+ * there is no endpoint to flood, and the fields are React-controlled, so a
+ * script writing into the DOM fails validation before any of this runs. The
+ * one thing it did reliably was refuse a visitor who arrived on
+ * `?objet=`, let the browser autofill and pasted a prepared message. Both
+ * signals become real in the server-side pass tracked separately.
+ *
  * Accessibility: the label sits above every control and no placeholder ever
  * stands in for one, each error is tied to its field by `aria-describedby`,
  * and the whole list is repeated in a polite live region so a screen reader
@@ -100,18 +106,11 @@ const ContactForm = () => {
     message: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [formError, setFormError] = useState<string>();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   /* Trap: hidden from sight, from the tab order and from screen readers, so
      only a script filling every input it finds will touch it. */
   const [trap, setTrap] = useState("");
-
-  /* Set after mount, never at render: the value must not reach the HTML. */
-  const renderedAt = useRef(0);
-  useEffect(() => {
-    renderedAt.current = Date.now();
-  }, []);
 
   const confirmation = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -123,18 +122,12 @@ const ContactForm = () => {
 
     const formErrors = validate(values);
     setErrors(formErrors);
-    setFormError(undefined);
 
     if (Object.keys(formErrors).length > 0) return;
 
     /* Dropped without a word: a bot learns nothing from a silent success. */
     if (trap) {
       setIsSubmitted(true);
-      return;
-    }
-
-    if (Date.now() - renderedAt.current < MIN_FILL_TIME_MS) {
-      setFormError("Votre message est parti trop vite pour être pris en compte. Merci de renvoyer le formulaire.");
       return;
     }
 
@@ -191,12 +184,6 @@ const ContactForm = () => {
                 </li>
               ))}
             </ul>
-          </InfoPanel>
-        ) : null}
-
-        {formError ? (
-          <InfoPanel accent="copper" className="mb-5.5">
-            <p className="text-lg">{formError}</p>
           </InfoPanel>
         ) : null}
       </div>
