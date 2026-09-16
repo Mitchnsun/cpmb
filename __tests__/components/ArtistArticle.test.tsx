@@ -54,7 +54,9 @@ describe("ArtistArticle", () => {
 
     const paragraphs = screen.getAllByText(/paragraphe/);
     paragraphs.forEach((paragraph) => {
-      expect(paragraph).toHaveClass("max-w-prose", "text-lg");
+      // The page sets the measure now, so the copy fills the space it is given.
+      expect(paragraph).toHaveClass("text-lg");
+      expect(paragraph).not.toHaveClass("max-w-prose");
     });
     expect(paragraphs[0].parentElement).toHaveClass("grid", "gap-4");
   });

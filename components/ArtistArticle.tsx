@@ -48,7 +48,7 @@ const ArtistArticle = ({ name, media, width, height, alt, text, hLevel = 2 }: Ar
             otherwise stay wider than the gutter allows and spill out. */}
         <div className="grid min-w-[min(18rem,100%)] flex-1 gap-4">
           {text.map((paragraph) => (
-            <p key={paragraph.slice(0, 50)} className="max-w-prose text-lg">
+            <p key={paragraph.slice(0, 50)} className="text-lg">
               {paragraph}
             </p>
           ))}

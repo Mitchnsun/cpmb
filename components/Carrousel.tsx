@@ -4,69 +4,73 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CARROUSEL_IMAGES as images } from "@/assets/contents/carrousel";
+import { type SiteImage } from "@/assets/contents/medias";
+import ChevronIcon from "@/assets/icons/chevron-down.svg";
+import Lightbox from "@/components/Lightbox";
+import { cn } from "@/utils/classnames";
 
 interface CarrouselProps {
   autoplay?: boolean;
 }
 
+/** Controls sit over the photo, so they carry their own dark backing. */
+const controlClassName =
+  "bg-stage-black/60 text-text-on-dark hover:bg-stage-black hover:text-teal-light focus-visible:outline-teal-light absolute flex min-h-12 min-w-12 items-center justify-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
+
+/**
+ * Gallery of the choir's photos, shown under the presentation.
+ *
+ * Every slide is a button: clicking one opens it full size in a `Lightbox`.
+ * Autoplay stops as soon as the visitor takes control — an arrow, a dot or a
+ * photo — so it never fights them, and it never starts at all under
+ * `prefers-reduced-motion`.
+ *
+ * No slide is `priority`: the home hero is the site's only one.
+ */
 const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoplay);
+  const [enlarged, setEnlarged] = useState<SiteImage | null>(null);
   const intervalRef = useRef<number | null>(null);
   const startTimeoutRef = useRef<number | null>(null);
 
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setCurrentIndex((previous) => (previous + 1) % images.length);
   }, []);
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    setCurrentIndex((previous) => (previous - 1 + images.length) % images.length);
   }, []);
 
-  const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
-
-  const togglePlayPause = useCallback(() => {
-    setIsPlaying((prev) => !prev);
-  }, []);
-
-  // Start the autoplay interval
   const startAutoplay = useCallback(() => {
-    if (intervalRef.current !== null) return; // already running
+    if (intervalRef.current !== null) return;
     intervalRef.current = window.setInterval(nextSlide, 6000);
   }, [nextSlide]);
 
-  // Clear all timers (interval + idle + timeout)
   const stopAutoplay = useCallback(() => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    // Clear a pending timeout fallback if any
     if (startTimeoutRef.current !== null) {
       clearTimeout(startTimeoutRef.current);
       startTimeoutRef.current = null;
     }
   }, []);
 
-  // Idle-ish autoplay scheduling (defer start slightly off the critical path)
   useEffect(() => {
-    // Respect reduced motion preferences and current play state
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Always clear existing timers when dependencies change
+
     stopAutoplay();
     if (!isPlaying || reduce) return;
 
-    // Defer a bit to keep it off the critical path
+    /* Deferred, to keep the timer off the critical path. */
     startTimeoutRef.current = window.setTimeout(() => {
       startAutoplay();
       startTimeoutRef.current = null;
     }, 1500);
 
-    return () => {
-      stopAutoplay();
-    };
+    return stopAutoplay;
   }, [isPlaying, startAutoplay, stopAutoplay]);
 
   // Mirror prop changes for autoplay toggling. Adjusting state during render
@@ -78,98 +82,110 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
     setIsPlaying(autoplay);
   }
 
+  /* Any deliberate move hands control over: the slideshow stops running. */
+  const takeOver = (move: () => void) => () => {
+    setIsPlaying(false);
+    move();
+  };
+
   return (
-    <section
-      className="relative h-48 w-full overflow-hidden rounded-lg shadow-lg lg:h-96"
-      aria-label="Carrousel d'images du chœur"
-      role="region"
-      aria-roledescription="carousel"
-      aria-live={isPlaying ? "off" : "polite"}
-    >
-      {/* Images container */}
+    <>
       <div
-        className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none motion-reduce:duration-0"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        className="border-border bg-stage-black relative aspect-[21/9] w-full overflow-hidden rounded-sm border"
+        aria-label="Photos du chœur"
+        role="region"
+        aria-roledescription="carrousel"
+        aria-live={isPlaying ? "off" : "polite"}
       >
-        {images.map((image, index) => (
-          <div key={image.src} className="relative h-full w-full flex-shrink-0" aria-hidden={index !== currentIndex}>
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              sizes="(min-width: 1536px) 1536px, (min-width: 1280px) 1280px, (min-width: 1024px) 1024px, (min-width: 768px) 768px, (min-width: 640px) 640px, 100vw"
-              className="object-cover"
-              priority={index === 0}
-              fetchPriority={index === 0 ? "high" : "low"}
-            />
-          </div>
-        ))}
+        <div
+          className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {images.map((image, index) => (
+            <button
+              key={image.src}
+              type="button"
+              // Only the slide on screen is reachable, by pointer or by tab.
+              aria-hidden={index !== currentIndex}
+              tabIndex={index === currentIndex ? undefined : -1}
+              onClick={takeOver(() => setEnlarged(image))}
+              /* The button carries the description, so the image inside it
+                 stays decorative: naming both would announce the photo
+                 twice, once for the image and once for the control. */
+              aria-label={`Agrandir la photo : ${image.alt}`}
+              className="focus-visible:outline-teal-light relative h-full w-full flex-shrink-0 cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-4"
+            >
+              {/* `contain`, never `cover`: the point of the gallery is to
+                  show the photo whole. Most files are already 4.2:1 strips,
+                  and covering a 21/9 box would crop them again sideways. */}
+              <Image src={image.src} alt="" fill sizes="(min-width: 1200px) 1152px, 100vw" className="object-contain" />
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={takeOver(prevSlide)}
+          className={cn(controlClassName, "top-1/2 left-4 -translate-y-1/2")}
+          aria-label="Photo précédente"
+        >
+          <ChevronIcon aria-hidden="true" className="h-6 w-6 rotate-90" />
+        </button>
+
+        <button
+          type="button"
+          onClick={takeOver(nextSlide)}
+          className={cn(controlClassName, "top-1/2 right-4 -translate-y-1/2")}
+          aria-label="Photo suivante"
+        >
+          <ChevronIcon aria-hidden="true" className="h-6 w-6 -rotate-90" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsPlaying((playing) => !playing)}
+          className={cn(controlClassName, "right-4 bottom-4")}
+          aria-label={isPlaying ? "Mettre le défilement en pause" : "Reprendre le défilement"}
+          aria-pressed={isPlaying}
+        >
+          {isPlaying ? (
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+              <rect x="7" y="6" width="3.5" height="12" rx="1" />
+              <rect x="13.5" y="6" width="3.5" height="12" rx="1" />
+            </svg>
+          ) : (
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          )}
+        </button>
+
+        {/* Same dark backing as the other controls: a tall photo fills the
+            box and the dots would otherwise sit on the picture itself. */}
+        <div className="bg-stage-black/60 absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 rounded-lg px-3">
+          {images.map(({ src, alt }, index) => (
+            <button
+              key={src}
+              type="button"
+              onClick={takeOver(() => setCurrentIndex(index))}
+              /* 44px touch target around a 12px dot. */
+              className="focus-visible:outline-teal-light flex h-11 w-5 items-center justify-center focus-visible:outline-2"
+              aria-label={`Photo ${index + 1} sur ${images.length} : ${alt}`}
+              aria-current={index === currentIndex ? "true" : undefined}
+            >
+              <span
+                className={cn(
+                  "h-3 w-3 rounded-full transition-colors",
+                  index === currentIndex ? "bg-teal-light" : "bg-text-on-dark/50"
+                )}
+              />
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Navigation buttons */}
-      <button
-        type="button"
-        onClick={() => {
-          setIsPlaying(false);
-          prevSlide();
-        }}
-        className="absolute top-1/2 left-4 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
-        aria-label="Image précédente"
-      >
-        <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-
-      <button
-        type="button"
-        onClick={() => {
-          setIsPlaying(false);
-          nextSlide();
-        }}
-        className="absolute top-1/2 right-4 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
-        aria-label="Image suivante"
-      >
-        <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      {/* Play/Pause button */}
-      <button
-        type="button"
-        onClick={togglePlayPause}
-        className="absolute right-4 bottom-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none"
-        aria-label={isPlaying ? "Mettre en pause" : "Reprendre"}
-        aria-pressed={isPlaying}
-      >
-        {isPlaying ? (
-          <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
-          </svg>
-        ) : (
-          <svg aria-hidden="true" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        )}
-      </button>
-
-      {/* Dots indicator */}
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-        {images.map(({ src }, index) => (
-          <button
-            key={src}
-            type="button"
-            onClick={() => goToSlide(index)}
-            className={`h-3 w-3 rounded-full transition-colors focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black/50 focus:outline-none ${
-              index === currentIndex ? "bg-white" : "bg-white/50 hover:bg-white/75"
-            }`}
-            aria-label={`Aller à l'image ${index + 1}`}
-            aria-current={index === currentIndex ? "true" : undefined}
-          />
-        ))}
-      </div>
-    </section>
+      <Lightbox image={enlarged} onClose={() => setEnlarged(null)} />
+    </>
   );
 };
 

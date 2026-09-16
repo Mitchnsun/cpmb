@@ -150,6 +150,17 @@ natifs — pas de surcharge, pas de token, on écrit directement la classe.
 Rythme vertical : `py-14` (56 px) pour les bandeaux, `py-16` à `py-20`
 (64–80 px) pour les sections de contenu.
 
+**Mesure de lecture.** Le conteneur fait 1536 px : un paragraphe étalé sur
+toute cette largeur dépasserait 200 caractères par ligne. Deux mesures
+coexistent donc, selon ce que porte le bloc.
+
+| Classe              | Largeur  | Pour quoi                                                                     |
+| ------------------- | -------- | ----------------------------------------------------------------------------- |
+| `max-w-6xl mx-auto` | 1152 px  | Blocs éditoriaux de la page Présentation — trois quarts du conteneur, centrés |
+| `max-w-prose`       | ~65 car. | Texte courant isolé (mentions légales, encarts, chapô d'un article)           |
+
+`max-w-6xl` est une classe Tailwind native : aucun token maison n'est ajouté.
+
 Grilles fluides, sans media query :
 `grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-10` — le passage en une
 colonne se fait tout seul.
@@ -191,6 +202,8 @@ vivent les états de survol qui neutralisent les couleurs de lien globales de
 | `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels          |
 | `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive)  |
 | `FormField`  | Champ de formulaire étiqueté (étiquette, contrôle, erreur)    | `input`, `select` ou `textarea` selon props |
+| `Carrousel`  | Galerie de photos, une diapositive à la fois                  | `autoplay` (défilement au chargement)       |
+| `Lightbox`   | Photo affichée plein écran par-dessus la page                 | —                                           |
 
 `PageBanner` porte l'en-tête de toutes les pages intérieures (concerts, fiche
 concert, presse, présentation, mentions légales) : avec une photo il applique
@@ -217,6 +230,14 @@ répéter — aucune couleur ne dit seule qu'un champ est en erreur.
 `Overline` porte `tracking-[0.16em]` par défaut ; le pied de page et le
 bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le
 remplacement, pas l'empilement.
+
+`Carrousel` est la galerie de la page Présentation. Ses diapositives sont en
+`object-contain` dans un cadre `aspect-[21/9]` fixe, **jamais en `cover`** :
+la plupart des fichiers de `public/carrousel/` sont déjà des bandes 4,2:1, et
+les recadrer une seconde fois irait contre le but même de la galerie. Chaque
+diapositive est un bouton qui ouvre la photo dans `Lightbox` ; le défilement
+s'arrête dès que le visiteur prend la main, et ne démarre pas du tout sous
+`prefers-reduced-motion`.
 
 ## Bibliothèque de médias
 
