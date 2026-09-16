@@ -87,13 +87,22 @@ const concerts = json("concerts.json");
 const articles = json("articles.json");
 
 /**
+ * A section of the concert page that actually renders. The page draws the
+ * programme and the cast only when their array holds something, while the
+ * validator accepts an empty one — so an empty array is a section absent,
+ * and reading these fields for their truthiness alone (`[]` is true) would
+ * call a concert complete that draws neither.
+ */
+const filled = (value) => Array.isArray(value) && value.length > 0;
+
+/**
  * The concert page is one template with optional halves — a poster, a
  * programme, a cast — and a concert carrying none of them exercises none of
  * them. Both ends of the template are walked: whichever concert has
  * everything, and whichever has nothing but the required fields.
  */
-const complete = concerts.find((concert) => concert.media && concert.programme && concert.performers);
-const bare = concerts.find((concert) => !concert.media && !concert.programme && !concert.performers);
+const complete = concerts.find((concert) => concert.media && filled(concert.programme) && filled(concert.performers));
+const bare = concerts.find((concert) => !concert.media && !filled(concert.programme) && !filled(concert.performers));
 
 /** One page of each kind, plus the two the visitor reaches by accident. */
 const ROUTES = [
@@ -354,6 +363,33 @@ const focusState = (page) =>
   });
 
 /**
+ * How long the focus may take to come back to the control that opened a
+ * dialog. Radix hands it back while the dialog is being taken down, and that
+ * teardown finishes *after* `waitFor({ state: "hidden" })` resolves — so
+ * reading `activeElement` once samples a race and catches `body` between the
+ * two, which reported a lost focus on a dialog that restores it correctly.
+ */
+const FOCUS_RESTORE_MS = 2000;
+
+/**
+ * Whether the focus comes back to the control whose label starts with
+ * `label`. Awaited rather than sampled: a visitor waits for the focus to
+ * land, and what has not come back within the budget has not come back.
+ */
+const focusReturnsTo = async (page, label) => {
+  try {
+    await page.waitForFunction(
+      (name) => (document.activeElement?.getAttribute("aria-label") ?? "").startsWith(name),
+      label,
+      { timeout: FOCUS_RESTORE_MS }
+    );
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
  * Walks the page with the Tab key: every stop must be a control that is
  * visible and shows the focus, and the walk must reach the end of the page.
  *
@@ -456,7 +492,7 @@ const auditDrawer = async (page) => {
   await page.keyboard.press("Escape");
   await page.getByRole("dialog").waitFor({ state: "hidden" });
 
-  const returned = await page.evaluate(() => document.activeElement?.getAttribute("aria-label") === "Ouvrir le menu");
+  const returned = await focusReturnsTo(page, "Ouvrir le menu");
 
   if (!returned) {
     record({
@@ -547,9 +583,7 @@ const auditLightbox = async (page) => {
   await page.keyboard.press("Escape");
   await dialog.waitFor({ state: "hidden" });
 
-  const returned = await page.evaluate(() =>
-    (document.activeElement?.getAttribute("aria-label") ?? "").startsWith("Agrandir la photo")
-  );
+  const returned = await focusReturnsTo(page, "Agrandir la photo");
 
   if (!returned) {
     record({

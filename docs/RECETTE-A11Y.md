@@ -162,6 +162,14 @@ de ce qu'il prétend mesurer. ✅
   l'a ouverte. Vérifié dans les deux sens : rien à signaler en l'état, et la
   passe relève aussitôt un `button-name` si l'on prive le bouton de
   fermeture de son nom. ✅
+- Pour les deux boîtes modales, le retour du focus est **attendu**, non
+  échantillonné : Radix le rend pendant le démontage de la couche, qui
+  s'achève après que celle-ci a disparu. Lire `activeElement` une seule fois
+  tombait donc, une passe sur quelques-unes, sur le `body` transitoire et
+  annonçait un focus perdu là où il revenait en 25 ms. Une passe qui ne
+  signale un défaut qu'une fois sur cinq est pire qu'une passe absente : elle
+  apprend à relancer jusqu'au vert. Le retour est désormais attendu jusqu'à
+  2 s, ce qui ne coûte ce délai que lorsqu'il n'arrive jamais. ✅
 - Accordéon des saisons passées (`<details>`/`<summary>` natif) et formulaire
   de contact : parcourus par le balayage, sans blocage. ✅
 - Le site ne déclare pas de style de focus : l'anneau par défaut de Chromium,
