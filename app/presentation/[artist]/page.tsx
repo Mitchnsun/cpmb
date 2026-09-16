@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import Artists from "@/assets/contents/artists.json";
 import ArtistArticle from "@/components/ArtistArticle";
+import PageBanner from "@/components/PageBanner";
 import ScrollToTop from "@/components/ScrollToTop";
 
 export async function generateStaticParams() {
@@ -37,9 +38,19 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
   }
 
   return (
-    <section className="my-4 px-4 lg:my-8">
+    <>
       <ScrollToTop />
-      <ArtistArticle name={data.name} media={data.media} alt={data.alt} text={data.text} hLevel={1} />
-    </section>
+      <PageBanner
+        backLink={{ href: "/presentation", label: "Retour à la présentation" }}
+        overline="Interprète"
+        title={data.name}
+      />
+
+      <section className="max-w-site mx-auto px-6 pt-14 pb-20">
+        {/* The banner carries the name: the portrait keeps its own heading
+            for the outline, visually hidden. */}
+        <ArtistArticle name={data.name} media={data.media} alt={data.alt} text={data.text} hLevel={1} titleHidden />
+      </section>
+    </>
   );
 }

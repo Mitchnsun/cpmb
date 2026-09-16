@@ -19,7 +19,8 @@ describe("ArtistArticle", () => {
 
     const article = screen.getByRole("article");
     expect(article).toBeInTheDocument();
-    expect(article).toHaveClass("container", "mx-auto", "text-justify");
+    // The page owns the container and the gutter, not this component.
+    expect(article.className).toBe("");
 
     const heading = screen.getByRole("heading", { name: mockProps.name });
     expect(heading).toBeInTheDocument();
@@ -44,16 +45,14 @@ describe("ArtistArticle", () => {
     expect(heading.tagName).toBe("H3");
   });
 
-  it("should apply correct spacing between paragraphs", () => {
+  it("should space the paragraphs with the grid gap, not a margin on each", () => {
     render(<ArtistArticle {...mockProps} />);
 
     const paragraphs = screen.getAllByText(/paragraphe/);
-
-    // All paragraphs except the last carry the mb-2 class
-    paragraphs.slice(0, -1).forEach((paragraph) => {
-      expect(paragraph).toHaveClass("mb-2");
+    paragraphs.forEach((paragraph) => {
+      expect(paragraph).toHaveClass("max-w-prose", "text-lg");
     });
-    expect(paragraphs.at(-1)).not.toHaveClass("mb-2");
+    expect(paragraphs[0].parentElement).toHaveClass("grid", "gap-4");
   });
 
   it("should render with single paragraph", () => {
@@ -66,7 +65,7 @@ describe("ArtistArticle", () => {
 
     const paragraph = screen.getByText("Un seul paragraphe de texte.");
     expect(paragraph).toBeInTheDocument();
-    expect(paragraph).not.toHaveClass("mb-2");
+    expect(paragraph).toHaveClass("text-lg");
   });
 
   it("should render with empty text array", () => {
@@ -82,36 +81,29 @@ describe("ArtistArticle", () => {
     expect(screen.getByRole("heading", { name: mockProps.name })).toBeInTheDocument();
   });
 
-  it("should apply responsive image classes", () => {
+  it("should give the portrait the charter's image frame", () => {
     render(<ArtistArticle {...mockProps} />);
 
-    const image = screen.getByRole("img");
-    expect(image).toHaveClass(
-      "mx-auto",
-      "h-80",
-      "w-full",
-      "max-w-3xs",
-      "grow-0",
-      "rounded-md",
-      "object-cover",
-      "lg:m-0",
-      "lg:h-auto"
-    );
+    expect(screen.getByRole("img")).toHaveClass("border-border", "rounded-sm", "border", "object-cover", "h-auto");
   });
 
-  it("should apply correct flex layout classes", () => {
+  it("should set the portrait beside the text, and let it wrap below when there is no room", () => {
     render(<ArtistArticle {...mockProps} />);
 
-    const contentDiv = screen.getByRole("img").parentElement;
-    expect(contentDiv).toHaveClass(
-      "flex",
-      "flex-col",
-      "items-start",
-      "gap-4",
-      "text-justify",
-      "sm:flex-row",
-      "lg:gap-8"
-    );
+    const layout = screen.getByRole("img").parentElement;
+    expect(layout).toHaveClass("flex", "flex-wrap", "items-start", "gap-10");
+
+    // The portrait keeps its own width; the text takes what is left and
+    // carries the minimum below which it drops to the next line.
+    expect(screen.getByRole("img")).toHaveClass("max-w-3xs");
+    expect(screen.getAllByText(/paragraphe/)[0].parentElement).toHaveClass("min-w-2xs", "flex-1");
+  });
+
+  it("should keep the name in the outline but off screen when the banner shows it", () => {
+    render(<ArtistArticle {...mockProps} hLevel={1} titleHidden />);
+
+    const heading = screen.getByRole("heading", { name: mockProps.name, level: 1 });
+    expect(heading).toHaveClass("sr-only");
   });
 
   it("should handle special characters in text", () => {

@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import { type ReactNode } from "react";
 
 import { type SiteImage } from "@/assets/contents/medias";
 import Overline from "@/components/Overline";
+import TextLink from "@/components/TextLink";
 import { cn } from "@/utils/classnames";
 
 /** Decorative ridge drawn across a banner carrying a photo. */
@@ -58,12 +58,9 @@ const PageBanner = ({ overline, title, image, backLink }: PageBannerProps) => (
 
     <div className={cn("max-w-site relative mx-auto px-6 pb-14", image ? "pt-16" : "pt-10")}>
       {backLink ? (
-        <Link
-          href={backLink.href}
-          className="text-teal-light hover:text-copper-light mb-7 inline-block border-b border-current text-lg no-underline"
-        >
+        <TextLink href={backLink.href} tone="onDark" className="mb-7 inline-block text-lg">
           {backLink.label}
-        </Link>
+        </TextLink>
       ) : null}
       <Overline className="text-copper-light mb-3.5">{overline}</Overline>
       <h1 className="font-display text-h1 font-semibold text-white">{title}</h1>

@@ -111,10 +111,10 @@ shadcn/ui, il n'y a qu'une seule échelle sur le site.
 
 ## Table de correspondance des anciens tokens
 
-Les tickets de l'épic #17 encore ouverts et les pages de `app/` toujours en
-palette legacy ont pu être rédigés avec les anciens noms, supprimés lors de
-la réduction du nombre de tokens du `@theme`. Cette table est transitoire :
-elle pourra disparaître une fois la refonte terminée.
+Les tickets de l'épic #17 encore ouverts ont pu être rédigés avec les anciens
+noms, supprimés lors de la réduction du nombre de tokens du `@theme`. Toutes
+les pages de `app/` sont désormais en charte (M4) : cette table ne sert plus
+qu'à relire les tickets, et pourra disparaître une fois la refonte terminée.
 
 | Ancien token / classe | À écrire désormais                                                |
 | --------------------- | ----------------------------------------------------------------- |
@@ -183,12 +183,14 @@ les réutilise plutôt que de recomposer les classes à la main : c'est là que
 vivent les états de survol qui neutralisent les couleurs de lien globales de
 `globals.css`.
 
-| Composant    | Rôle                                                          | Variantes                                  |
-| ------------ | ------------------------------------------------------------- | ------------------------------------------ |
-| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px)     | `onLight`, `onDark`, `onTeal`, `outline`   |
-| `Overline`   | Sur-titre mono 12 px majuscules                               | Couleur et approche passées en `className` |
-| `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels         |
-| `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive) |
+| Composant    | Rôle                                                          | Variantes                                   |
+| ------------ | ------------------------------------------------------------- | ------------------------------------------- |
+| `ButtonLink` | Bouton d'action, rendu en lien (48 px, rayon 8 px, 18 px)     | `onLight`, `onDark`, `onTeal`, `outline`    |
+| `TextLink`   | Lien texte souligné au `border-bottom`                        | `onLight` (défaut), `onDark`                |
+| `Overline`   | Sur-titre mono 12 px majuscules                               | Couleur et approche passées en `className`  |
+| `PageBanner` | Bandeau de page intérieure : sur-titre + h1 sur noir de scène | Photo et lien de retour optionnels          |
+| `InfoPanel`  | Encart d'information à filet latéral                          | `teal` (neutre), `copper` (passé, archive)  |
+| `FormField`  | Champ de formulaire étiqueté (étiquette, contrôle, erreur)    | `input`, `select` ou `textarea` selon props |
 
 `PageBanner` porte l'en-tête de toutes les pages intérieures (concerts, fiche
 concert, presse, présentation, mentions légales) : avec une photo il applique
@@ -198,7 +200,19 @@ charte : fond blanc, filet 1 px, bord gauche de 3 px à la couleur de l'accent.
 
 Les tons de `ButtonLink` disent sur quoi le bouton est posé, pas sa couleur :
 `onLight` sur le fond de page, `onDark` sur le noir de scène, `onTeal` sur le
-bandeau « Nous rejoindre », `outline` pour une action secondaire.
+bandeau « Nous rejoindre », `outline` pour une action secondaire. `TextLink`
+suit la même logique et porte le soulignement de la charte
+(`border-b border-current no-underline`, jamais `text-decoration`) : il rend
+un `next/link` pour une route du site, une ancre simple pour un `mailto:`,
+une URL externe ou un `#ancre` de la page.
+
+`FormField` porte le motif de champ de la charte : étiquette au-dessus —
+jamais un `placeholder` à sa place — mention « (obligatoire) » en 400
+`text-muted`, contrôle en `min-h-12 rounded-md border px-3.5 text-lg` sur
+`bg-surface`, focus `border-teal` + `outline-2 outline-teal`, et message
+d'erreur sous le champ relié par `aria-describedby`. L'état invalide se lit
+dans `aria-invalid` et dans le message ; le filet cuivre ne fait que le
+répéter — aucune couleur ne dit seule qu'un champ est en erreur.
 
 `Overline` porte `tracking-[0.16em]` par défaut ; le pied de page et le
 bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le

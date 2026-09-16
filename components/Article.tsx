@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import Heading from "@/components/Heading";
+import TextLink from "@/components/TextLink";
 import { cn } from "@/utils/classnames";
 
 interface ArticleProps {
@@ -10,32 +10,39 @@ interface ArticleProps {
   media: Array<{ url: string; alt: string }>;
   publication?: string;
   subtitle?: string;
-  title: string;
+  /** Omitted when the page banner already carries the title. */
+  title?: string;
 }
 
+/**
+ * A press article: its title, the paper it came out in, and the clipping
+ * itself. The title takes the charter's section size whatever heading level
+ * the page gives it — the level is a matter of outline, not of scale.
+ */
 const Article = ({ fullDisplay, hLevel = 1, link, media, publication, subtitle, title }: ArticleProps) => {
+  const Title = `h${hLevel}` as const;
+
   return (
     <article>
-      <div className="items-baseline gap-2 lg:flex">
-        <Heading hLevel={hLevel}>{title}</Heading>
-        {publication && (
-          <span className="text-sm text-gray-500">
-            <span className="hidden lg:inline">- </span>
-            {publication}
-          </span>
-        )}
-      </div>
+      {title ? (
+        <div className="menu:flex items-baseline gap-3">
+          <Title className="font-display text-3xl font-semibold">{title}</Title>
+          {publication ? <span className="text-muted text-lg">{publication}</span> : null}
+        </div>
+      ) : null}
 
-      {subtitle && <p className="py-2">{subtitle}</p>}
-      {link && (
-        <p>
-          <a href={link} className="text-sm text-sky-700 hover:underline" target="_blank" rel="noopener noreferrer">
+      {subtitle ? <p className={cn("max-w-prose text-lg", title && "mt-3")}>{subtitle}</p> : null}
+
+      {link ? (
+        <p className="mt-3">
+          <TextLink href={link} target="_blank" rel="noopener noreferrer">
             Retrouver l&apos;article sur le site du journal
-          </a>
+          </TextLink>
         </p>
-      )}
-      {media && media.length > 0 && (
-        <div className={cn("relative mx-auto mt-4 w-full", { "lg:w-1/2": !fullDisplay })}>
+      ) : null}
+
+      {media.length > 0 ? (
+        <div className={cn("mx-auto mt-6 w-full", { "menu:w-1/2": !fullDisplay })}>
           {media.map(({ url, alt }) => (
             <Image
               key={url}
@@ -43,11 +50,12 @@ const Article = ({ fullDisplay, hLevel = 1, link, media, publication, subtitle, 
               alt={alt}
               width={1024}
               height={500}
-              sizes={fullDisplay ? "100vw" : "(min-width: 1024px) 50vw, 100vw"}
+              sizes={fullDisplay ? "100vw" : "(min-width: 700px) 50vw, 100vw"}
+              className="border-border h-auto w-full rounded-sm border"
             />
           ))}
         </div>
-      )}
+      ) : null}
     </article>
   );
 };

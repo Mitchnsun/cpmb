@@ -14,7 +14,23 @@ describe("ArticlePage", () => {
 
     render(await ArticlePage({ params: mockParams }));
 
-    expect(screen.getByRole("heading", { name: articles[0].title })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: articles[0].title })).toBeInTheDocument();
+  });
+
+  it("should carry the title once, on the banner, and not again above the clipping", async () => {
+    const mockParams = Promise.resolve({ slug: articles[0].slug });
+
+    render(await ArticlePage({ params: mockParams }));
+
+    expect(screen.getAllByRole("heading", { name: articles[0].title })).toHaveLength(1);
+  });
+
+  it("should offer a way back to the press page", async () => {
+    const mockParams = Promise.resolve({ slug: articles[0].slug });
+
+    render(await ArticlePage({ params: mockParams }));
+
+    expect(screen.getByRole("link", { name: "Retour à la revue de presse" })).toHaveAttribute("href", "/presse");
   });
 
   it("should call notFound when slug is not found", async () => {

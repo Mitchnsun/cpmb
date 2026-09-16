@@ -49,12 +49,12 @@ describe("Article Component", () => {
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("should render publication with proper formatting on desktop", () => {
+  it("should set the publication beside the title, in the muted tone", () => {
     render(<Article title="Test Article" publication="Le Monde" media={mockMedia} />);
 
     const publication = screen.getByText("Le Monde");
-    expect(publication).toBeInTheDocument();
-    expect(publication.parentElement).toHaveTextContent("- Le Monde");
+    expect(publication).toHaveClass("text-muted", "text-lg");
+    expect(publication.parentElement).toHaveTextContent("Test ArticleLe Monde");
   });
 
   it("should render subtitle when provided", () => {
@@ -98,22 +98,22 @@ describe("Article Component", () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it("should apply full display width styling when fullDisplay is true", () => {
+  it("should let the clipping run full width when fullDisplay is set", () => {
     render(<Article title="Test Article" media={mockMedia} fullDisplay={true} />);
 
     const mediaContainer = screen.getAllByRole("img")[0].parentElement;
-    expect(mediaContainer).not.toHaveClass("lg:w-1/2");
+    expect(mediaContainer).not.toHaveClass("menu:w-1/2");
   });
 
-  it("should apply limited width styling when fullDisplay is false or undefined", () => {
+  it("should hold the clipping to half the width below fullDisplay", () => {
     const { rerender } = render(<Article title="Test Article" media={mockMedia} fullDisplay={false} />);
 
     let mediaContainer = screen.getAllByRole("img")[0].parentElement;
-    expect(mediaContainer).toHaveClass("lg:w-1/2");
+    expect(mediaContainer).toHaveClass("menu:w-1/2");
 
     rerender(<Article title="Test Article" media={mockMedia} />);
     mediaContainer = screen.getAllByRole("img")[0].parentElement;
-    expect(mediaContainer).toHaveClass("lg:w-1/2");
+    expect(mediaContainer).toHaveClass("menu:w-1/2");
   });
 
   it("should not render images section when media array is empty", () => {
@@ -126,7 +126,21 @@ describe("Article Component", () => {
   it("should not render publication when not provided", () => {
     render(<Article title="Test Article" media={mockMedia} />);
 
-    expect(screen.queryByText(/- /)).not.toBeInTheDocument();
+    expect(screen.getByRole("heading").parentElement).toHaveTextContent("Test Article");
+  });
+
+  it("should drop the whole title block when the page banner already carries it", () => {
+    render(<Article subtitle="Le chapô de l'article" publication="Le Monde" media={mockMedia} />);
+
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByText("Le Monde")).not.toBeInTheDocument();
+    expect(screen.getByText("Le chapô de l'article")).toBeInTheDocument();
+  });
+
+  it("should give the charter's section size to the title, whatever its level", () => {
+    render(<Article title="Test Article" media={mockMedia} hLevel={4} />);
+
+    expect(screen.getByRole("heading", { level: 4 })).toHaveClass("font-display", "text-3xl", "font-semibold");
   });
 
   it("should not render subtitle when not provided", () => {

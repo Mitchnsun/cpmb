@@ -99,6 +99,16 @@ export const CONTACT_BANNER: SiteImage = {
   sizes: "100vw",
 };
 
+/** "Page non trouvée" banner. */
+export const NOT_FOUND_BANNER: SiteImage = {
+  src: "/media/illustration_404.jpeg",
+  alt: "Un sommet enneigé du massif du Mont-Blanc émergeant des nuages",
+  width: 4608,
+  height: 3072,
+  objectPosition: "center",
+  sizes: "100vw",
+};
+
 /** Partner logos — home page banner. */
 export const PARTNER_LOGOS: readonly PartnerLogo[] = [
   {

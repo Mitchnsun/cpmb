@@ -1,59 +1,38 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+import { CONTACT_BANNER } from "@/assets/contents/medias";
 import ContactForm from "@/components/ContactForm";
-import Heading from "@/components/Heading";
+import ContactInfo from "@/components/ContactInfo";
+import PageBanner from "@/components/PageBanner";
 
 export const metadata: Metadata = {
   title: "Contact – Chœur des Pays du Mont-Blanc",
   description: "Contactez-nous pour rejoindre le Chœur des Pays du Mont-Blanc ou pour toute information.",
 };
 
+/**
+ * "Contact" page (CPMB-15): the banner, then the practical information and
+ * the form side by side — a fluid two-column grid that falls to one column
+ * on its own, with no media query.
+ */
 export default function Contact() {
   return (
-    <section className="p-4 text-zinc-900 xl:p-8">
-      <div className="container mx-auto max-w-4xl">
-        <Heading className="mb-6">Contactez-nous</Heading>
+    <>
+      <PageBanner overline="Écrire au chœur" title="Contact" image={CONTACT_BANNER} />
 
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-6">
-            <div>
-              <Heading hLevel={2} variant={2} className="mb-4">
-                Informations pratiques
-              </Heading>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold text-gray-800">Adresse e-mail</h3>
-                  <p className="mt-1">
-                    <a href="mailto:bureau@choeurdespaysdumontblanc.fr" className="text-sky-700 hover:underline">
-                      bureau@choeurdespaysdumontblanc.fr
-                    </a>
-                  </p>
-                </div>
+      <section className="max-w-site mx-auto grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-start gap-14 px-6 pt-16 pb-20">
+        <ContactInfo />
 
-                <div>
-                  <h3 className="font-semibold text-gray-800">Rejoignez-nous</h3>
-                  <p className="mt-1 text-gray-600">
-                    Nous recrutons des choristes ayant une expérience chorale et/ou une capacité en déchiffrage.
-                    N&apos;hésitez pas à nous contacter pour plus d&apos;informations !
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <Heading hLevel={2} variant={2} className="mb-4">
-              Envoyez-nous un message
-            </Heading>
-            {/* `useSearchParams` reads `?objet=` to preselect the subject: on a
-                statically prerendered page it needs a boundary above it. */}
-            <Suspense>
-              <ContactForm />
-            </Suspense>
-          </div>
+        <div>
+          <h2 className="font-display mb-5.5 text-3xl font-semibold">Envoyez-nous un message</h2>
+          {/* `useSearchParams` reads `?objet=` to preselect the subject: on a
+              statically prerendered page it needs a boundary above it. */}
+          <Suspense>
+            <ContactForm />
+          </Suspense>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

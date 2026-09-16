@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import Heading from "@/components/Heading";
 import { cn } from "@/utils/classnames";
 
 interface ArtistArticleProps {
@@ -9,27 +8,37 @@ interface ArtistArticleProps {
   alt: string;
   text: string[];
   hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  /** Kept in the outline but taken off screen, when a banner already shows it. */
+  titleHidden?: boolean;
 }
 
-const ArtistArticle = ({ name, media, alt, text, hLevel }: ArtistArticleProps) => {
+/**
+ * Portrait of a performer: the photo beside the text.
+ *
+ * The layout wraps rather than reflows on a breakpoint — the portrait keeps
+ * its own width and the text takes what is left, until the text no longer
+ * fits beside it and drops below, the photo then centring itself. The page
+ * owns the container and the gutter, not this component.
+ */
+const ArtistArticle = ({ name, media, alt, text, hLevel = 2, titleHidden }: ArtistArticleProps) => {
+  const Title = `h${hLevel}` as const;
+
   return (
-    <article className="container mx-auto text-justify">
-      <Heading hLevel={hLevel} className="mb-4">
-        {name}
-      </Heading>
-      <div className="flex flex-col items-start gap-4 text-justify sm:flex-row lg:gap-8">
+    <article>
+      <Title className={cn("font-display mb-5.5 text-3xl font-semibold", titleHidden && "sr-only")}>{name}</Title>
+
+      <div className="flex flex-wrap items-start gap-10">
         <Image
           src={media}
           alt={alt}
           width={200}
           height={300}
-          priority
-          sizes="(min-width: 1024px) 15rem, 100vw"
-          className="mx-auto h-80 w-full max-w-3xs grow-0 rounded-md object-cover lg:m-0 lg:h-auto"
+          sizes="256px"
+          className="border-border mx-auto h-auto w-full max-w-3xs rounded-sm border object-cover"
         />
-        <div>
-          {text.map((paragraph, index) => (
-            <p key={paragraph.slice(0, 50)} className={cn({ "mb-2": index < text.length - 1 })}>
+        <div className="grid min-w-2xs flex-1 gap-4">
+          {text.map((paragraph) => (
+            <p key={paragraph.slice(0, 50)} className="max-w-prose text-lg">
               {paragraph}
             </p>
           ))}

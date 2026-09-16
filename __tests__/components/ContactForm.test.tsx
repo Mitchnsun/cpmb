@@ -1,15 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { useSearchParams } from "next/navigation";
 import { vi } from "vitest";
 
 import ContactForm from "@/components/ContactForm";
 
-// Mock the mail icon
-vi.mock("@/assets/icons/mail.svg", () => ({
-  default: (props: any) => <svg data-testid="mail-icon" {...props} />,
-}));
-
-// Mock window.location.href
 const mockLocationHref = vi.fn();
 Object.defineProperty(window, "location", {
   value: {
@@ -23,195 +18,261 @@ Object.defineProperty(window, "location", {
   writable: true,
 });
 
-describe("ContactForm", () => {
+/* Fake timers deadlock `userEvent`, so the clock is moved by hand: the
+   component only ever reads `Date.now()`. */
+let now = 1_700_000_000_000;
+const waitOutTheAntiSpamDelay = () => {
+  now += 2500;
+};
+
+const useControlledClock = () => {
+  let clock: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    now = 1_700_000_000_000;
+    clock = vi.spyOn(Date, "now").mockImplementation(() => now);
   });
 
-  it("should render all form fields with proper labels", () => {
+  afterEach(() => {
+    clock.mockRestore();
+  });
+};
+
+const fillTheForm = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.type(screen.getByLabelText(/^Nom/), "Marie Dupont");
+  await user.type(screen.getByLabelText(/^Adresse e-mail/), "marie@example.com");
+  await user.selectOptions(screen.getByLabelText(/^Objet/), "concerts");
+  await user.type(screen.getByLabelText(/^Message/), "Bonjour, je souhaite des informations sur vos concerts.");
+};
+
+const submit = async (user: ReturnType<typeof userEvent.setup>) =>
+  user.click(screen.getByRole("button", { name: "Envoyer le message" }));
+
+/* Every message shows twice on purpose — under its field and in the summary
+   — so a field error is read back through the id the control points at. */
+const fieldError = (field: string) => document.getElementById(`contact-${field}-error`);
+
+describe("ContactForm", () => {
+  useControlledClock();
+  const user = userEvent.setup();
+
+  it("should render every field with a visible label and no placeholder standing in for one", () => {
     render(<ContactForm />);
 
-    expect(screen.getByLabelText(/nom/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/adresse e-mail/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/objet/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/message/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Nom/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Adresse e-mail/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Objet/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Message/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Envoyer le message" })).toBeInTheDocument();
+
+    expect(document.querySelectorAll("[placeholder]")).toHaveLength(0);
   });
 
-  it("should show validation errors for empty required fields", async () => {
+  it("should say which fields are required with the word, not an asterisk", () => {
     render(<ContactForm />);
 
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText("Le nom est requis")).toBeInTheDocument();
-    expect(screen.getByText("L'adresse e-mail est requise")).toBeInTheDocument();
-    expect(screen.getByText("L'objet est requis")).toBeInTheDocument();
-    expect(screen.getByText("Le message est requis")).toBeInTheDocument();
+    expect(screen.getAllByText("(obligatoire)")).toHaveLength(4);
+    expect(screen.queryByText("*")).not.toBeInTheDocument();
   });
 
-  it("should validate email format", async () => {
+  it("should offer the four subjects of the ticket", () => {
     render(<ContactForm />);
 
-    const emailInput = screen.getByLabelText(/adresse e-mail/i);
-    fireEvent.change(emailInput, { target: { value: "invalid-email" } });
-
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText("Veuillez saisir une adresse e-mail valide")).toBeInTheDocument();
+    const options = screen.getAllByRole("option").map((option) => option.textContent);
+    expect(options).toEqual([
+      "Choisissez un objet",
+      "Rejoindre le chœur",
+      "Question sur les concerts",
+      "Inviter le chœur",
+      "Autre",
+    ]);
   });
 
-  it("should validate message minimum length", async () => {
+  it("should report every empty required field", async () => {
     render(<ContactForm />);
 
-    const messageInput = screen.getByLabelText(/message/i);
-    fireEvent.change(messageInput, { target: { value: "short" } });
+    await submit(user);
 
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText("Le message doit contenir au moins 10 caractères")).toBeInTheDocument();
+    expect(fieldError("name")).toHaveTextContent("Le nom est requis");
+    expect(fieldError("email")).toHaveTextContent("L'adresse e-mail est requise");
+    expect(fieldError("subject")).toHaveTextContent("L'objet est requis");
+    expect(fieldError("message")).toHaveTextContent("Le message est requis");
+    expect(mockLocationHref).not.toHaveBeenCalled();
   });
 
-  it("should clear individual field errors when user starts typing", async () => {
-    render(<ContactForm />);
-
-    // Submit empty form to show errors
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    expect(screen.getByText("Le nom est requis")).toBeInTheDocument();
-
-    // Start typing in name field
-    const nameInput = screen.getByLabelText(/nom/i);
-    fireEvent.change(nameInput, { target: { value: "J" } });
-
-    // Error should be cleared
-    expect(screen.queryByText("Le nom est requis")).not.toBeInTheDocument();
-  });
-
-  it("should create mailto link and show success message on valid form submission", async () => {
-    render(<ContactForm />);
-
-    // Fill out form with valid data
-    fireEvent.change(screen.getByLabelText(/nom/i), { target: { value: "John Doe" } });
-    fireEvent.change(screen.getByLabelText(/adresse e-mail/i), { target: { value: "john@example.com" } });
-    fireEvent.change(screen.getByLabelText(/objet/i), { target: { value: "Test Subject" } });
-    fireEvent.change(screen.getByLabelText(/message/i), {
-      target: { value: "This is a test message with enough characters" },
-    });
-
-    // Submit form
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    // Check mailto link was called
-    expect(mockLocationHref).toHaveBeenCalledWith(
-      expect.stringMatching(/^mailto:bureau@choeurdespaysdumontblanc\.fr\?subject=.*&body=.*/)
-    );
-
-    // Check success message is shown
-    expect(screen.getByText("Message envoyé !")).toBeInTheDocument();
-    expect(screen.getByTestId("mail-icon")).toBeInTheDocument();
-  });
-
-  it("should reset form after success message timeout", async () => {
-    // This test is mainly for UI behavior and is complex to test with timers.
-    // The core functionality is that the form resets after 3 seconds, which is already tested
-    // in browser integration. The important part is that the success message appears.
-    render(<ContactForm />);
-
-    // Fill and submit form
-    fireEvent.change(screen.getByLabelText(/nom/i), { target: { value: "John Doe" } });
-    fireEvent.change(screen.getByLabelText(/adresse e-mail/i), { target: { value: "john@example.com" } });
-    fireEvent.change(screen.getByLabelText(/objet/i), { target: { value: "Test Subject" } });
-    fireEvent.change(screen.getByLabelText(/message/i), {
-      target: { value: "This is a test message with enough characters" },
-    });
-
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
-
-    // Success message should be shown
-    expect(screen.getByText("Message envoyé !")).toBeInTheDocument();
-  });
-
-  it("should have proper accessibility attributes", () => {
+  it("should repeat the errors in a polite live region, one link per field", async () => {
     const { container } = render(<ContactForm />);
 
-    // Check required field indicators
-    const requiredFields = screen.getAllByText("*");
-    expect(requiredFields.length).toBeGreaterThan(0);
+    await submit(user);
 
-    // Check form has noValidate
-    const form = container.querySelector("form");
-    expect(form).toHaveAttribute("noValidate");
+    const liveRegion = container.querySelector('[aria-live="polite"]');
+    expect(liveRegion).toBeInTheDocument();
+    expect(liveRegion).toHaveTextContent("4 champs sont à corriger avant l'envoi :");
 
-    // Check inputs have proper aria attributes when no errors
-    const nameInput = screen.getByLabelText(/nom/i);
-    expect(nameInput).toHaveAttribute("aria-invalid", "false");
+    const summaryLinks = screen.getAllByRole("link");
+    expect(summaryLinks.map((link) => link.getAttribute("href"))).toEqual([
+      "#contact-name",
+      "#contact-email",
+      "#contact-subject",
+      "#contact-message",
+    ]);
   });
 
-  it("should set proper aria attributes when there are validation errors", () => {
+  it("should switch the summary to the singular for a single error", async () => {
+    const { container } = render(<ContactForm />);
+
+    await fillTheForm(user);
+    await user.clear(screen.getByLabelText(/^Nom/));
+    await submit(user);
+
+    expect(container.querySelector('[aria-live="polite"]')).toHaveTextContent(
+      "Un champ est à corriger avant l'envoi :"
+    );
+  });
+
+  it("should reject a malformed e-mail address", async () => {
     render(<ContactForm />);
 
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
+    await user.type(screen.getByLabelText(/^Adresse e-mail/), "pas-une-adresse");
+    await submit(user);
 
-    const nameInput = screen.getByLabelText(/nom/i);
+    expect(fieldError("email")).toHaveTextContent("Veuillez saisir une adresse e-mail valide");
+  });
+
+  it("should reject a message shorter than ten characters", async () => {
+    render(<ContactForm />);
+
+    await user.type(screen.getByLabelText(/^Message/), "court");
+    await submit(user);
+
+    expect(fieldError("message")).toHaveTextContent("Le message doit contenir au moins 10 caractères");
+  });
+
+  it("should tie each error to its field, and clear it as soon as the visitor types", async () => {
+    render(<ContactForm />);
+
+    await submit(user);
+
+    const nameInput = screen.getByLabelText(/^Nom/);
     expect(nameInput).toHaveAttribute("aria-invalid", "true");
-    expect(nameInput).toHaveAttribute("aria-describedby", "name-error");
+    expect(nameInput).toHaveAttribute("aria-describedby", "contact-name-error");
+    expect(fieldError("name")).toHaveTextContent("Le nom est requis");
 
-    const errorMessage = screen.getByText("Le nom est requis");
-    expect(errorMessage).toBeInTheDocument();
-    expect(errorMessage).toHaveAttribute("id", "name-error");
-    expect(errorMessage).toHaveAttribute("role", "alert");
+    await user.type(nameInput, "M");
+
+    expect(fieldError("name")).not.toBeInTheDocument();
+    expect(screen.queryByText("Le nom est requis")).not.toBeInTheDocument();
+    expect(nameInput).toHaveAttribute("aria-invalid", "false");
+    expect(nameInput).not.toHaveAttribute("aria-describedby");
   });
 
-  it("should properly encode mailto URL parameters", () => {
+  it("should open a prefilled draft and confirm, on a valid submission", async () => {
     render(<ContactForm />);
 
-    // Fill form with special characters
-    fireEvent.change(screen.getByLabelText(/nom/i), { target: { value: "Jean-Luc & Marie" } });
-    fireEvent.change(screen.getByLabelText(/adresse e-mail/i), { target: { value: "test@example.com" } });
-    fireEvent.change(screen.getByLabelText(/objet/i), {
-      target: { value: "Sujet avec caractères spéciaux & accents" },
-    });
-    fireEvent.change(screen.getByLabelText(/message/i), {
-      target: { value: "Message avec caractères spéciaux: é, è, à, ç" },
-    });
+    await fillTheForm(user);
+    await waitOutTheAntiSpamDelay();
+    await submit(user);
 
-    const submitButton = screen.getByRole("button", { name: "Envoyer le message" });
-    fireEvent.click(submitButton);
+    const mailto = mockLocationHref.mock.calls[0][0];
+    expect(mailto).toContain("mailto:bureau@choeurdespaysdumontblanc.fr");
+    expect(mailto).toContain(encodeURIComponent("Question sur les concerts — Marie Dupont"));
+    expect(mailto).toContain(encodeURIComponent("marie@example.com"));
 
-    // Check that special characters are properly encoded
-    const calledUrl = mockLocationHref.mock.calls[0][0];
-    expect(calledUrl).toContain("Jean-Luc%20%26%20Marie");
-    expect(calledUrl).toContain("caract%C3%A8res");
+    expect(screen.getByText("Votre message est prêt à être envoyé.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Envoyer le message" })).not.toBeInTheDocument();
+  });
+
+  it("should move the focus to the confirmation panel", async () => {
+    render(<ContactForm />);
+
+    await fillTheForm(user);
+    await waitOutTheAntiSpamDelay();
+    await submit(user);
+
+    const confirmation = screen.getByText("Votre message est prêt à être envoyé.").closest("div");
+    expect(confirmation).toHaveAttribute("tabindex", "-1");
+    await waitFor(() => expect(confirmation).toHaveFocus());
+  });
+
+  it("should percent-encode accents and ampersands in the draft", async () => {
+    render(<ContactForm />);
+
+    await user.type(screen.getByLabelText(/^Nom/), "Jean-Luc & Marie");
+    await user.type(screen.getByLabelText(/^Adresse e-mail/), "test@example.com");
+    await user.selectOptions(screen.getByLabelText(/^Objet/), "autre");
+    await user.type(screen.getByLabelText(/^Message/), "Message avec caractères spéciaux : é, è, à, ç");
+    await waitOutTheAntiSpamDelay();
+    await submit(user);
+
+    const mailto = mockLocationHref.mock.calls[0][0];
+    expect(mailto).toContain("Jean-Luc%20%26%20Marie");
+    expect(mailto).toContain("caract%C3%A8res");
+  });
+});
+
+describe("ContactForm anti-spam", () => {
+  useControlledClock();
+  const user = userEvent.setup();
+
+  it("should refuse a submission sent faster than a human could fill the form", async () => {
+    render(<ContactForm />);
+
+    await fillTheForm(user);
+    await submit(user);
+
+    expect(mockLocationHref).not.toHaveBeenCalled();
+    expect(
+      screen.getByText("Votre message est parti trop vite pour être pris en compte. Merci de renvoyer le formulaire.")
+    ).toBeInTheDocument();
+  });
+
+  it("should keep the typed values when a submission is refused", async () => {
+    render(<ContactForm />);
+
+    await fillTheForm(user);
+    await submit(user);
+
+    expect(screen.getByLabelText(/^Nom/)).toHaveValue("Marie Dupont");
+    expect(screen.getByLabelText(/^Adresse e-mail/)).toHaveValue("marie@example.com");
+    expect(screen.getByLabelText(/^Objet/)).toHaveValue("concerts");
+  });
+
+  it("should drop a submission that filled the hidden trap, without saying so", async () => {
+    const { container } = render(<ContactForm />);
+
+    await fillTheForm(user);
+    const trap = container.querySelector("#contact-site") as HTMLInputElement;
+    expect(trap).toHaveAttribute("tabindex", "-1");
+    await user.type(trap, "https://spam.example");
+    await waitOutTheAntiSpamDelay();
+    await submit(user);
+
+    expect(mockLocationHref).not.toHaveBeenCalled();
+    expect(screen.getByText("Votre message est prêt à être envoyé.")).toBeInTheDocument();
   });
 });
 
 describe("ContactForm subject preselection", () => {
-  it("should fill the subject in from the ?objet= parameter", () => {
+  it("should preselect the subject carried by ?objet=", () => {
     vi.mocked(useSearchParams).mockReturnValueOnce(new URLSearchParams("objet=rejoindre") as never);
 
     render(<ContactForm />);
 
-    expect(screen.getByLabelText(/Objet/)).toHaveValue("Rejoindre le chœur");
+    expect(screen.getByLabelText(/^Objet/)).toHaveValue("rejoindre");
   });
 
-  it("should leave the subject empty for an unknown parameter", () => {
+  it("should leave the subject unchosen for an unknown parameter", () => {
     vi.mocked(useSearchParams).mockReturnValueOnce(new URLSearchParams("objet=inconnu") as never);
 
     render(<ContactForm />);
 
-    expect(screen.getByLabelText(/Objet/)).toHaveValue("");
+    expect(screen.getByLabelText(/^Objet/)).toHaveValue("");
   });
 
-  it("should leave the subject empty when there is no parameter at all", () => {
+  it("should leave the subject unchosen when there is no parameter at all", () => {
     render(<ContactForm />);
 
-    expect(screen.getByLabelText(/Objet/)).toHaveValue("");
+    expect(screen.getByLabelText(/^Objet/)).toHaveValue("");
   });
 });
