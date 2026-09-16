@@ -231,7 +231,11 @@ répéter — aucune couleur ne dit seule qu'un champ est en erreur.
 bandeau partenaires le resserrent à `0.14em` via `className` — `cn()` fait le
 remplacement, pas l'empilement.
 
-`Carrousel` est la galerie de la page Présentation. Ses diapositives sont en
+`Carrousel` est la galerie de la page Présentation. Son cadre est
+transparent : ce que la photo contenue laisse libre montre le fond de page,
+pas un cache sombre posé dessus. Les flèches portent donc une pastille
+**opaque** — elles tombent tantôt sur la photo, tantôt sur ce fond clair, et
+une pastille translucide s'y délavait en gris. Ses diapositives sont en
 `object-contain` dans un cadre `aspect-[21/9]` fixe, **jamais en `cover`** :
 la plupart des fichiers de `public/carrousel/` sont déjà des bandes 4,2:1, et
 les recadrer une seconde fois irait contre le but même de la galerie. Chaque

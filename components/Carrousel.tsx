@@ -13,9 +13,14 @@ interface CarrouselProps {
   autoplay?: boolean;
 }
 
-/** Controls sit over the photo, so they carry their own dark backing. */
+/**
+ * The arrows land on whatever the photo leaves them: on the picture itself
+ * for a wide strip, on the page background for a tall one. The backing is
+ * therefore opaque — translucent, it washed out to a grey blob over the
+ * light letterbox — so the icon keeps its contrast either way.
+ */
 const controlClassName =
-  "bg-stage-black/60 text-text-on-dark hover:bg-stage-black hover:text-teal-light focus-visible:outline-teal-light absolute flex min-h-12 min-w-12 items-center justify-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
+  "bg-stage-black text-text-on-dark hover:text-teal-light focus-visible:outline-teal-light absolute flex min-h-12 min-w-12 items-center justify-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2";
 
 /**
  * Gallery of the choir's photos, shown under the presentation.
@@ -113,7 +118,9 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
         aria-roledescription="carrousel"
         aria-live={isScrolling ? "off" : "polite"}
       >
-        <div className="border-border bg-stage-black relative aspect-[21/9] w-full overflow-hidden rounded-sm border">
+        {/* Transparent: the page background fills whatever the contained
+            photo leaves, rather than a dark mat sitting on a light page. */}
+        <div className="border-border relative aspect-[21/9] w-full overflow-hidden rounded-sm border">
           <div
             className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
