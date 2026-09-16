@@ -3,9 +3,10 @@ import { render, screen } from "@testing-library/react";
 import Article from "@/components/Article";
 
 describe("Article Component", () => {
+  // Deliberately different shapes: a landscape clipping and a portrait one.
   const mockMedia = [
-    { url: "/test-image-1.jpg", alt: "Test image 1" },
-    { url: "/test-image-2.jpg", alt: "Test image 2" },
+    { url: "/test-image-1.jpg", alt: "Test image 1", width: 1188, height: 1645 },
+    { url: "/test-image-2.jpg", alt: "Test image 2", width: 1865, height: 932 },
   ];
 
   it("should render with minimal required props", () => {
@@ -157,13 +158,15 @@ describe("Article Component", () => {
     expect(link).not.toBeInTheDocument();
   });
 
-  it("should have correct image attributes for Next.js optimization", () => {
+  it("should reserve each clipping's own box, so nothing shifts when it lands", () => {
     render(<Article title="Test Article" media={mockMedia} />);
 
+    // A single declared ratio would reserve the wrong box for the portrait
+    // scans and push the rest of the page down once they load.
     const images = screen.getAllByRole("img");
-    images.forEach((image) => {
-      expect(image).toHaveAttribute("width", "1024");
-      expect(image).toHaveAttribute("height", "500");
-    });
+    expect(images[0]).toHaveAttribute("width", "1188");
+    expect(images[0]).toHaveAttribute("height", "1645");
+    expect(images[1]).toHaveAttribute("width", "1865");
+    expect(images[1]).toHaveAttribute("height", "932");
   });
 });

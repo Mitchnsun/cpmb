@@ -9,14 +9,8 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-interface ArticleData {
-  title: string;
-  slug: string;
-  publication?: string;
-  subtitle?: string;
-  media: Array<{ url: string; alt: string; type: string }>;
-  link?: string;
-}
+/** Derived from the JSON, so widening the data widens the type. */
+type ArticleData = (typeof articles)[number];
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
