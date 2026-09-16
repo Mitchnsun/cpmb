@@ -20,7 +20,7 @@ describe("JoinBanner", () => {
     expect(screen.getByText("Espace Louis-Simon, salle Roger Duvanel — Gaillard")).toBeInTheDocument();
     expect(screen.getByText(/Un vendredi par mois, 19h30 – 22h/)).toBeInTheDocument();
     expect(screen.getByText(/Un dimanche par mois, 10h – 16h/)).toBeInTheDocument();
-    expect(screen.getByText(/Soit 9 heures de répétition par mois\./)).toBeInTheDocument();
+    expect(screen.getByText(/Nous avons besoin de vos voix !/)).toBeInTheDocument();
   });
 
   it("should lead to the contact page with the subject preselected", () => {

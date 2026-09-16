@@ -1,4 +1,5 @@
 import ButtonLink from "@/components/ButtonLink";
+import Overline from "@/components/Overline";
 
 /**
  * "Nous rejoindre" banner (CPMB-07): full-width teal strip between the hero
@@ -15,6 +16,7 @@ const JoinBanner = () => (
         <h2 id="nous-rejoindre" className="font-display mb-3.5 text-3xl font-semibold text-white">
           Nous rejoindre
         </h2>
+        <Overline className="mb-2 text-base text-white">Nous avons besoin de vos voix !</Overline>
         <p className="max-w-md text-lg text-white">
           Le chœur recrute des choristes ayant une expérience chorale et/ou une capacité en déchiffrage. Le recrutement
           se fait après audition.
@@ -26,8 +28,6 @@ const JoinBanner = () => (
           Un vendredi par mois, 19h30 – 22h
           <br />
           Un dimanche par mois, 10h – 16h
-          <br />
-          Soit 9 heures de répétition par mois.
         </p>
         {/* Full width below the mobile breakpoint, so the target is easy to hit. */}
         <ButtonLink
