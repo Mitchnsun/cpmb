@@ -26,8 +26,8 @@ const controlClassName =
  * Gallery of the choir's photos, shown under the presentation.
  *
  * Every slide is a button: clicking one opens it full size in a `Lightbox`.
- * Autoplay stops as soon as the visitor takes control — an arrow, a dot or a
- * photo — so it never fights them. Under `prefers-reduced-motion` it never
+ * Autoplay stops as soon as the visitor takes control — an arrow, a dot, a
+ * photo, or simply tabbing in — so it never fights them. Under `prefers-reduced-motion` it never
  * runs at all, and the gallery says so: the live region turns polite and the
  * pause control disappears rather than offering to stop a standstill.
  *
@@ -117,6 +117,11 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
         aria-label="Photos du chœur"
         aria-roledescription="carrousel"
         aria-live={isScrolling ? "off" : "polite"}
+        /* Tabbing in is enough to take control. Left running, the next tick
+           would move the slide the visitor just reached, handing them a
+           control that is now `aria-hidden` and out of the tab order while
+           it still holds focus. Bubbles, so any control inside counts. */
+        onFocus={() => setIsPlaying(false)}
       >
         {/* Transparent: the page background fills whatever the contained
             photo leaves, rather than a dark mat sitting on a light page. */}

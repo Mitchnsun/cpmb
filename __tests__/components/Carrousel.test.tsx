@@ -115,6 +115,19 @@ describe("Carrousel", () => {
     ).toHaveAttribute("aria-current", "true");
   });
 
+  it("should hand control over as soon as the keyboard reaches it", async () => {
+    render(<Carrousel />);
+
+    // Left running, the next tick would move the slide the visitor just
+    // tabbed to, leaving focus on a control that is now `aria-hidden` and
+    // out of the tab order.
+    await user.tab();
+    screen.getByRole("button", { name: /^Agrandir la photo/ }).focus();
+
+    expect(screen.getByRole("button", { name: "Reprendre le défilement" })).toBeInTheDocument();
+    expect(screen.getByRole("region")).toHaveAttribute("aria-live", "polite");
+  });
+
   it("should open the photo full size when a slide is clicked", async () => {
     render(<Carrousel />);
 
