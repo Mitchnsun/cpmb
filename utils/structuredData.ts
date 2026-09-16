@@ -1,4 +1,5 @@
 import { LOGO, SOCIAL_IMAGE } from "@/assets/contents/medias";
+import { isDateAhead } from "@/utils/concerts";
 import { META_DESCRIPTION_LENGTH } from "@/utils/metadata";
 import {
   absoluteUrl,
@@ -284,11 +285,15 @@ export interface ConcertList {
   itemListElement: { "@type": "ListItem"; position: number; item: MusicEvent }[];
 }
 
-export const concertList = (concerts: readonly ConcertLike[]): ConcertList => ({
+export const concertList = (concerts: readonly ConcertLike[], now: number): ConcertList => ({
   "@context": "https://schema.org",
   "@type": "ItemList",
   itemListElement: concerts
     .flatMap((concert) => concertEvents(concert))
+    /* A concert given twice stays on the agenda between its two evenings —
+       but the evening that has passed has no place in a list of what is
+       still to come. Same Paris-midnight cutoff as the page itself. */
+    .filter((event) => isDateAhead(event.startDate, now))
     .map((event, index) => ({ "@type": "ListItem" as const, position: index + 1, item: event })),
 });
 
@@ -317,7 +322,7 @@ export interface NewsArticleSchema {
   description?: string;
   image?: string;
   datePublished?: string;
-  author?: { "@type": "Organization"; name: string };
+  publisher?: { "@type": "Organization"; name: string };
 }
 
 /**
@@ -343,7 +348,9 @@ export const pressArticle = (article: ArticleLike): NewsArticleSchema => {
     ...(article.subtitle ? { description: article.subtitle } : {}),
     ...(clipping ? { image: absoluteUrl(clipping.url) } : {}),
     ...(FULL_DATE.test(article.date) ? { datePublished: article.date } : {}),
-    ...(publisher ? { author: { "@type": "Organization" as const, name: publisher } } : {}),
+    /* The paper published the clipping; it did not sign it. No byline is
+       recorded anywhere in the data, so nothing is published as `author`. */
+    ...(publisher ? { publisher: { "@type": "Organization" as const, name: publisher } } : {}),
   };
 };
 
@@ -363,16 +370,19 @@ export interface PersonSchema {
   name: string;
   image: string;
   url: string;
-  memberOf: { "@type": "MusicGroup"; name: string; url: string };
   description?: string;
 }
 
 /**
  * An interpreter's page as a `Person` (CPMB-18) — "Benoît Dubu chef de
  * chœur" is a plausible search, and the page already carries a name, a
- * portrait and a biography for it. `memberOf` is the same minimal
- * `MusicGroup` reference a `MusicEvent`'s `performer` carries, not the full
- * `choirOrganization()` entity, which has no place repeated on every page.
+ * portrait and a biography for it.
+ *
+ * No `memberOf`: of the three people profiled, one directs the choir and two
+ * are instrumentalists who play with it, and `artists.json` says nothing
+ * about the difference — the presentation page carries it, in its headings.
+ * Declaring them all members would state an affiliation two of them never
+ * claimed. The day the data names the relation, this is where it goes.
  */
 export const personSchema = (slug: string, artist: ArtistLike): PersonSchema => ({
   "@context": "https://schema.org",
@@ -380,6 +390,5 @@ export const personSchema = (slug: string, artist: ArtistLike): PersonSchema => 
   name: artist.name,
   image: absoluteUrl(artist.media),
   url: artistUrl(slug),
-  memberOf: CHOIR,
   ...(artist.text[0] ? { description: truncateAtWord(artist.text[0], META_DESCRIPTION_LENGTH) } : {}),
 });

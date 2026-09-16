@@ -284,11 +284,14 @@ describe("breadcrumb", () => {
 });
 
 describe("concertList", () => {
-  it("should list every performance of every given concert as an event", () => {
-    const twoNights = concertOf("concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais");
-    const oneNight = concertOf("concert-de-noel-22-decembre-2024-gaillard");
+  const twoNights = concertOf("concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais");
+  const oneNight = concertOf("concert-de-noel-22-decembre-2024-gaillard");
 
-    const list = concertList([twoNights, oneNight]);
+  /* A day when both concerts are still ahead. */
+  const BEFORE = new Date("2024-01-01T12:00:00Z").getTime();
+
+  it("should list every performance still ahead as an event", () => {
+    const list = concertList([twoNights, oneNight], BEFORE);
 
     expect(list["@type"]).toBe("ItemList");
     expect(list.itemListElement).toHaveLength(concertEvents(twoNights).length + concertEvents(oneNight).length);
@@ -296,8 +299,19 @@ describe("concertList", () => {
     expect(list.itemListElement[0].item).toMatchObject({ "@type": "MusicEvent", name: twoNights.title });
   });
 
+  it("should drop the evening a two-night concert has already given", () => {
+    /* Between the two performances of June 2025: the concert is still on the
+       agenda, the evening of the 14th is not. */
+    const between = new Date("2025-06-15T08:00:00Z").getTime();
+
+    const list = concertList([twoNights], between);
+
+    expect(list.itemListElement.map((item) => item.item.startDate)).toEqual(["2025-06-15T18:00:00+02:00"]);
+    expect(list.itemListElement.map((item) => item.position)).toEqual([1]);
+  });
+
   it("should describe an empty agenda as an empty list", () => {
-    expect(concertList([]).itemListElement).toEqual([]);
+    expect(concertList([], BEFORE).itemListElement).toEqual([]);
   });
 });
 
@@ -319,7 +333,7 @@ describe("pressArticle", () => {
       datePublished: "2026-12-13",
       description: base.subtitle,
       image: "https://choeurdespaysdumontblanc.fr/articles/un-concert-salue-par-le-public.jpg",
-      author: { "@type": "Organization", name: "Le Dauphiné Libéré" },
+      publisher: { "@type": "Organization", name: "Le Dauphiné Libéré" },
     });
   });
 
@@ -327,18 +341,27 @@ describe("pressArticle", () => {
     expect(pressArticle({ ...base, date: "2026-12" })).not.toHaveProperty("datePublished");
   });
 
-  it("should leave image and author out when the data carries neither", () => {
+  it("should name the paper as the publisher, never as the author", () => {
+    const article = pressArticle({ ...base, date: "2026-12-13" });
+
+    /* "Le Dauphiné Libéré" published the clipping; the data records no
+       byline, so nothing claims to be its author. */
+    expect(article).not.toHaveProperty("author");
+    expect(article.publisher).toEqual({ "@type": "Organization", name: "Le Dauphiné Libéré" });
+  });
+
+  it("should leave image and publisher out when the data carries neither", () => {
     const bare = { ...base, publication: undefined, media: [], date: "2026-12-13" };
 
     const article = pressArticle(bare);
 
     expect(article).not.toHaveProperty("image");
-    expect(article).not.toHaveProperty("author");
+    expect(article).not.toHaveProperty("publisher");
   });
 });
 
 describe("personSchema", () => {
-  it("should describe an interpreter as a person, a member of the choir", () => {
+  it("should describe an interpreter as a person, and claim nothing more", () => {
     const artist = {
       name: "Benoît Dubu",
       media: "/media/benoit_dubu.jpg",
@@ -351,11 +374,6 @@ describe("personSchema", () => {
       name: "Benoît Dubu",
       image: "https://choeurdespaysdumontblanc.fr/media/benoit_dubu.jpg",
       url: "https://choeurdespaysdumontblanc.fr/presentation/benoit-dubu",
-      memberOf: {
-        "@type": "MusicGroup",
-        name: "Chœur des Pays du Mont-Blanc",
-        url: "https://choeurdespaysdumontblanc.fr",
-      },
       description: artist.text[0],
     });
   });

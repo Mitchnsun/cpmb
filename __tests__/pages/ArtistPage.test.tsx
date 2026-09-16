@@ -80,10 +80,11 @@ describe("ArtistPage", () => {
     );
     const person = blocks.find((block) => block["@type"] === "Person");
 
-    expect(person).toMatchObject({
-      name: artist.name,
-      memberOf: { "@type": "MusicGroup", name: "Chœur des Pays du Mont-Blanc" },
-    });
+    expect(person).toMatchObject({ name: artist.name });
+
+    /* Two of the three people profiled are instrumentalists who play with
+       the choir, not members of it, and the data says nothing either way. */
+    expect(person).not.toHaveProperty("memberOf");
   });
 
   it("should trail the artist with a breadcrumb from the home page", async () => {

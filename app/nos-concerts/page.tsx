@@ -42,7 +42,7 @@ export default function NosConcerts() {
       {/* The agenda as a list of events (CPMB-18), not only its own fiches:
           this is where a search for a concert lands first. Empty when no
           concert is announced, rather than an empty list. */}
-      {upcoming.length > 0 ? <JsonLd data={concertList(upcoming)} /> : null}
+      {upcoming.length > 0 ? <JsonLd data={concertList(upcoming, now)} /> : null}
 
       <PageBanner overline="Agenda" title="Nos concerts" image={CONCERTS_BANNER} />
       <UpcomingConcerts items={upcoming} />
