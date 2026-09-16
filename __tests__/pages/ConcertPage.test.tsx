@@ -155,9 +155,10 @@ describe("ConcertPage", () => {
     const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
       JSON.parse(node.textContent ?? "{}")
     );
+    const events = blocks.filter((block) => block["@type"] === "MusicEvent");
 
-    expect(blocks).toHaveLength(GLORIA.date.length);
-    expect(blocks[0]).toMatchObject({
+    expect(events).toHaveLength(GLORIA.date.length);
+    expect(events[0]).toMatchObject({
       "@type": "MusicEvent",
       name: GLORIA.title,
       startDate: GLORIA.date[0],
@@ -165,6 +166,21 @@ describe("ConcertPage", () => {
       performer: { "@type": "MusicGroup", name: "Chœur des Pays du Mont-Blanc" },
       location: { "@type": "Place", address: { "@type": "PostalAddress" } },
     });
+  });
+
+  it("should trail the concert with a breadcrumb from the home page", async () => {
+    const { container } = await renderConcert(GLORIA.slug);
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const trail = blocks.find((block) => block["@type"] === "BreadcrumbList");
+
+    expect(trail.itemListElement.map((item: { name: string }) => item.name)).toEqual([
+      "Accueil",
+      "Nos concerts",
+      GLORIA.title,
+    ]);
   });
 
   it("should generate default metadata for non-existent concert", async () => {

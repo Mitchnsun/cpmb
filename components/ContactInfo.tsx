@@ -1,6 +1,6 @@
 import InfoPanel from "@/components/InfoPanel";
 import TextLink from "@/components/TextLink";
-import { CONTACT_EMAIL } from "@/utils/site";
+import { CONTACT_EMAIL, REHEARSAL_PLACE } from "@/utils/site";
 
 /**
  * "Informations pratiques" column of the contact page (CPMB-15): how to
@@ -29,7 +29,7 @@ const ContactInfo = () => (
     <InfoPanel accent="copper">
       <h3 className="mb-1.5 text-lg font-semibold">Répétitions</h3>
       <p className="text-muted text-lg">
-        Espace Louis-Simon, salle Roger Duvanel — Gaillard (74240)
+        {REHEARSAL_PLACE.name} — {REHEARSAL_PLACE.locality} ({REHEARSAL_PLACE.postalCode})
         <br />
         Un vendredi par mois, 19h30 – 22h
         <br />

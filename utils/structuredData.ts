@@ -1,4 +1,17 @@
-import { absoluteUrl, concertUrl, SITE_NAME, SITE_URL } from "@/utils/site";
+import { LOGO, SOCIAL_IMAGE } from "@/assets/contents/medias";
+import { META_DESCRIPTION_LENGTH } from "@/utils/metadata";
+import {
+  absoluteUrl,
+  articleUrl,
+  artistUrl,
+  concertUrl,
+  CONTACT_EMAIL,
+  REHEARSAL_PLACE,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/utils/site";
+import { truncateAtWord } from "@/utils/truncate";
 
 /**
  * schema.org descriptions of a concert (CPMB-18).
@@ -50,6 +63,7 @@ const readMarker = (part: string): { text: string; country?: string } => {
 interface PostalAddress {
   "@type": "PostalAddress";
   addressLocality?: string;
+  postalCode?: string;
   addressCountry?: string;
 }
 
@@ -181,3 +195,191 @@ export const concertEvents = (concert: ConcertLike): MusicEvent[] => {
     ...(concert.media ? { image: absoluteUrl(concert.media) } : {}),
   }));
 };
+
+/**
+ * The choir itself, as an entity rather than a page (CPMB-18) — what feeds
+ * a knowledge panel on a brand search. Everything comes from the site's own
+ * constants, so it can only drift alongside the page it mirrors: the
+ * description is the layout's own Open Graph line, the rehearsal address is
+ * `ContactInfo`'s.
+ *
+ * No `sameAs`: the choir has no social account referenced anywhere in this
+ * repository, and an empty list is honest where a guessed link would not be.
+ */
+export interface ChoirOrganization {
+  "@context": "https://schema.org";
+  "@type": "MusicGroup";
+  name: string;
+  url: string;
+  description: string;
+  foundingDate: string;
+  email: string;
+  logo: string;
+  image: string;
+  areaServed: string[];
+  location: Place;
+}
+
+export const choirOrganization = (): ChoirOrganization => ({
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+  foundingDate: "2005-03",
+  email: CONTACT_EMAIL,
+  logo: absoluteUrl(LOGO.src),
+  image: absoluteUrl(SOCIAL_IMAGE.src),
+  areaServed: ["Haute-Savoie", "Genevois"],
+  location: {
+    "@type": "Place",
+    name: REHEARSAL_PLACE.name,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: REHEARSAL_PLACE.locality,
+      postalCode: REHEARSAL_PLACE.postalCode,
+      addressCountry: REHEARSAL_PLACE.country,
+    },
+  },
+});
+
+/**
+ * A page's place in the site, read by a search engine as a breadcrumb trail
+ * rather than a bare URL (CPMB-18). `items` runs from the home page to the
+ * page itself; callers take their labels from `navigation.ts`, the single
+ * navigation source, so a menu rename cannot leave the trail behind.
+ */
+export interface BreadcrumbItem {
+  name: string;
+  path: string;
+}
+
+export interface BreadcrumbList {
+  "@context": "https://schema.org";
+  "@type": "BreadcrumbList";
+  itemListElement: { "@type": "ListItem"; position: number; name: string; item: string }[];
+}
+
+export const breadcrumb = (items: readonly BreadcrumbItem[]): BreadcrumbList => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, index) => ({
+    "@type": "ListItem" as const,
+    position: index + 1,
+    name: item.name,
+    item: absoluteUrl(item.path),
+  })),
+});
+
+/**
+ * The agenda, as a list of events rather than a page of links (CPMB-18) —
+ * `/nos-concerts` is where a search for "concert chœur Haute-Savoie" lands,
+ * and until now only a concert's own page carried a `MusicEvent`. Built from
+ * `concertEvents()` rather than duplicating it, so the two can never
+ * disagree on how a concert reads as an event.
+ */
+export interface ConcertList {
+  "@context": "https://schema.org";
+  "@type": "ItemList";
+  itemListElement: { "@type": "ListItem"; position: number; item: MusicEvent }[];
+}
+
+export const concertList = (concerts: readonly ConcertLike[]): ConcertList => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: concerts
+    .flatMap((concert) => concertEvents(concert))
+    .map((event, index) => ({ "@type": "ListItem" as const, position: index + 1, item: event })),
+});
+
+/**
+ * What describing a press clipping as a `NewsArticle` takes — a subset of
+ * the shape `articles.json` holds.
+ */
+export interface ArticleLike {
+  title: string;
+  slug: string;
+  /** `YYYY-MM-DD`, or `YYYY-MM` when the paper gives only the month. */
+  date: string;
+  subtitle?: string;
+  publication?: string;
+  media: readonly { url: string; alt: string }[];
+}
+
+const FULL_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+export interface NewsArticleSchema {
+  "@context": "https://schema.org";
+  "@type": "NewsArticle";
+  headline: string;
+  url: string;
+  mainEntityOfPage: string;
+  description?: string;
+  image?: string;
+  datePublished?: string;
+  author?: { "@type": "Organization"; name: string };
+}
+
+/**
+ * A clipping of the press review, as an article a search engine can date and
+ * attribute (CPMB-18). `datePublished` is only published when the day is
+ * known — a month-only date would either be rejected or, worse, read as the
+ * first of the month, a day the paper never printed. The publication's name
+ * is the part of `publication` before its comma ("Le Dauphiné Libéré,
+ * Novembre 2023" → "Le Dauphiné Libéré"), read the same way `parsePlace`
+ * reads a venue from a location line.
+ */
+export const pressArticle = (article: ArticleLike): NewsArticleSchema => {
+  const url = articleUrl(article.slug);
+  const [clipping] = article.media;
+  const publisher = article.publication?.split(",")[0]?.trim();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    url,
+    mainEntityOfPage: url,
+    ...(article.subtitle ? { description: article.subtitle } : {}),
+    ...(clipping ? { image: absoluteUrl(clipping.url) } : {}),
+    ...(FULL_DATE.test(article.date) ? { datePublished: article.date } : {}),
+    ...(publisher ? { author: { "@type": "Organization" as const, name: publisher } } : {}),
+  };
+};
+
+/**
+ * What describing an interpreter as a `Person` takes — a subset of the shape
+ * `artists.json` holds.
+ */
+export interface ArtistLike {
+  name: string;
+  media: string;
+  text: readonly string[];
+}
+
+export interface PersonSchema {
+  "@context": "https://schema.org";
+  "@type": "Person";
+  name: string;
+  image: string;
+  url: string;
+  memberOf: { "@type": "MusicGroup"; name: string; url: string };
+  description?: string;
+}
+
+/**
+ * An interpreter's page as a `Person` (CPMB-18) — "Benoît Dubu chef de
+ * chœur" is a plausible search, and the page already carries a name, a
+ * portrait and a biography for it. `memberOf` is the same minimal
+ * `MusicGroup` reference a `MusicEvent`'s `performer` carries, not the full
+ * `choirOrganization()` entity, which has no place repeated on every page.
+ */
+export const personSchema = (slug: string, artist: ArtistLike): PersonSchema => ({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: artist.name,
+  image: absoluteUrl(artist.media),
+  url: artistUrl(slug),
+  memberOf: CHOIR,
+  ...(artist.text[0] ? { description: truncateAtWord(artist.text[0], META_DESCRIPTION_LENGTH) } : {}),
+});

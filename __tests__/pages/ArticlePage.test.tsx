@@ -78,4 +78,47 @@ describe("ArticlePage", () => {
 
     expect(metadata.title).toBe("Article non trouvé");
   });
+
+  it("should describe itself as a dated, attributed NewsArticle", async () => {
+    const dated = articles.find((article) => /^\d{4}-\d{2}-\d{2}$/.test(article.date))!;
+    const { container } = render(await ArticlePage({ params: Promise.resolve({ slug: dated.slug }) }));
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const article = blocks.find((block) => block["@type"] === "NewsArticle");
+
+    expect(article).toMatchObject({
+      headline: dated.title,
+      datePublished: dated.date,
+      url: `https://choeurdespaysdumontblanc.fr/presse/${dated.slug}`,
+    });
+  });
+
+  it("should leave datePublished out when the paper gives only the month", async () => {
+    const monthOnly = articles.find((article) => /^\d{4}-\d{2}$/.test(article.date))!;
+    const { container } = render(await ArticlePage({ params: Promise.resolve({ slug: monthOnly.slug }) }));
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const article = blocks.find((block) => block["@type"] === "NewsArticle");
+
+    expect(article.datePublished).toBeUndefined();
+  });
+
+  it("should trail the article with a breadcrumb from the home page", async () => {
+    const { container } = render(await ArticlePage({ params: Promise.resolve({ slug: articles[0].slug }) }));
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const trail = blocks.find((block) => block["@type"] === "BreadcrumbList");
+
+    expect(trail.itemListElement.map((item: { name: string }) => item.name)).toEqual([
+      "Accueil",
+      "Presse",
+      articles[0].title,
+    ]);
+  });
 });

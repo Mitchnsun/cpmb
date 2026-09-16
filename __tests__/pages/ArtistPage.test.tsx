@@ -71,4 +71,33 @@ describe("ArtistPage", () => {
 
     expect(metadata.title).toBe("Artiste non trouvé");
   });
+
+  it("should describe itself as a Person, a member of the choir", async () => {
+    const { container } = render(await ArtistPage({ params: Promise.resolve({ artist: SLUG }) }));
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const person = blocks.find((block) => block["@type"] === "Person");
+
+    expect(person).toMatchObject({
+      name: artist.name,
+      memberOf: { "@type": "MusicGroup", name: "Chœur des Pays du Mont-Blanc" },
+    });
+  });
+
+  it("should trail the artist with a breadcrumb from the home page", async () => {
+    const { container } = render(await ArtistPage({ params: Promise.resolve({ artist: SLUG }) }));
+
+    const blocks = [...container.querySelectorAll('script[type="application/ld+json"]')].map((node) =>
+      JSON.parse(node.textContent ?? "{}")
+    );
+    const trail = blocks.find((block) => block["@type"] === "BreadcrumbList");
+
+    expect(trail.itemListElement.map((item: { name: string }) => item.name)).toEqual([
+      "Accueil",
+      "Présentation",
+      artist.name,
+    ]);
+  });
 });

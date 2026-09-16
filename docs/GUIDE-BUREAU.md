@@ -129,11 +129,47 @@ En bas de la page GitHub : **Commit changes**, un court message
 
 Un contrôle automatique se déclenche. En cas d'erreur, GitHub affiche une
 croix rouge ❌ : ouvrir le détail, le message indique le champ fautif. Les
-erreurs les plus fréquentes sont listées au chapitre 7.
+erreurs les plus fréquentes sont listées au chapitre 8.
 
 ---
 
-## 3. L'affiche et son texte alternatif
+## 3. Ajouter un article de presse
+
+Ouvrir `assets/contents/articles.json`, cliquer sur le crayon ✏️, et ajouter
+un bloc **tout en haut de la liste** :
+
+```json
+  {
+    "title": "Un concert salué par le public",
+    "slug": "un-concert-salue-par-le-public",
+    "publication": "Le Dauphiné Libéré, Décembre 2026",
+    "date": "2026-12-13",
+    "subtitle": "Article paru dans le Dauphiné Libéré du 13 décembre 2026 à propos du concert donné le 12 décembre 2026 à l'église Saint-Pierre.",
+    "media": [
+      {
+        "type": "image",
+        "url": "/articles/un-concert-salue-par-le-public.jpg",
+        "width": 894,
+        "height": 1021,
+        "alt": "Article du Dauphiné Libéré Décembre 2026 : un concert salué par le public"
+      }
+    ],
+    "link": "https://www.ledauphine.com/…"
+  },
+```
+
+Le scan de la coupure de presse se dépose dans `public/articles/`, comme
+l'affiche d'un concert (chapitre 2, étape 2).
+
+`date` est la date de parution de l'article, au format `AAAA-MM-JJ` quand le
+journal la donne au jour près ; sinon, le mois seul suffit, au format
+`AAAA-MM` — n'inventez jamais un jour que l'article ne donne pas. Ce champ
+sert à classer la revue de presse et à décrire l'article aux moteurs de
+recherche.
+
+---
+
+## 4. L'affiche et son texte alternatif
 
 Le **texte alternatif** est la phrase lue par un lecteur d'écran, et affichée
 si l'image ne charge pas. Sur les affiches de concert, il est **construit
@@ -152,7 +188,7 @@ ce que montre la photo, pas ce qu'elle illustre.
 
 ---
 
-## 4. Ce qui se passe tout seul quand une date passe
+## 5. Ce qui se passe tout seul quand une date passe
 
 Aucune manipulation n'est nécessaire lorsqu'un concert a eu lieu : **rien
 n'est à déplacer, rien n'est à archiver**. Le site relit les dates et se
@@ -177,7 +213,7 @@ est temps d'ajouter la saison suivante.
 
 ---
 
-## 5. Mettre à jour les partenaires
+## 6. Mettre à jour les partenaires
 
 Les logos du bas de la page d'accueil sont déclarés dans
 `assets/contents/medias.ts`, dans la liste `PARTNER_LOGOS`. Déposer d'abord
@@ -208,7 +244,7 @@ rester, il ne gêne pas.
 
 ---
 
-## 6. Où arrivent les messages du formulaire de contact
+## 7. Où arrivent les messages du formulaire de contact
 
 Le formulaire de la page Contact **n'envoie rien par lui-même** et
 n'enregistre rien : quand le visiteur valide, le site prépare un courriel
@@ -229,7 +265,7 @@ Ce qu'il faut en retenir :
 
 ---
 
-## 7. Vérifier avant de publier
+## 8. Vérifier avant de publier
 
 Un contrôle automatique tourne à chaque modification du contenu. Il vérifie
 que chaque concert a un titre, un identifiant valide et unique, au moins une
@@ -252,11 +288,13 @@ localement avec `yarn validate`.
 
 ---
 
-## 8. Mémo
+## 9. Mémo
 
 - Une fiche = un concert, même s'il est donné plusieurs fois.
 - Les dates sont toujours entre crochets.
 - Le `slug` ne change jamais après publication.
 - Un titre descriptif vaut texte alternatif pour l'affiche.
 - Rien à archiver : le passage d'une date est automatique.
+- Un article de presse porte une `date` de parution — le jour si le journal
+  le donne, le mois seul sinon, jamais un jour inventé.
 - Les messages du formulaire arrivent dans la boîte du bureau, pas sur le site.

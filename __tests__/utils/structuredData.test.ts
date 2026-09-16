@@ -1,6 +1,14 @@
 import concerts from "@/assets/contents/concerts.json";
 import { type Concert } from "@/utils/concerts";
-import { concertEvents, parsePlace } from "@/utils/structuredData";
+import {
+  breadcrumb,
+  choirOrganization,
+  concertEvents,
+  concertList,
+  parsePlace,
+  personSchema,
+  pressArticle,
+} from "@/utils/structuredData";
 
 const concertOf = (slug: string): Concert => concerts.find((concert) => concert.slug === slug)!;
 
@@ -211,5 +219,150 @@ describe("concertEvents", () => {
 
   it("should describe every concert of the data without failing", () => {
     expect(concerts.flatMap((concert) => concertEvents(concert)).length).toBeGreaterThanOrEqual(concerts.length);
+  });
+});
+
+describe("choirOrganization", () => {
+  it("should describe the choir as an entity a knowledge panel can read", () => {
+    expect(choirOrganization()).toEqual({
+      "@context": "https://schema.org",
+      "@type": "MusicGroup",
+      name: "Chœur des Pays du Mont-Blanc",
+      url: "https://choeurdespaysdumontblanc.fr",
+      description: expect.any(String),
+      foundingDate: "2005-03",
+      email: "bureau@choeurdespaysdumontblanc.fr",
+      logo: "https://choeurdespaysdumontblanc.fr/CPMB-logo-blanc.png",
+      image: expect.stringMatching(/^https:\/\/choeurdespaysdumontblanc\.fr\//),
+      areaServed: expect.any(Array),
+      location: {
+        "@type": "Place",
+        name: "Espace Louis-Simon, salle Roger Duvanel",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Gaillard",
+          postalCode: "74240",
+          addressCountry: "FR",
+        },
+      },
+    });
+  });
+
+  it("should carry no sameAs rather than a guessed social account", () => {
+    expect(choirOrganization()).not.toHaveProperty("sameAs");
+  });
+});
+
+describe("breadcrumb", () => {
+  it("should turn a trail of pages into a positioned, absolute list", () => {
+    expect(
+      breadcrumb([
+        { name: "Accueil", path: "/" },
+        { name: "Nos concerts", path: "/nos-concerts" },
+        { name: "Concert de Noël", path: "/nos-concerts/concert-de-noel" },
+      ])
+    ).toEqual({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Accueil", item: "https://choeurdespaysdumontblanc.fr/" },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Nos concerts",
+          item: "https://choeurdespaysdumontblanc.fr/nos-concerts",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "Concert de Noël",
+          item: "https://choeurdespaysdumontblanc.fr/nos-concerts/concert-de-noel",
+        },
+      ],
+    });
+  });
+});
+
+describe("concertList", () => {
+  it("should list every performance of every given concert as an event", () => {
+    const twoNights = concertOf("concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais");
+    const oneNight = concertOf("concert-de-noel-22-decembre-2024-gaillard");
+
+    const list = concertList([twoNights, oneNight]);
+
+    expect(list["@type"]).toBe("ItemList");
+    expect(list.itemListElement).toHaveLength(concertEvents(twoNights).length + concertEvents(oneNight).length);
+    expect(list.itemListElement.map((item) => item.position)).toEqual([1, 2, 3]);
+    expect(list.itemListElement[0].item).toMatchObject({ "@type": "MusicEvent", name: twoNights.title });
+  });
+
+  it("should describe an empty agenda as an empty list", () => {
+    expect(concertList([]).itemListElement).toEqual([]);
+  });
+});
+
+describe("pressArticle", () => {
+  const base = {
+    title: "Un concert salué par le public",
+    slug: "un-concert-salue-par-le-public",
+    publication: "Le Dauphiné Libéré, Décembre 2026",
+    subtitle: "Article paru dans le Dauphiné Libéré.",
+    media: [{ url: "/articles/un-concert-salue-par-le-public.jpg", alt: "Coupure de presse" }],
+  };
+
+  it("should publish the day when the paper gives it", () => {
+    expect(pressArticle({ ...base, date: "2026-12-13" })).toMatchObject({
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      headline: base.title,
+      url: "https://choeurdespaysdumontblanc.fr/presse/un-concert-salue-par-le-public",
+      datePublished: "2026-12-13",
+      description: base.subtitle,
+      image: "https://choeurdespaysdumontblanc.fr/articles/un-concert-salue-par-le-public.jpg",
+      author: { "@type": "Organization", name: "Le Dauphiné Libéré" },
+    });
+  });
+
+  it("should leave datePublished out rather than invent a day the paper never printed", () => {
+    expect(pressArticle({ ...base, date: "2026-12" })).not.toHaveProperty("datePublished");
+  });
+
+  it("should leave image and author out when the data carries neither", () => {
+    const bare = { ...base, publication: undefined, media: [], date: "2026-12-13" };
+
+    const article = pressArticle(bare);
+
+    expect(article).not.toHaveProperty("image");
+    expect(article).not.toHaveProperty("author");
+  });
+});
+
+describe("personSchema", () => {
+  it("should describe an interpreter as a person, a member of the choir", () => {
+    const artist = {
+      name: "Benoît Dubu",
+      media: "/media/benoit_dubu.jpg",
+      text: ["Benoît Dubu découvre le chant choral dès son plus jeune âge."],
+    };
+
+    expect(personSchema("benoit-dubu", artist)).toEqual({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Benoît Dubu",
+      image: "https://choeurdespaysdumontblanc.fr/media/benoit_dubu.jpg",
+      url: "https://choeurdespaysdumontblanc.fr/presentation/benoit-dubu",
+      memberOf: {
+        "@type": "MusicGroup",
+        name: "Chœur des Pays du Mont-Blanc",
+        url: "https://choeurdespaysdumontblanc.fr",
+      },
+      description: artist.text[0],
+    });
+  });
+
+  it("should carry no description when the artist has no text", () => {
+    const artist = { name: "Interprète", media: "/media/x.jpg", text: [] };
+
+    expect(personSchema("interprete", artist)).not.toHaveProperty("description");
   });
 });

@@ -6,7 +6,9 @@ import { Cormorant_Garamond, IBM_Plex_Mono, Source_Sans_3 } from "next/font/goog
 import { SOCIAL_IMAGE } from "@/assets/contents/medias";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { SITE_NAME, SITE_URL } from "@/utils/site";
+import JsonLd from "@/components/JsonLd";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/utils/site";
+import { choirOrganization } from "@/utils/structuredData";
 
 /**
  * `next/font` self-hosts the woff2 files and applies `font-display: swap`
@@ -57,8 +59,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     url: "/",
     title: `${SITE_NAME} — chœur symphonique en Haute-Savoie`,
-    description:
-      "Chœur symphonique de 30 choristes amateurs dirigé par Benoît Dubu, en concert en Haute-Savoie et dans le Genevois.",
+    description: SITE_DESCRIPTION,
     images: [{ url: SOCIAL_IMAGE.src, width: SOCIAL_IMAGE.width, height: SOCIAL_IMAGE.height, alt: SOCIAL_IMAGE.alt }],
   },
   twitter: { card: "summary_large_image" },
@@ -110,6 +111,9 @@ export default function RootLayout({
       className={`${cormorantGaramond.variable} ${sourceSans3.variable} ${ibmPlexMono.variable} scroll-pt-20`}
     >
       <body className="font-body bg-bg text-stage-black flex min-h-screen flex-col text-pretty antialiased">
+        {/* The choir as an entity, not only a page (CPMB-18): once, site-wide,
+            what feeds a knowledge panel on a search for the choir's name. */}
+        <JsonLd data={choirOrganization()} />
         <Header />
         <main id="main-content" className="flex-1">
           {children}
