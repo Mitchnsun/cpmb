@@ -15,7 +15,7 @@ const ContactInfo = () => (
 
     <h3 className="mb-1.5 text-lg font-semibold">Adresse e-mail</h3>
     <p className="mb-7 text-lg">
-      <TextLink href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
+      <TextLink touch href={`mailto:${CONTACT_EMAIL}`} className="wrap-anywhere">
         {CONTACT_EMAIL}
       </TextLink>
     </p>

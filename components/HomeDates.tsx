@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { TOUCH_TARGET } from "@/components/TextLink";
 import { cn } from "@/utils/classnames";
 import { type Concert } from "@/utils/concerts";
 import { formatFrenchDateList } from "@/utils/formatDate";
@@ -28,7 +29,7 @@ const HomeDates = ({ items, upcoming }: HomeDatesProps) => {
         <h2 id="home-dates" className="font-display text-3xl font-semibold">
           {upcoming ? "Trois prochaines dates" : "Retour sur les dernières saisons"}
         </h2>
-        <Link href="/nos-concerts" className="border-b border-current text-lg">
+        <Link href="/nos-concerts" className={`border-b border-current text-lg ${TOUCH_TARGET}`}>
           Tous les concerts
         </Link>
       </div>

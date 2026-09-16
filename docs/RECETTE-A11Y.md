@@ -29,7 +29,8 @@ navigateur et rejoue la recette à la demande :
 - **tags** `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` et
   `best-practice` (cette dernière apporte les règles de structure : hiérarchie
   des titres, points de repère, `main` unique) ;
-- **contrôles maison** en plus d'axe : défilement horizontal, unicité du `h1`,
+- **contrôles maison** en plus d'axe : taille réelle des cibles tactiles
+  (44 px, mesurée par pointage), défilement horizontal, unicité du `h1`,
   niveaux de titre sautés, animations encore actives sous
   `prefers-reduced-motion`, balayage clavier jusqu'à la sortie de la page et
   détection des boucles de focus, piège de focus du menu mobile, unicité des
@@ -105,9 +106,36 @@ quand le titre est long : 5,42:1 dans le pire cas, au-dessus des 4,5:1 exigés
 
 ### Cibles tactiles ≥ 44 px, boutons ≥ 48 px
 
-Règle `target-size` (WCAG 2.2 AA) sans violation aux 4 largeurs. Le
-`ButtonLink` de la charte impose `min-h-12` (48 px) et le bouton du menu
-mobile `size-11` (44 px). ✅
+La règle `target-size` d'axe ne suffit pas ici : WCAG 2.2 exige 24 px, la
+charte 44. Une première version de cette recette s'appuyait sur elle et
+concluait à tort ; le contrôle est désormais explicite, et il mesure la
+**zone atteinte par le doigt**, pas la boîte CSS — un lien peut être agrandi
+par du remplissage, par une boîte plus haute ou par un calque, et seule une
+mesure par pointage les couvre toutes : depuis le centre du contrôle, le
+point 22 px au-dessus et celui 22 px en dessous doivent encore l'atteindre.
+
+Ce contrôle a trouvé une cinquantaine de liens autonomes entre 23 et 30 px —
+plan du site et partenaires du pied de page, liste de la revue de presse,
+liens « Voir le concert » de l'accordéon, « Tous les concerts », lien de
+retour des bandeaux, adresse e-mail. Tous corrigés : `TOUCH_TARGET`
+(`components/TextLink.tsx`) pose un calque de 44 px centré sur le lien.
+
+Le calque plutôt qu'une boîte plus haute, parce que le soulignement de la
+charte est un `border-bottom` : grandir la boîte l'aurait décollé du texte.
+Le lien garde donc sa taille, son rythme et son trait ; seul le doigt gagne
+la hauteur. Deux conséquences assumées, visibles : l'écart des colonnes du
+pied de page passe de 10 à 16 px et celui de la liste de presse de 12 à
+20 px, faute de quoi deux cibles voisines se chevaucheraient et un appui près
+du bord atteindrait le mauvais lien.
+
+Exceptions, comme WCAG 2.2 les prévoit (2.5.8) : un lien à l'intérieur d'une
+phrase, dont la taille est fixée par le texte qui l'entoure — l'agrandir
+recouvrirait ce texte. Le `ButtonLink` de la charte (48 px) et le bouton du
+menu mobile (44 px) satisfaisaient déjà leur seuil.
+
+Vérifié aussi dans l'autre sens : le contrôle neutralisé sur la page Presse,
+20 cibles trop petites réapparaissent immédiatement — il ne passe pas à côté
+de ce qu'il prétend mesurer. ✅
 
 ### Navigation clavier, focus visible, aucun piège
 

@@ -130,6 +130,20 @@ const AXE_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-
 /** An anomaly at these levels blocks the release. */
 const BLOCKING_IMPACTS = new Set(["serious", "critical"]);
 
+/**
+ * Touch target the epic asks for, in CSS pixels. axe only enforces WCAG 2.2's
+ * 24px, so a page can pass `target-size` and still miss the charter by 20px:
+ * this is checked here instead.
+ */
+const TARGET_SIZE = 44;
+
+/** And the charter's primary button — `ButtonLink`, `min-h-12` — taller still. */
+const BUTTON_SIZE = 48;
+
+/** Everything a finger or a Tab can reach. */
+const INTERACTIVE =
+  'a[href], button, input:not([type="hidden"]), select, textarea, summary, [tabindex]:not([tabindex="-1"])';
+
 const findings = [];
 
 /** Page titles, checked against each other once every page is walked. */
@@ -177,6 +191,67 @@ const runningAnimations = (page) =>
       .slice(0, 5)
   );
 
+/**
+ * Interactive elements whose tappable area is shorter than the charter asks.
+ *
+ * The CSS box is not the answer: a target may be enlarged by padding, by a
+ * taller flex box, or — where an underline has to stay against its text — by
+ * an overlay that the box does not report. So the area is hit-tested: from
+ * the middle of the control, does the point 22px above and the point 22px
+ * below still reach it? That is what a finger asks.
+ *
+ * A link inside a sentence is exempt, as WCAG 2.2 exempts it: its size is
+ * set by the text around it, and enlarging it would cover that text.
+ */
+const smallTargets = (page) =>
+  page.evaluate(
+    ({ selector, target, button }) => {
+      const reaches = (node, x, y) => {
+        const hit = document.elementFromPoint(x, y);
+        return Boolean(hit) && (hit === node || node.contains(hit) || hit.closest(selector) === node);
+      };
+
+      return [...document.querySelectorAll(selector)]
+        .filter((node) => node.getBoundingClientRect().width > 0)
+        .filter((node) => {
+          const parent = node.parentElement;
+          const style = getComputedStyle(node);
+          /* Inline, and sharing its line with text that is not a link. */
+          const inSentence =
+            style.display.startsWith("inline") &&
+            Boolean(parent) &&
+            [...parent.childNodes].some((child) => child.nodeType === 3 && child.textContent.trim() !== "");
+
+          return !inSentence;
+        })
+        .map((node) => {
+          node.scrollIntoView({ block: "center" });
+          const box = node.getBoundingClientRect();
+
+          /* The charter's own call to action asks for more than a link does. */
+          const wanted = /\bmin-h-12\b/.test(String(node.className ?? "")) ? button : target;
+          const name = `${node.tagName.toLowerCase()} « ${(node.getAttribute("aria-label") ?? node.textContent ?? "").trim().slice(0, 40)} »`;
+
+          /* Tall enough on its own — including a link wrapped over two lines,
+             whose fragments no single point can stand for. */
+          if (box.height >= wanted) return { name, wanted, reached: true };
+
+          const x = Math.round(box.left + box.width / 2);
+          const y = Math.round(box.top + box.height / 2);
+          const reach = Math.floor(wanted / 2) - 1;
+
+          /* A control the finger cannot reach at all is not a small target:
+             it is a hidden one. The closed seasons of the agenda stay in the
+             page, clipped by their accordion, and keep a full-size box. */
+          if (!reaches(node, x, y)) return { name, wanted, reached: true };
+
+          return { name, wanted, reached: reaches(node, x, y - reach) && reaches(node, x, y + reach) };
+        })
+        .filter((entry) => !entry.reached);
+    },
+    { selector: INTERACTIVE, target: TARGET_SIZE, button: BUTTON_SIZE }
+  );
+
 const auditViewport = async (page, route, viewport) => {
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
   await open(page, route.path);
@@ -191,6 +266,17 @@ const auditViewport = async (page, route, viewport) => {
       impact: violation.impact,
       blocking: BLOCKING_IMPACTS.has(violation.impact),
       detail: `${violation.help} (${violation.nodes.length}) — ${violation.nodes[0]?.target?.join(" ") ?? ""}`,
+    });
+  });
+
+  (await smallTargets(page)).forEach((entry) => {
+    record({
+      route: route.path,
+      viewport: viewport.name,
+      rule: "cible-tactile-trop-petite",
+      impact: "serious",
+      blocking: true,
+      detail: `${entry.name} n'atteint pas ${entry.wanted}px de haut`,
     });
   });
 

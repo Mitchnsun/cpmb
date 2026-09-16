@@ -5,6 +5,22 @@ import { AnchorHTMLAttributes, PropsWithChildren } from "react";
 import { cn } from "@/utils/classnames";
 
 /**
+ * A 44px-tall touch target, centred on the link and reaching past it.
+ *
+ * The charter asks for 44px, and a line of 18px text is 26. Growing the box
+ * itself would drag the `border-bottom` underline away from the text, so the
+ * target is an overlay instead: the link keeps its size, its rhythm and its
+ * underline, and the finger gets the height. A list of such links needs a
+ * gap of at least 16px, or neighbouring targets overlap and a tap near the
+ * edge reaches the wrong one.
+ *
+ * Only for a link standing on its own. A link inside a sentence is exempt
+ * (WCAG 2.2, 2.5.8) and an overlay there would cover the text above it.
+ */
+export const TOUCH_TARGET =
+  "relative after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']";
+
+/**
  * The charter's text link: an underline drawn with `border-bottom` rather
  * than `text-decoration`, so it sits a little lower and keeps its colour.
  *
@@ -20,8 +36,10 @@ export const textLinkVariants = cva("border-b border-current no-underline", {
       /** On stage black. */
       onDark: "text-teal-light hover:text-copper-light",
     },
+    /** `true` for a link on a line of its own: see `TOUCH_TARGET`. */
+    touch: { true: TOUCH_TARGET, false: "" },
   },
-  defaultVariants: { tone: "onLight" },
+  defaultVariants: { tone: "onLight", touch: false },
 });
 
 interface TextLinkProps
@@ -39,8 +57,8 @@ interface TextLinkProps
  */
 const isRoute = (href: string) => href.startsWith("/");
 
-const TextLink = ({ href, tone, className, children, ...htmlProps }: TextLinkProps) => {
-  const classes = cn(textLinkVariants({ tone }), className);
+const TextLink = ({ href, tone, touch, className, children, ...htmlProps }: TextLinkProps) => {
+  const classes = cn(textLinkVariants({ tone, touch }), className);
 
   if (isRoute(href)) {
     return (

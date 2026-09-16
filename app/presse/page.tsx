@@ -23,10 +23,12 @@ export default function Presse() {
         <Article hLevel={2} {...latest} />
 
         <h2 className="font-display border-teal mt-12 mb-6 border-b-2 pb-3 text-3xl font-semibold">Autres articles</h2>
-        <ul className="grid gap-3">
+        <ul className="grid gap-5">
           {rest.map((article) => (
             <li key={article.slug} className="text-lg">
-              <TextLink href={`/presse/${article.slug}`}>{article.title}</TextLink>
+              <TextLink touch href={`/presse/${article.slug}`}>
+                {article.title}
+              </TextLink>
             </li>
           ))}
         </ul>

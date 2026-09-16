@@ -41,7 +41,7 @@ const Article = ({ fullDisplay, hLevel = 1, link, media, publication, subtitle, 
 
       {link ? (
         <p className="mt-3">
-          <TextLink href={link} target="_blank" rel="noopener noreferrer">
+          <TextLink touch href={link} target="_blank" rel="noopener noreferrer">
             Retrouver l&apos;article sur le site du journal
           </TextLink>
         </p>

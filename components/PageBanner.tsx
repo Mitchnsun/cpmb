@@ -58,7 +58,7 @@ const PageBanner = ({ overline, title, image, backLink }: PageBannerProps) => (
 
     <div className={cn("max-w-site relative mx-auto px-6 pb-14", image ? "pt-16" : "pt-10")}>
       {backLink ? (
-        <TextLink href={backLink.href} tone="onDark" className="mb-7 inline-block text-lg">
+        <TextLink touch href={backLink.href} tone="onDark" className="mb-7 inline-block text-lg">
           {backLink.label}
         </TextLink>
       ) : null}
