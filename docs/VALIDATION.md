@@ -6,7 +6,7 @@ This project includes a comprehensive data validation system for concerts data t
 
 The validation system checks:
 
-- **Structure Validation**: Required fields (title, slug, date, location, media) and optional fields (description, programme, performers)
+- **Structure Validation**: Required fields (title, slug, date, location) and optional fields (description, media, programme, performers)
 - **Unique Constraints**: Ensures all concert slugs are unique
 - **Data Format**: Validates slug format (URL-friendly), date format (ISO), and field types
 - **Asset Existence**: Verifies that all referenced media files exist in the public directory
@@ -36,7 +36,7 @@ yarn validate
 ✅ All concerts data is valid!
 
 📊 Validation Summary:
-   • Total concerts: 24
+   • Total concerts: 27
    • All required fields present: ✅
    • All slugs unique: ✅
    • All media files exist: ✅
@@ -73,15 +73,19 @@ yarn validate
 | `slug`     | string | URL-friendly format (`a-z`, `0-9`, `-` only) |
 | `date`     | array  | Array of valid ISO date strings              |
 | `location` | string | Non-empty string                             |
-| `media`    | string | Path to existing media file                  |
 
 ### Optional Fields
 
-| Field         | Type   | Rules                                  |
-| ------------- | ------ | -------------------------------------- |
-| `description` | string | String if provided                     |
-| `programme`   | array  | Array of non-empty strings if provided |
-| `performers`  | array  | Array of non-empty strings if provided |
+| Field         | Type   | Rules                                       |
+| ------------- | ------ | ------------------------------------------- |
+| `description` | string | String if provided                          |
+| `media`       | string | Path to an existing media file, if provided |
+| `programme`   | array  | Array of non-empty strings if provided      |
+| `performers`  | array  | Array of non-empty strings if provided      |
+
+> `media` is optional: some concerts were never given a poster, and the pages
+> render without one. A declared poster must still resolve to a real file
+> under `public/`.
 
 ### Examples
 

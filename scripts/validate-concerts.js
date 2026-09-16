@@ -94,6 +94,19 @@ function validateOptionalFields(concert, index, errors) {
     });
   }
 
+  /*
+   * A concert may have no poster: some of them were never given one, and the
+   * pages already render without it. When one is declared it still has to
+   * resolve to a real file (see validateMediaAssets).
+   */
+  if (concert.media !== undefined && (typeof concert.media !== "string" || concert.media.trim() === "")) {
+    errors.push({
+      field: `concert[${index}].media`,
+      message: "Media must be a non-empty string if provided",
+      value: concert.media,
+    });
+  }
+
   validateOptionalStringArray(concert, "programme", index, errors);
   validateOptionalStringArray(concert, "performers", index, errors);
 }
@@ -114,7 +127,6 @@ function validateConcert(concert, index) {
   validateSlugField(concert, index, errors);
   validateDateField(concert, index, errors);
   validateRequiredStringField(concert, "location", index, errors);
-  validateRequiredStringField(concert, "media", index, errors);
 
   // Validate optional fields
   validateOptionalFields(concert, index, errors);

@@ -5,7 +5,7 @@ import ConcertPage, { generateMetadata, generateStaticParams, revalidate } from 
 import concerts from "@/assets/contents/concerts.json";
 
 /** The concert given twice in June 2025, the reference of CPMB-14. */
-const GLORIA = concerts[0];
+const GLORIA = concerts.find((c) => c.slug === "concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais")!;
 
 /** A day when every concert of the data is behind us. */
 const AFTER_EVERYTHING = new Date("2026-09-15T12:00:00Z");
@@ -120,7 +120,7 @@ describe("ConcertPage", () => {
     const params = await generateStaticParams();
 
     expect(params).toHaveLength(concerts.length);
-    expect(params[0]).toEqual({ slug: GLORIA.slug });
+    expect(params).toContainEqual({ slug: GLORIA.slug });
   });
 
   it("should generate metadata for existing concert", async () => {

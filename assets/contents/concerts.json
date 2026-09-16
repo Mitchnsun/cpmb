@@ -1,9 +1,31 @@
 [
   {
+    "title": "Concert autour de la Misa Criolla, 7 et 28 juin 2026, Vongy et Boëge",
+    "slug": "concert-autour-de-la-misa-criolla-7-et-28-juin-2026-vongy-et-boege",
+    "date": ["2026-06-07", "2026-06-28"],
+    "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu et accompagné par des instrumentistes et des solistes professionnels, a proposé un concert autour de la « Misa Criolla » les 7 et 28 juin 2026 à Vongy et à Boëge.",
+    "location": "Vongy et Boëge, France"
+  },
+  {
+    "title": "Concert de Noël, 12 décembre 2025, Vétraz-Monthoux",
+    "slug": "concert-de-noel-12-decembre-2025-vetraz-monthoux",
+    "date": ["2025-12-12"],
+    "description": "Le Chœur des Pays du Mont-Blanc a eu le plaisir de proposer le 12 décembre 2025 un concert de Noël à l'église de Vétraz-Monthoux, à l'occasion de l'ouverture du marché de Noël.",
+    "location": "Église de Vétraz-Monthoux, France"
+  },
+  {
+    "title": "Concert Gloria, 16 novembre 2025, Gaillard",
+    "slug": "concert-gloria-16-novembre-2025-gaillard",
+    "date": ["2025-11-16"],
+    "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu et accompagné par huit instrumentistes et deux solistes professionnels, a eu le plaisir de proposer le 16 novembre 2025 à l'Espace Louis Simon de Gaillard un concert avec au programme le « Gloria » de Vivaldi et le « Gloria » de Jenkins.",
+    "location": "Espace Louis Simon, Gaillard, France",
+    "programme": ["Gloria — Antonio Vivaldi", "Gloria — Karl Jenkins"]
+  },
+  {
     "title": "Concert Vivaldi Jenkins, 14 et 15 juin 2025, Boëge et Saint Gervais",
     "slug": "concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais",
     "date": ["2025-06-14T20:30:00+02:00", "2025-06-15T18:00:00+02:00"],
-    "description": "Le Choeur des Pays du Mont Blanc, dirigé par Benoît Dubu, aura le plaisir de vous proposer un concert avec au programme, le Gloria de Vivaldi, des extraits du Gloria de Jenkins. et deux magnifiques pièces de Brahms.\n\nPour l'occasion, le choeur sera accompagné par des solistes et un pianiste professionnels.",
+    "description": "Le Chœur des Pays du Mont-Blanc, dirigé par Benoît Dubu, a eu le plaisir de proposer un concert avec au programme le Gloria de Vivaldi, des extraits du Gloria de Jenkins et deux magnifiques pièces de Brahms.\n\nPour l'occasion, le chœur était accompagné par des solistes et un pianiste professionnels.",
     "location": "Boëge et Saint-Gervais-les-Bains, France",
     "media": "/concerts/affiche-concert-vivaldi-jenkins-14-et-15-juin-2025-boege-et-saint-gervais.jpg",
     "programme": [
