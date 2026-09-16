@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { type SiteImage, SOCIAL_IMAGE } from "@/assets/contents/medias";
+import { SOCIAL_IMAGE } from "@/assets/contents/medias";
 import { SITE_NAME } from "@/utils/site";
 
 /**
@@ -22,6 +22,22 @@ import { SITE_NAME } from "@/utils/site";
  */
 export const META_DESCRIPTION_LENGTH = 155;
 
+/**
+ * Image of a social card. Its dimensions are a hint, and an optional one:
+ * a concert poster is whatever file the bureau dropped in `public/concerts/`
+ * — most are A4 portrait, three are landscape — so nothing here can state
+ * its shape. Declaring a wrong one is worse than declaring none: the card
+ * would reserve a portrait box for a landscape photo. The visuals of
+ * `medias.ts` and of the press clippings do carry their true size, checked
+ * against the file itself by their own tests.
+ */
+export interface SocialImage {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
 export interface PageMetadataOptions {
   /** Short title of the page; the layout appends the choir's name. */
   title: string;
@@ -29,7 +45,7 @@ export interface PageMetadataOptions {
   /** Path of the page, from the root: "/nos-concerts". */
   path: string;
   /** Image of the social card. The choir's photo when the page has none. */
-  image?: SiteImage;
+  image?: SocialImage;
   keywords?: string[];
   /** An article — a concert, a press clipping — rather than a section. */
   type?: "website" | "article";
@@ -54,6 +70,12 @@ export const pageMetadata = ({
     url: path,
     title: `${title} | ${SITE_NAME}`,
     description,
-    images: [{ url: image.src, width: image.width, height: image.height, alt: image.alt }],
+    images: [
+      {
+        url: image.src,
+        alt: image.alt,
+        ...(image.width && image.height ? { width: image.width, height: image.height } : {}),
+      },
+    ],
   },
 });

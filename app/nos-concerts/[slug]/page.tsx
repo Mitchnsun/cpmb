@@ -163,10 +163,10 @@ export async function generateMetadata({ params }: ConcertPageProps): Promise<Me
     /* A description is a summary: the full text of a concert runs long. */
     description: concert.description ? truncateAtWord(concert.description, META_DESCRIPTION_LENGTH) : concert.title,
     path: concertPath(concert.slug),
-    /* The poster is the concert's own image; without one, the agenda's. */
-    image: concert.media
-      ? { src: concert.media, alt: posterAlt(concert.title), width: 1080, height: 1500 }
-      : CONCERTS_BANNER,
+    /* The poster is the concert's own image; without one, the agenda's. No
+       dimensions: a poster is whatever file was dropped in `public/concerts/`
+       and the shapes differ from one to the next. */
+    image: concert.media ? { src: concert.media, alt: posterAlt(concert.title) } : CONCERTS_BANNER,
     type: "article",
   });
 }

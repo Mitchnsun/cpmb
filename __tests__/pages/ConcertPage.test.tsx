@@ -133,12 +133,12 @@ describe("ConcertPage", () => {
     expect(metadata.alternates?.canonical).toBe(`/nos-concerts/${GLORIA.slug}`);
   });
 
-  it("should share the poster as the social card", async () => {
+  it("should share the poster as the social card, without claiming a shape", async () => {
     const metadata = await generateMetadata({ params: Promise.resolve({ slug: GLORIA.slug }) });
 
-    expect(metadata.openGraph?.images).toEqual([
-      expect.objectContaining({ url: GLORIA.media, alt: `Affiche du concert : ${GLORIA.title}` }),
-    ]);
+    /* Posters are whatever file was dropped in public/concerts/: most are
+       portrait, a few are landscape. No declared size beats a wrong one. */
+    expect(metadata.openGraph?.images).toEqual([{ url: GLORIA.media, alt: `Affiche du concert : ${GLORIA.title}` }]);
   });
 
   it("should fall back to the agenda's photo when the concert has no poster", async () => {

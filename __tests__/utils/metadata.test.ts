@@ -35,6 +35,12 @@ describe("pageMetadata", () => {
     expect(pageMetadata({ ...BASE, type: "article" }).openGraph).toMatchObject({ type: "article" });
   });
 
+  it("should leave out the dimensions of an image whose shape is unknown", () => {
+    const metadata = pageMetadata({ ...BASE, image: { src: "/concerts/affiche.jpg", alt: "Affiche" } });
+
+    expect(metadata.openGraph?.images).toEqual([{ url: "/concerts/affiche.jpg", alt: "Affiche" }]);
+  });
+
   it("should only declare keywords when the page gives some", () => {
     expect(pageMetadata(BASE).keywords).toBeUndefined();
     expect(pageMetadata({ ...BASE, keywords: ["chœur"] }).keywords).toEqual(["chœur"]);
