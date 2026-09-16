@@ -14,6 +14,23 @@ import { absoluteUrl, concertUrl, SITE_NAME, SITE_URL } from "@/utils/site";
 /** Countries the choir sings in, and their code. */
 const COUNTRY_CODES: Readonly<Record<string, string>> = { France: "FR", Suisse: "CH" };
 
+/**
+ * The other way the data names a country: a marker in brackets, used when a
+ * single line spans the border — "Genève (CH) et Église de Gaillard (F)".
+ */
+const COUNTRY_MARKERS: Readonly<Record<string, string>> = { CH: "CH", F: "FR", FR: "FR", CHE: "CH", FRA: "FR" };
+
+const MARKER = /\s*\((CH|CHE|F|FR|FRA)\)\s*$/i;
+
+/** Country marked in brackets at the end of a fragment, and that fragment without it. */
+const readMarker = (part: string): { text: string; country?: string } => {
+  const found = MARKER.exec(part);
+
+  return found
+    ? { text: part.slice(0, found.index).trim(), country: COUNTRY_MARKERS[found[1].toUpperCase()] }
+    : { text: part };
+};
+
 interface PostalAddress {
   "@type": "PostalAddress";
   addressLocality?: string;
@@ -54,6 +71,8 @@ export interface MusicEvent {
  * its own; otherwise the place keeps its name and the address carries the
  * country alone, rather than a church published as a municipality.
  *
+ * The country is read either as a word of its own at the end of the line, or
+ * as the bracketed marker that a cross-border line carries on each side;
  * `fallbackCountry` lets a venue inherit the country written once at the end
  * of a two-venue line.
  */
@@ -64,9 +83,15 @@ export const parsePlace = (location: string, fallbackCountry?: string): Place =>
     .filter(Boolean);
 
   const last = parts.at(-1) ?? "";
-  const own = COUNTRY_CODES[last];
+  const spelled = COUNTRY_CODES[last];
+
+  /* A spelled-out country is a part of its own and drops out; a bracketed
+     marker sits on the town or the venue and is only stripped from it. */
+  const marked = spelled ? { text: last, country: undefined } : readMarker(last);
+  const own = spelled ?? marked.country;
   const country = own ?? fallbackCountry;
-  const rest = own ? parts.slice(0, -1) : parts;
+
+  const rest = spelled ? parts.slice(0, -1) : [...parts.slice(0, -1), marked.text].filter(Boolean);
 
   /* Two parts or more: the last is the town, what precedes it the venue. */
   const locality = rest.length > 1 ? rest.at(-1) : undefined;

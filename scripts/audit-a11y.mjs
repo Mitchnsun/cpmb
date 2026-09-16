@@ -14,9 +14,15 @@
  *   yarn build && yarn start &      # or any server on AUDIT_URL
  *   yarn audit:a11y
  *
+ * Usage, in full, from a fresh checkout:
+ *   yarn install
+ *   yarn audit:a11y:setup          # downloads Chromium, once per machine
+ *   yarn build && yarn start &
+ *   yarn audit:a11y
+ *
  * Environment:
  *   AUDIT_URL       base address to audit (default http://127.0.0.1:3000)
- *   CHROMIUM_PATH   browser binary, when Playwright's own is not installed
+ *   CHROMIUM_PATH   browser binary, for a machine that already has one
  *   AUDIT_JSON      path to write the full report to, as JSON
  */
 
@@ -80,13 +86,25 @@ const json = (file) => JSON.parse(readFileSync(new URL(`../assets/contents/${fil
 const concerts = json("concerts.json");
 const articles = json("articles.json");
 
+/**
+ * The concert page is one template with optional halves — a poster, a
+ * programme, a cast — and a concert carrying none of them exercises none of
+ * them. Both ends of the template are walked: whichever concert has
+ * everything, and whichever has nothing but the required fields.
+ */
+const complete = concerts.find((concert) => concert.media && concert.programme && concert.performers);
+const bare = concerts.find((concert) => !concert.media && !concert.programme && !concert.performers);
+
 /** One page of each kind, plus the two the visitor reaches by accident. */
 const ROUTES = [
   { path: "/", name: "Accueil" },
   { path: "/presentation", name: "Présentation" },
   { path: "/presentation/benoit-dubu", name: "Fiche artiste" },
   { path: "/nos-concerts", name: "Nos concerts" },
-  { path: `/nos-concerts/${concerts[0].slug}`, name: "Fiche concert" },
+  ...(complete
+    ? [{ path: `/nos-concerts/${complete.slug}`, name: "Fiche concert (affiche, programme, distribution)" }]
+    : []),
+  ...(bare ? [{ path: `/nos-concerts/${bare.slug}`, name: "Fiche concert (sans affiche ni programme)" }] : []),
   { path: "/presse", name: "Presse" },
   { path: `/presse/${articles[0].slug}`, name: "Article de presse" },
   { path: "/contact", name: "Contact" },
@@ -386,10 +404,30 @@ const auditReducedMotion = async (context, route) => {
   await page.close();
 };
 
+/**
+ * Installing the `playwright` package does not download a browser: that is a
+ * separate step, and a missing binary otherwise fails with a stack trace
+ * rather than with the one command that fixes it.
+ */
+const launch = async () => {
+  try {
+    return await chromium.launch({
+      ...(env.CHROMIUM_PATH ? { executablePath: env.CHROMIUM_PATH } : {}),
+    });
+  } catch (error) {
+    if (!/executable doesn't exist|ENOENT/i.test(String(error))) throw error;
+
+    console.error(
+      "Chromium est introuvable. Installez-le une fois avec :\n" +
+        "  yarn audit:a11y:setup\n" +
+        "ou désignez un binaire existant avec CHROMIUM_PATH=/chemin/vers/chromium."
+    );
+    exit(1);
+  }
+};
+
 const run = async () => {
-  const browser = await chromium.launch({
-    ...(env.CHROMIUM_PATH ? { executablePath: env.CHROMIUM_PATH } : {}),
-  });
+  const browser = await launch();
 
   for (const route of ROUTES) {
     console.log(`\n${route.name} — ${route.path}`);

@@ -20,6 +20,7 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "test:ci": "vitest run --reporter=default",
+    "audit:a11y:setup": "playwright install chromium",
     "audit:a11y": "node scripts/audit-a11y.mjs",
     "validate:concerts": "node scripts/validate-concerts.js",
     "validate": "yarn validate:concerts"

@@ -12,17 +12,17 @@ Write code, comments, commit messages and docs in **English**. User-facing site 
 
 Node 24 (`.nvmrc`), Yarn 4.18 via `corepack enable`.
 
-| Command                                        | Note                                                              |
-| ---------------------------------------------- | ----------------------------------------------------------------- |
-| `yarn dev` / `yarn build` / `yarn start`       | Turbopack by default                                              |
-| `yarn lint` / `yarn lint:fix`                  | `next build` no longer lints since Next 16 — lint is its own gate |
-| `yarn format` / `yarn format:check`            | Prettier + Tailwind class sort (no CI job runs `format:check`)    |
-| `yarn type-check`                              | `tsc --noEmit`                                                    |
-| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter                                  |
-| `yarn test:coverage`                           | coverage report (v8)                                              |
-| `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                   |
-| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                               |
-| `yarn audit:a11y`                              | axe + Playwright, **needs a server already running** (see below)  |
+| Command                                        | Note                                                                  |
+| ---------------------------------------------- | --------------------------------------------------------------------- |
+| `yarn dev` / `yarn build` / `yarn start`       | Turbopack by default                                                  |
+| `yarn lint` / `yarn lint:fix`                  | `next build` no longer lints since Next 16 — lint is its own gate     |
+| `yarn format` / `yarn format:check`            | Prettier + Tailwind class sort (no CI job runs `format:check`)        |
+| `yarn type-check`                              | `tsc --noEmit`                                                        |
+| `yarn test` / `yarn test:run` / `yarn test:ci` | watch / single run / CI reporter                                      |
+| `yarn test:coverage`                           | coverage report (v8)                                                  |
+| `yarn test:snapshots`                          | `vitest run -u` — run after any `Footer` change                       |
+| `yarn validate` (alias of `validate:concerts`) | `node scripts/validate-concerts.js`                                   |
+| `yarn audit:a11y:setup` / `yarn audit:a11y`    | Chromium download, then axe + Playwright against a **running** server |
 
 Single test: `yarn vitest run __tests__/components/Header.test.tsx`
 By name: `yarn vitest run -t "should render the header"`
@@ -33,9 +33,10 @@ Full pre-push gate mirroring CI (`.github/workflows/ci.yml`: lint / test:ci / ty
 yarn lint && yarn type-check && yarn test:ci && yarn validate
 ```
 
-`yarn audit:a11y` (`scripts/audit-a11y.mjs`) is the CPMB-16 recette, replayable: 10 pages × 4 widths (390/768/1440, plus 720 for 1440 at 200 % zoom), axe-core plus its own checks — horizontal overflow, single `h1`, keyboard sweep, the drawer's focus trap, `prefers-reduced-motion`, unique page titles. It audits a running build, not the dev server:
+`yarn audit:a11y` (`scripts/audit-a11y.mjs`) is the CPMB-16 recette, replayable: 11 pages × 4 widths (both halves of the concert template: one fiche with a poster, a programme and a cast, one with none) (390/768/1440, plus 720 for 1440 at 200 % zoom), axe-core plus its own checks — horizontal overflow, single `h1`, keyboard sweep, the drawer's focus trap, `prefers-reduced-motion`, unique page titles. It audits a running build, not the dev server:
 
 ```bash
+yarn audit:a11y:setup                             # downloads Chromium, once per machine
 yarn build && yarn start &
 AUDIT_URL=http://127.0.0.1:3000 yarn audit:a11y   # exits non-zero on a blocking finding
 ```

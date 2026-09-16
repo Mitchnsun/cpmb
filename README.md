@@ -58,6 +58,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 - `yarn test:ci` - Exécute les tests en mode CI (sans watch)
 - `yarn validate:concerts` - Valide les données des concerts et l'existence des médias
 - `yarn validate` - Alias pour la validation des données
+- `yarn audit:a11y:setup` - Télécharge Chromium pour la recette (une fois par machine)
 - `yarn audit:a11y` - Recette accessibilité et responsive (axe-core + Playwright) sur un serveur déjà lancé — voir `docs/RECETTE-A11Y.md`
 
 ## 📁 Structure du projet

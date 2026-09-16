@@ -31,8 +31,25 @@ describe("parsePlace", () => {
     });
   });
 
+  it("should read the country from a bracketed marker, and drop it from the name", () => {
+    expect(parsePlace("Église de Gaillard (F)")).toEqual({
+      "@type": "Place",
+      name: "Église de Gaillard",
+      address: { "@type": "PostalAddress", addressCountry: "FR" },
+    });
+    expect(parsePlace("Temple de Chêne-Bougeries (CH)").address.addressCountry).toBe("CH");
+    expect(parsePlace("Eglise Notre Dame de l'Assomption, Évian (F)").address).toEqual({
+      "@type": "PostalAddress",
+      addressLocality: "Évian",
+      addressCountry: "FR",
+    });
+  });
+
   it("should carry no country when the location names none", () => {
-    expect(parsePlace("Genève (CH) et Samoëns (F)").address).toEqual({ "@type": "PostalAddress" });
+    expect(parsePlace("Espace Louis Simon, Gaillard").address).toEqual({
+      "@type": "PostalAddress",
+      addressLocality: "Gaillard",
+    });
   });
 
   it("should recognise Switzerland as well", () => {
@@ -102,13 +119,31 @@ describe("concertEvents", () => {
     expect(venueOnly.location.name).toBe("Église de Vétraz-Monthoux");
   });
 
-  it("should split the venues of a two-town concert that names them both", () => {
+  it("should split a cross-border concert and keep each side's country", () => {
     const acrossTheBorder = concertOf("messe-en-ut-de-mozart");
 
-    expect(concertEvents(acrossTheBorder).map((event) => event.location.name)).toEqual([
-      "Temple de la Madeleine",
-      "Église de Gaillard (F)",
+    expect(concertEvents(acrossTheBorder).map((event) => event.location)).toEqual([
+      {
+        "@type": "Place",
+        name: "Temple de la Madeleine",
+        address: { "@type": "PostalAddress", addressLocality: "Genève", addressCountry: "CH" },
+      },
+      {
+        "@type": "Place",
+        name: "Église de Gaillard",
+        address: { "@type": "PostalAddress", addressCountry: "FR" },
+      },
     ]);
+  });
+
+  it("should leave no country unread where the data marks one", () => {
+    const marked = concerts.filter((concert) => /\((CH|F|FR)\)/i.test(concert.location));
+
+    const silent = marked
+      .flatMap((concert) => concertEvents(concert))
+      .filter((event) => !event.location.address.addressCountry);
+
+    expect(silent.map((event) => event.location.name)).toEqual([]);
   });
 
   it("should never invent a venue out of two towns joined on one line", () => {

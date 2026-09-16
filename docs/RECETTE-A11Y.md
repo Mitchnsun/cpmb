@@ -20,8 +20,10 @@ jour par CPMB-17.
 navigateur et rejoue la recette à la demande :
 
 - **axe-core 4.13** via `@axe-core/playwright`, Playwright 1.63, Chromium 141 ;
-- **10 pages** : accueil, présentation, fiche artiste, agenda, fiche concert,
-  revue de presse, article de presse, contact, mentions légales, page 404 ;
+- **11 pages** : accueil, présentation, fiche artiste, agenda, **deux** fiches
+  concert — une avec affiche, programme et distribution, une sans rien de tout
+  cela, les deux moitiés facultatives du gabarit —, revue de presse, article
+  de presse, contact, mentions légales, page 404 ;
 - **4 largeurs** : 390 px, 768 px, 1440 px, et 720 px qui simule le 1440 px
   affiché à 200 % ;
 - **tags** `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` et
@@ -34,11 +36,16 @@ navigateur et rejoue la recette à la demande :
   titres de page.
 
 ```bash
+yarn audit:a11y:setup      # télécharge Chromium, une fois par machine
 yarn build
 yarn start &
 yarn audit:a11y            # sort en échec s'il reste une anomalie bloquante
 AUDIT_JSON=rapport.json yarn audit:a11y   # + rapport détaillé en JSON
 ```
+
+Installer le paquet `playwright` ne télécharge pas de navigateur : c'est
+l'étape `audit:a11y:setup`. Sur une machine qui en a déjà un,
+`CHROMIUM_PATH=/chemin/vers/chromium` évite le téléchargement.
 
 Deux détails de mise en œuvre, documentés dans le script : l'audit attend la
 fin des animations d'entrée avant de mesurer (un texte lu en plein fondu est
@@ -62,7 +69,7 @@ ci-dessous.
 
 ### Contrastes ≥ 4,5:1 (3:1 au-delà de 32 px)
 
-Aucune violation relevée par axe sur les 10 pages aux 4 largeurs. Les couples
+Aucune violation relevée par axe sur les 11 pages aux 4 largeurs. Les couples
 de la charte, recalculés :
 
 | Couple                                                 | Rapport | Verdict |
@@ -132,7 +139,7 @@ globale de `globals.css` fait son travail. ✅
 
 ### Rendu à 390 / 768 / 1440 px, sans défilement horizontal
 
-Aucun débordement horizontal sur les 10 pages aux 4 largeurs — le contrôle
+Aucun débordement horizontal sur les 11 pages aux 4 largeurs — le contrôle
 compare `documentElement.scrollWidth` à la largeur de fenêtre, à un pixel
 près. ✅
 
@@ -157,7 +164,7 @@ affiches de concert reçoivent « Affiche du concert : … ». ✅
 ### `lang="fr"`, titres de page distincts
 
 `lang="fr"` sur `<html>` (règles axe `html-has-lang` et `html-lang-valid`
-passantes). Les 10 titres relevés sont distincts. ✅ (une anomalie corrigée,
+passantes). Les 11 titres relevés sont distincts. ✅ (une anomalie corrigée,
 voir ci-dessous.)
 
 ---
@@ -175,7 +182,7 @@ d'entrée, donc à moitié transparent. Le script attend désormais la fin des
 animations non infinies avant de mesurer. Le contraste réel de ce bouton est
 de 6,81:1.
 
-**Après correction : 0 anomalie, sur 10 pages × 4 largeurs.**
+**Après correction : 0 anomalie, sur 11 pages × 4 largeurs.**
 
 ---
 
