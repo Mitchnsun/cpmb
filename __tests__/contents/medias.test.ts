@@ -7,10 +7,12 @@ import {
   CONTACT_BANNER,
   HOME_HERO,
   LOGO,
+  NOT_FOUND_BANNER,
   PARTNER_LOGOS,
   posterAlt,
   PRESENTATION_BANNER,
   type SiteImage,
+  SOCIAL_IMAGE,
 } from "@/assets/contents/medias";
 
 const ALL_IMAGES: SiteImage[] = [
@@ -20,6 +22,8 @@ const ALL_IMAGES: SiteImage[] = [
   CONCERTS_BANNER,
   CONTACT_BANNER,
   PRESENTATION_BANNER,
+  NOT_FOUND_BANNER,
+  SOCIAL_IMAGE,
   ...PARTNER_LOGOS,
 ];
 

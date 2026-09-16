@@ -70,6 +70,8 @@ All graphic values live in one `@theme` block in `app/globals.css` (Tailwind v4 
 
 ## Content & validation
 
+The bureau edits content from GitHub, without a checkout: `docs/GUIDE-BUREAU.md` is their procedure (adding a concert, posters and alt text, the automatic upcoming→past switch, partners, where the contact form's messages land). Keep it in step with the data shape — it is the only documentation they have.
+
 Adding a concert: append to `assets/contents/concerts.json`, drop the poster in `public/concerts/`, run `yarn validate`. Required fields: `title` / `slug` / `date` (non-empty array of ISO strings) / `location`; optional: `description` / `media` / `programme` / `performers`. Slug must match `^[a-z0-9]+(?:-[a-z0-9]+)*$` and be unique; a declared `media` must resolve to a real file under `public/`. Full rules and error catalogue: `docs/VALIDATION.md`.
 
 `scripts/validate-concerts.js` is dependency-free CommonJS (so CI runs it with no build step) and validates **concerts only** — `articles.json`/`artists.json` only get a JSON-syntax check in the workflow.

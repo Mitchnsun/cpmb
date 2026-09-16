@@ -74,6 +74,7 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 │   └── validate-concerts.js # Script de validation des données
 ├── docs/                   # Documentation du projet
 │   ├── CHARTE.md          # Charte graphique : tokens, échelles, médias
+│   ├── GUIDE-BUREAU.md    # Guide d'édition du contenu, à l'usage du bureau
 │   ├── RECETTE-A11Y.md    # Recette accessibilité et responsive (CPMB-16)
 │   └── VALIDATION.md      # Documentation du système de validation
 ├── __tests__/              # Tests unitaires et d'intégration
