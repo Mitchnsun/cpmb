@@ -82,6 +82,8 @@ export default function Presentation() {
           <ArtistArticle
             name="Direction artistique – Benoît Dubu"
             media={benoitDubu.media}
+            width={benoitDubu.width}
+            height={benoitDubu.height}
             alt={benoitDubu.alt}
             text={benoitDubu.text}
             hLevel={2}
@@ -95,6 +97,8 @@ export default function Presentation() {
           <ArtistArticle
             name={agnesLorincz.name}
             media={agnesLorincz.media}
+            width={agnesLorincz.width}
+            height={agnesLorincz.height}
             alt={agnesLorincz.alt}
             text={agnesLorincz.text}
             hLevel={3}
@@ -102,6 +106,8 @@ export default function Presentation() {
           <ArtistArticle
             name={marjorieSaunier.name}
             media={marjorieSaunier.media}
+            width={marjorieSaunier.width}
+            height={marjorieSaunier.height}
             alt={marjorieSaunier.alt}
             text={marjorieSaunier.text}
             hLevel={3}

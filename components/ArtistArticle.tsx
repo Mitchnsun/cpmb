@@ -4,6 +4,9 @@ interface ArtistArticleProps {
   /** Omitted when the page banner already carries the name. */
   name?: string;
   media: string;
+  /** Native dimensions of the portrait, so its box is reserved before it loads. */
+  width: number;
+  height: number;
   alt: string;
   text: string[];
   hLevel?: 1 | 2 | 3 | 4 | 5 | 6;
@@ -20,8 +23,12 @@ interface ArtistArticleProps {
  * Without a `name` no heading is rendered at all: on the artist page the
  * banner is already the `h1`, and merely hiding a second one would still
  * hand screen readers the same title twice.
+ *
+ * The portraits are not all the same shape — two of the three are square —
+ * so each one's own dimensions come from the data: a single declared ratio
+ * would reserve the wrong box and push the biography down on load.
  */
-const ArtistArticle = ({ name, media, alt, text, hLevel = 2 }: ArtistArticleProps) => {
+const ArtistArticle = ({ name, media, width, height, alt, text, hLevel = 2 }: ArtistArticleProps) => {
   const Title = `h${hLevel}` as const;
 
   return (
@@ -32,8 +39,8 @@ const ArtistArticle = ({ name, media, alt, text, hLevel = 2 }: ArtistArticleProp
         <Image
           src={media}
           alt={alt}
-          width={200}
-          height={300}
+          width={width}
+          height={height}
           sizes="256px"
           className="border-border mx-auto h-auto w-full max-w-3xs rounded-sm border object-cover"
         />

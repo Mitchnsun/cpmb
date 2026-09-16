@@ -6,6 +6,10 @@ describe("ArtistArticle", () => {
   const mockProps = {
     name: "John Doe",
     media: "/test-image.jpg",
+    // Square, like two of the three real portraits — not the 2:3 a single
+    // declared ratio would assume.
+    width: 641,
+    height: 641,
     alt: "Portrait de John Doe",
     text: [
       "Premier paragraphe de présentation de l'artiste.",
@@ -29,8 +33,8 @@ describe("ArtistArticle", () => {
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("src", mockProps.media);
     expect(image).toHaveAttribute("alt", mockProps.alt);
-    expect(image).toHaveAttribute("width", "200");
-    expect(image).toHaveAttribute("height", "300");
+    expect(image).toHaveAttribute("width", "641");
+    expect(image).toHaveAttribute("height", "641");
 
     mockProps.text.forEach((paragraph) => {
       expect(screen.getByText(paragraph)).toBeInTheDocument();

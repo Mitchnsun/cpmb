@@ -49,7 +49,7 @@ export default async function Artist({ params }: { params: Promise<{ artist: str
       <section className="max-w-site mx-auto px-6 pt-14 pb-20">
         {/* The banner is the page's h1: the portrait renders no heading of
             its own, so the name is announced once and not twice. */}
-        <ArtistArticle media={data.media} alt={data.alt} text={data.text} />
+        <ArtistArticle media={data.media} width={data.width} height={data.height} alt={data.alt} text={data.text} />
       </section>
     </>
   );

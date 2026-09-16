@@ -2,6 +2,8 @@
   "benoit-dubu": {
     "name": "Benoît Dubu",
     "media": "/media/benoit_dubu.jpg",
+    "width": 699,
+    "height": 1137,
     "alt": "Portrait de Benoît Dubu",
     "text": [
       "Benoît Dubu découvre le chant choral dès son plus jeune âge et intègre le chœur d’enfants La Cigale de Lyon.",
@@ -16,6 +18,8 @@
   "agnes-lorincz": {
     "name": "Ágnes Lőrincz",
     "media": "/media/agnes_lorincz.jpg",
+    "width": 300,
+    "height": 300,
     "alt": "Portrait d'Ágnes Lőrincz",
     "text": [
       "Pianiste accompagnatrice, cheffe de choeur et experte en méthode Kodály, Ágnes Lőrincz obtient ses diplômes de Master à l’Académie de Musique Ferenc Liszt de Budapest et à la Haute Ecole de Musique de Genève.",
@@ -27,6 +31,8 @@
   "marjorie-saunier": {
     "name": "Marjorie Saunier",
     "media": "/media/marjorie_saunier.jpg",
+    "width": 641,
+    "height": 641,
     "alt": "Portrait de Marjorie Saunier",
     "text": [
       "Marjorie Saunier commence très jeune l’étude du piano. Dès six ans, elle entre sur concours au Conservatoire de Toulon. A l’âge de quinze ans, elle obtient son Diplôme d’Etudes Musicales de piano dans la classe de Célimène Daudet et l’année suivante, celui de musique de chambre, dans la classe de Yannick Callier. Marjorie continue ensuite sa formation auprès de Bernard d’Ascoli, au sein de l’Association Piano Cantabile.",
