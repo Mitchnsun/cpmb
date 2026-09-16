@@ -16,7 +16,7 @@ const COUNTRY_CODES: Readonly<Record<string, string>> = { France: "FR", Suisse: 
 
 interface PostalAddress {
   "@type": "PostalAddress";
-  addressLocality: string;
+  addressLocality?: string;
   addressCountry?: string;
 }
 
@@ -45,11 +45,17 @@ export interface MusicEvent {
  * The free-text location of a concert, read as a place: "Église
  * Saint-Pierre, Gaillard, France" is a venue, a town and a country.
  *
- * The data was written for humans, so the reading stays defensive: a
- * location naming only its town keeps that town as the place's name, and
- * one naming no country at all ("Genève (CH)") simply carries none —
- * `fallbackCountry` then lets a venue inherit the country written once at
- * the end of a two-venue line.
+ * The data was written for humans, so the reading stays defensive. The comma
+ * is what separates a venue from its town, and nothing else can: "Église de
+ * Vétraz-Monthoux, France" names one place, and whether that place is a town
+ * or a building standing in one is not decidable — "Boëge" is a town,
+ * "Auditorium de Seynod" is not, and no rule short of a gazetteer tells them
+ * apart. So `addressLocality` is published only when the line states it on
+ * its own; otherwise the place keeps its name and the address carries the
+ * country alone, rather than a church published as a municipality.
+ *
+ * `fallbackCountry` lets a venue inherit the country written once at the end
+ * of a two-venue line.
  */
 export const parsePlace = (location: string, fallbackCountry?: string): Place => {
   const parts = location
@@ -62,15 +68,16 @@ export const parsePlace = (location: string, fallbackCountry?: string): Place =>
   const country = own ?? fallbackCountry;
   const rest = own ? parts.slice(0, -1) : parts;
 
-  const locality = rest.at(-1) ?? location;
-  const name = rest.length > 1 ? rest.slice(0, -1).join(", ") : locality;
+  /* Two parts or more: the last is the town, what precedes it the venue. */
+  const locality = rest.length > 1 ? rest.at(-1) : undefined;
+  const name = rest.length > 1 ? rest.slice(0, -1).join(", ") : (rest[0] ?? location);
 
   return {
     "@type": "Place",
     name,
     address: {
       "@type": "PostalAddress",
-      addressLocality: locality,
+      ...(locality ? { addressLocality: locality } : {}),
       ...(country ? { addressCountry: country } : {}),
     },
   };

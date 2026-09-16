@@ -13,19 +13,26 @@ describe("parsePlace", () => {
     });
   });
 
-  it("should keep the town as the place when no venue is named", () => {
+  it("should not pass a venue off as a municipality", () => {
+    /* "Église de Vétraz-Monthoux" names a building, not a town, and nothing
+       in the line says which town it stands in. */
+    expect(parsePlace("Église de Vétraz-Monthoux, France")).toEqual({
+      "@type": "Place",
+      name: "Église de Vétraz-Monthoux",
+      address: { "@type": "PostalAddress", addressCountry: "FR" },
+    });
+  });
+
+  it("should keep the whole line as the place when it names one thing", () => {
     expect(parsePlace("Vongy et Boëge, France")).toEqual({
       "@type": "Place",
       name: "Vongy et Boëge",
-      address: { "@type": "PostalAddress", addressLocality: "Vongy et Boëge", addressCountry: "FR" },
+      address: { "@type": "PostalAddress", addressCountry: "FR" },
     });
   });
 
   it("should carry no country when the location names none", () => {
-    expect(parsePlace("Genève (CH) et Samoëns (F)").address).toEqual({
-      "@type": "PostalAddress",
-      addressLocality: "Genève (CH) et Samoëns (F)",
-    });
+    expect(parsePlace("Genève (CH) et Samoëns (F)").address).toEqual({ "@type": "PostalAddress" });
   });
 
   it("should recognise Switzerland as well", () => {
@@ -77,13 +84,22 @@ describe("concertEvents", () => {
     expect(boege.location).toEqual({
       "@type": "Place",
       name: "Boëge",
-      address: { "@type": "PostalAddress", addressLocality: "Boëge", addressCountry: "FR" },
+      address: { "@type": "PostalAddress", addressCountry: "FR" },
     });
     expect(saintGervais.location).toEqual({
       "@type": "Place",
       name: "Saint-Gervais-les-Bains",
-      address: { "@type": "PostalAddress", addressLocality: "Saint-Gervais-les-Bains", addressCountry: "FR" },
+      address: { "@type": "PostalAddress", addressCountry: "FR" },
     });
+  });
+
+  it("should publish a locality only where the data separates one", () => {
+    const withTown = concertEvents(concertOf("concert-de-noel-22-decembre-2024-gaillard"))[0];
+    const venueOnly = concertEvents(concertOf("musique-francaise-10-decembre-2022-vetraz-monthoux"))[0];
+
+    expect(withTown.location.address.addressLocality).toBe("Gaillard");
+    expect(venueOnly.location.address.addressLocality).toBeUndefined();
+    expect(venueOnly.location.name).toBe("Église de Vétraz-Monthoux");
   });
 
   it("should split the venues of a two-town concert that names them both", () => {

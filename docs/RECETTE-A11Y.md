@@ -29,8 +29,9 @@ navigateur et rejoue la recette à la demande :
   des titres, points de repère, `main` unique) ;
 - **contrôles maison** en plus d'axe : défilement horizontal, unicité du `h1`,
   niveaux de titre sautés, animations encore actives sous
-  `prefers-reduced-motion`, balayage clavier, piège de focus du menu mobile,
-  unicité des titres de page.
+  `prefers-reduced-motion`, balayage clavier jusqu'à la sortie de la page et
+  détection des boucles de focus, piège de focus du menu mobile, unicité des
+  titres de page.
 
 ```bash
 yarn build
@@ -103,9 +104,17 @@ mobile `size-11` (44 px). ✅
 
 ### Navigation clavier, focus visible, aucun piège
 
-- Balayage de 40 tabulations sur chaque page, à 390 px puis à 1440 px : chaque
-  arrêt est sur un élément visible qui affiche un indicateur de focus, et la
-  tabulation progresse toujours (aucune répétition en boucle). ✅
+- Balayage à la tabulation sur chaque page, à 390 px puis à 1440 px, jusqu'à
+  la sortie de la page — au-delà du dernier contrôle, le navigateur rend le
+  focus au document, et c'est la seule fin acceptée : chaque page y parvient
+  (l'agenda compte une soixantaine d'arrêts). Chaque arrêt est sur un élément
+  visible qui affiche un indicateur de focus. ✅
+- Aucun piège : revenir deux fois sur le même élément avant cette sortie
+  signale un circuit fermé, qu'il s'agisse d'un contrôle qui se garde ou d'un
+  composant qui fait tourner le focus sur plusieurs — les deux se ressemblent
+  pour qui reste appuyé sur Tab. Le détecteur est vérifié contre un vrai
+  piège du site, le menu mobile ouvert, dont il relève la boucle de quatre
+  éléments. ✅
 - Menu mobile (Radix Dialog via vaul) : ouverture au clavier, 12 tabulations
   qui restent dans le panneau — un piège voulu, celui d'une boîte modale —
   puis `Échap` qui referme et **rend le focus au bouton d'ouverture**. ✅

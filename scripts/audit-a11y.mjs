@@ -219,8 +219,12 @@ const auditOutline = async (page, route) => {
   });
 };
 
-/** How far the sweep walks before calling the page covered. */
-const KEYBOARD_STEPS = 40;
+/**
+ * Enough stops to walk the longest page to its end — the agenda carries
+ * around sixty. The sweep is only conclusive once it has left the page, so
+ * the budget has to exceed the page, not sample it.
+ */
+const KEYBOARD_STEPS = 200;
 
 /** State of whatever the Tab key has just reached. */
 const focusState = (page) =>
@@ -233,6 +237,8 @@ const focusState = (page) =>
 
     return {
       outside: false,
+      /* Identity of the element, to tell a second visit from a namesake. */
+      key: [...document.querySelectorAll("*")].indexOf(node),
       name: `${node.tagName.toLowerCase()} « ${(node.getAttribute("aria-label") ?? node.textContent ?? "").trim().slice(0, 40)} »`,
       /* A control with no box cannot show where the focus is. */
       invisible: box.width === 0 && box.height === 0,
@@ -245,20 +251,42 @@ const focusState = (page) =>
 
 /**
  * Walks the page with the Tab key: every stop must be a control that is
- * visible and shows the focus, and the walk must keep moving — the same
- * element reached again and again is a trap.
+ * visible and shows the focus, and the walk must reach the end of the page.
+ *
+ * Past its last control, the browser hands the focus back to the document —
+ * that is how a free page ends, and the only way this sweep ends well.
+ * Landing twice on the same element before that means the focus is going
+ * round a closed circuit: one control that keeps itself, or a widget cycling
+ * through several, which reads the same to someone holding Tab.
  */
 const auditKeyboard = async (page, route, viewport) => {
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
   await open(page, route.path);
 
-  const seen = [];
+  const visited = [];
+  let escaped = false;
 
   for (let step = 0; step < KEYBOARD_STEPS; step += 1) {
     await page.keyboard.press("Tab");
     const state = await focusState(page);
 
-    if (state.outside) break;
+    if (state.outside) {
+      escaped = true;
+      break;
+    }
+
+    if (visited.includes(state.key)) {
+      const cycle = visited.length - visited.indexOf(state.key);
+      record({
+        route: route.path,
+        viewport: viewport.name,
+        rule: "piege-clavier",
+        impact: "critical",
+        blocking: true,
+        detail: `la tabulation boucle sur ${cycle} élément(s) sans quitter la page, de nouveau sur ${state.name}`,
+      });
+      return;
+    }
 
     if (state.invisible || !state.ringed) {
       record({
@@ -271,18 +299,19 @@ const auditKeyboard = async (page, route, viewport) => {
       });
     }
 
-    seen.push(state.name);
+    visited.push(state.key);
   }
 
-  const stuck = seen.length >= 4 && new Set(seen.slice(-4)).size === 1;
-  if (stuck) {
+  /* Neither an exit nor a loop: the page is longer than the budget, and the
+     sweep proves nothing about its end. Say so rather than call it clean. */
+  if (!escaped) {
     record({
       route: route.path,
       viewport: viewport.name,
-      rule: "piege-clavier",
-      impact: "critical",
-      blocking: true,
-      detail: `la tabulation ne quitte plus ${seen.at(-1)}`,
+      rule: "balayage-clavier-incomplet",
+      impact: "moderate",
+      blocking: false,
+      detail: `${KEYBOARD_STEPS} tabulations sans atteindre la fin de la page`,
     });
   }
 };
