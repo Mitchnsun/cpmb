@@ -24,7 +24,7 @@ describe("Carrousel", () => {
 
     // The files range from 1.51 to 4.2 in ratio: the frame is fixed and the
     // photo is contained inside it, so nothing is cropped and nothing jumps.
-    expect(container.querySelector('[aria-roledescription="carrousel"]')?.className).toContain("aspect-[21/9]");
+    expect(container.querySelector(".aspect-\\[21\\/9\\]")).toBeInTheDocument();
     container.querySelectorAll("img").forEach((image) => {
       expect(image).toHaveClass("object-contain");
     });
@@ -102,6 +102,20 @@ describe("Carrousel", () => {
     await user.click(screen.getByRole("button", { name: /^Agrandir la photo/ }));
 
     expect(screen.getByRole("dialog", { name: CARROUSEL_IMAGES[0].alt })).toBeInTheDocument();
+  });
+
+  it("should keep the dots and the pause out of the photo frame", () => {
+    const { container } = render(<Carrousel />);
+
+    // A 21/9 frame is barely 117px tall on a 320px screen: a centred arrow
+    // and a corner control cannot both have a 44px target inside it.
+    const frame = container.querySelector(".aspect-\\[21\\/9\\]") as HTMLElement;
+    expect(frame.querySelector('[aria-label^="Photo 1 sur"]')).toBeNull();
+    expect(frame.querySelector('[aria-label^="Mettre le défilement"]')).toBeNull();
+
+    // The arrows stay on the photo, at its sides, where nothing competes.
+    expect(frame.querySelector('[aria-label="Photo précédente"]')).toBeInTheDocument();
+    expect(frame.querySelector('[aria-label="Photo suivante"]')).toBeInTheDocument();
   });
 
   it("should announce politely only once the slideshow is stopped", () => {

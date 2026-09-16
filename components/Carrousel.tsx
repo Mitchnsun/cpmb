@@ -91,96 +91,110 @@ const Carrousel = ({ autoplay = true }: CarrouselProps) => {
   return (
     <>
       <div
-        className="border-border bg-stage-black relative aspect-[21/9] w-full overflow-hidden rounded-sm border"
-        aria-label="Photos du chœur"
         role="region"
+        aria-label="Photos du chœur"
         aria-roledescription="carrousel"
         aria-live={isPlaying ? "off" : "polite"}
       >
-        <div
-          className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {images.map((image, index) => (
-            <button
-              key={image.src}
-              type="button"
-              // Only the slide on screen is reachable, by pointer or by tab.
-              aria-hidden={index !== currentIndex}
-              tabIndex={index === currentIndex ? undefined : -1}
-              onClick={takeOver(() => setEnlarged(image))}
-              /* The button carries the description, so the image inside it
-                 stays decorative: naming both would announce the photo
-                 twice, once for the image and once for the control. */
-              aria-label={`Agrandir la photo : ${image.alt}`}
-              className="focus-visible:outline-teal-light relative h-full w-full flex-shrink-0 cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-4"
-            >
-              {/* `contain`, never `cover`: the point of the gallery is to
-                  show the photo whole. Most files are already 4.2:1 strips,
-                  and covering a 21/9 box would crop them again sideways. */}
-              <Image src={image.src} alt="" fill sizes="(min-width: 1200px) 1152px, 100vw" className="object-contain" />
-            </button>
-          ))}
+        <div className="border-border bg-stage-black relative aspect-[21/9] w-full overflow-hidden rounded-sm border">
+          <div
+            className="flex h-full transition-transform duration-500 ease-in-out motion-reduce:transition-none"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {images.map((image, index) => (
+              <button
+                key={image.src}
+                type="button"
+                // Only the slide on screen is reachable, by pointer or by tab.
+                aria-hidden={index !== currentIndex}
+                tabIndex={index === currentIndex ? undefined : -1}
+                onClick={takeOver(() => setEnlarged(image))}
+                /* The button carries the description, so the image inside it
+                   stays decorative: naming both would announce the photo
+                   twice, once for the image and once for the control. */
+                aria-label={`Agrandir la photo : ${image.alt}`}
+                className="focus-visible:outline-teal-light relative h-full w-full flex-shrink-0 cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-4"
+              >
+                {/* `contain`, never `cover`: the point of the gallery is to
+                    show the photo whole. Most files are already 4.2:1 strips,
+                    and covering a 21/9 box would crop them again sideways. */}
+                <Image
+                  src={image.src}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1200px) 1152px, 100vw"
+                  className="object-contain"
+                />
+              </button>
+            ))}
+          </div>
+
+          {/* Only the arrows sit on the photo, and only at its sides: a
+              21/9 frame is barely 117px tall on a 320px screen, so anything
+              in a corner would collide with them and steal their taps. */}
+          <button
+            type="button"
+            onClick={takeOver(prevSlide)}
+            className={cn(controlClassName, "top-1/2 left-4 -translate-y-1/2")}
+            aria-label="Photo précédente"
+          >
+            <ChevronIcon aria-hidden="true" className="h-6 w-6 rotate-90" />
+          </button>
+
+          <button
+            type="button"
+            onClick={takeOver(nextSlide)}
+            className={cn(controlClassName, "top-1/2 right-4 -translate-y-1/2")}
+            aria-label="Photo suivante"
+          >
+            <ChevronIcon aria-hidden="true" className="h-6 w-6 -rotate-90" />
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={takeOver(prevSlide)}
-          className={cn(controlClassName, "top-1/2 left-4 -translate-y-1/2")}
-          aria-label="Photo précédente"
-        >
-          <ChevronIcon aria-hidden="true" className="h-6 w-6 rotate-90" />
-        </button>
+        {/* Dots and pause live under the frame, on the page background:
+            always legible, and never fighting the arrows for room. */}
+        <div className="mt-2 flex flex-wrap items-center justify-center">
+          <div className="flex">
+            {images.map(({ src, alt }, index) => (
+              <button
+                key={src}
+                type="button"
+                onClick={takeOver(() => setCurrentIndex(index))}
+                /* The charter's 44px target, around a 10px dot. Six of them
+                   plus the pause overflow a 320px screen, so the row wraps
+                   rather than shrinking any target below the rule. */
+                className="focus-visible:outline-teal flex h-11 w-11 items-center justify-center focus-visible:outline-2"
+                aria-label={`Photo ${index + 1} sur ${images.length} : ${alt}`}
+                aria-current={index === currentIndex ? "true" : undefined}
+              >
+                <span
+                  className={cn(
+                    "h-2.5 w-2.5 rounded-full transition-colors",
+                    index === currentIndex ? "bg-teal" : "bg-border"
+                  )}
+                />
+              </button>
+            ))}
+          </div>
 
-        <button
-          type="button"
-          onClick={takeOver(nextSlide)}
-          className={cn(controlClassName, "top-1/2 right-4 -translate-y-1/2")}
-          aria-label="Photo suivante"
-        >
-          <ChevronIcon aria-hidden="true" className="h-6 w-6 -rotate-90" />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setIsPlaying((playing) => !playing)}
-          className={cn(controlClassName, "right-4 bottom-4")}
-          aria-label={isPlaying ? "Mettre le défilement en pause" : "Reprendre le défilement"}
-          aria-pressed={isPlaying}
-        >
-          {isPlaying ? (
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-              <rect x="7" y="6" width="3.5" height="12" rx="1" />
-              <rect x="13.5" y="6" width="3.5" height="12" rx="1" />
-            </svg>
-          ) : (
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          )}
-        </button>
-
-        {/* Same dark backing as the other controls: a tall photo fills the
-            box and the dots would otherwise sit on the picture itself. */}
-        <div className="bg-stage-black/60 absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2 rounded-lg px-3">
-          {images.map(({ src, alt }, index) => (
-            <button
-              key={src}
-              type="button"
-              onClick={takeOver(() => setCurrentIndex(index))}
-              /* 44px touch target around a 12px dot. */
-              className="focus-visible:outline-teal-light flex h-11 w-5 items-center justify-center focus-visible:outline-2"
-              aria-label={`Photo ${index + 1} sur ${images.length} : ${alt}`}
-              aria-current={index === currentIndex ? "true" : undefined}
-            >
-              <span
-                className={cn(
-                  "h-3 w-3 rounded-full transition-colors",
-                  index === currentIndex ? "bg-teal-light" : "bg-text-on-dark/50"
-                )}
-              />
-            </button>
-          ))}
+          <button
+            type="button"
+            onClick={() => setIsPlaying((playing) => !playing)}
+            className="text-muted hover:text-teal focus-visible:outline-teal ml-2 flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors focus-visible:outline-2"
+            aria-label={isPlaying ? "Mettre le défilement en pause" : "Reprendre le défilement"}
+            aria-pressed={isPlaying}
+          >
+            {isPlaying ? (
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                <rect x="7" y="6" width="3.5" height="12" rx="1" />
+                <rect x="13.5" y="6" width="3.5" height="12" rx="1" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 

@@ -239,6 +239,13 @@ diapositive est un bouton qui ouvre la photo dans `Lightbox` ; le défilement
 s'arrête dès que le visiteur prend la main, et ne démarre pas du tout sous
 `prefers-reduced-motion`.
 
+Seules les flèches sont posées sur la photo, et uniquement sur ses côtés :
+un cadre 21/9 ne fait que 117 px de haut sur un écran de 320 px, donc une
+flèche centrée et un bouton en coin ne peuvent pas y tenir leurs 44 px sans
+se recouvrir — et le contrôle dessiné en dernier vole les appuis de l'autre.
+Les puces et la pause vivent donc **sous** le cadre, sur le fond de page, et
+leur rangée se replie plutôt que de réduire une cible sous la règle.
+
 ## Bibliothèque de médias
 
 `assets/contents/medias.ts` est le point d'entrée unique des visuels
