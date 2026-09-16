@@ -92,12 +92,15 @@ Deux formes acceptées :
 Un même programme donné deux soirs est **une seule fiche, deux dates** — pas
 deux fiches :
 
+Deux soirs dans deux villes différentes — le cas le plus courant :
+
 ```json
   {
     "title": "Concert autour de la Misa Criolla, 7 et 28 juin 2027, Vongy et Boëge",
     "slug": "concert-autour-de-la-misa-criolla-7-et-28-juin-2027-vongy-et-boege",
     "date": ["2027-06-07T20:30:00+02:00", "2027-06-28T18:00:00+02:00"],
     "location": "Vongy et Boëge, France",
+    "venues": ["Vongy, France", "Boëge, France"],
     "description": "…"
   },
 ```
@@ -106,21 +109,17 @@ Le site s'occupe du reste : les deux dates sont listées sur la fiche, le
 fichier agenda contient deux événements, et le concert reste annoncé comme
 « à venir » **tant que la dernière des deux dates n'est pas passée**.
 
-⚠️ **Quand les deux soirs n'ont pas lieu au même endroit**, ajouter un champ
-`venues` : un lieu par date, dans le même ordre que `date`. La ligne
-`location` reste la phrase affichée sur la fiche ; `venues` est ce que lisent
-les moteurs de recherche, qui publient chaque représentation comme un
-événement distinct, avec **son** lieu.
-
-```json
-    "date": ["2027-06-07T20:30:00+02:00", "2027-06-28T18:00:00+02:00"],
-    "location": "Vongy et Boëge, France",
-    "venues": ["Vongy, France", "Boëge, France"],
-```
+⚠️ **Le champ `venues` est ce qui envoie chaque soir à la bonne adresse** :
+un lieu par date, dans le même ordre que `date`. La ligne `location` est la
+phrase affichée sur la fiche ; `venues` est ce que lisent les moteurs de
+recherche **et le fichier agenda que le visiteur télécharge**. Sans lui, les
+deux soirées sont annoncées à « Vongy et Boëge, France », une adresse qui
+n'existe pas et vers laquelle personne ne peut rouler.
 
 Le contrôle automatique refuse un `venues` qui ne compte pas exactement
 autant de lieux que de dates : mieux vaut aucune association qu'une fausse.
-Un concert donné deux fois **au même endroit** n'a pas besoin de ce champ.
+Un concert donné deux fois **au même endroit** n'a pas besoin de ce champ —
+la ligne `location` suffit alors aux deux soirées.
 
 ### Étape 4 — enregistrer
 

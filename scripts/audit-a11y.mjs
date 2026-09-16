@@ -438,14 +438,16 @@ const auditDrawer = async (page) => {
     await page.keyboard.press("Tab");
     const state = await focusState(page);
 
-    if (!state.outside && !state.inDialog) {
+    /* Focus handed back to the document is the leak, not an exception to it:
+       a modal that lets Tab reach the page behind it has no trap at all. */
+    if (state.outside || !state.inDialog) {
       record({
         route: "/",
         viewport: "390 px",
         rule: "menu-mobile-fuite",
         impact: "serious",
         blocking: true,
-        detail: `la tabulation sort du menu ouvert vers ${state.name}`,
+        detail: `la tabulation sort du menu ouvert vers ${state.outside ? "le document" : state.name}`,
       });
       break;
     }
@@ -528,14 +530,15 @@ const auditLightbox = async (page) => {
     await page.keyboard.press("Tab");
     const state = await focusState(page);
 
-    if (!state.outside && !state.inDialog) {
+    /* Same rule as the menu: leaving for the document is leaving. */
+    if (state.outside || !state.inDialog) {
       record({
         route: "/presentation",
         viewport: "1440 px, photo agrandie",
         rule: "visionneuse-fuite",
         impact: "serious",
         blocking: true,
-        detail: `la tabulation sort de la photo agrandie vers ${state.name}`,
+        detail: `la tabulation sort de la photo agrandie vers ${state.outside ? "le document" : state.name}`,
       });
       break;
     }
